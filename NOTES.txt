@@ -1,0 +1,32 @@
+@BREAK_POINTS
+    xs, extra-small: 0px
+    sm, small: 600px
+    md, medium: 900px
+    lg, large: 1200px
+    xl, extra-large: 1536px
+@DETAIL
+    size        0px      600px    900px    1200px   1536px
+    innerWidth  |xs      sm       md       lg       xl
+                |--------|--------|--------|--------|-------->
+    width       |   xs   |   sm   |   md   |   lg   |   xl
+@QUERY
+    Up query
+        //Match [md, ∞) <=> [900px, ∞)
+        [theme.breakpoints.up('md')]: { 
+            backgroundColor: 'red'
+        },
+    Down query
+        //Match [0, md) <=> [0, 900px)
+        [theme.breakpoints.down('md')]: { 
+            backgroundColor: 'red'
+        },
+
+@MONGODB BACKUP AND RESTORE
+    Using bson file(generate so much file)
+        mongodump --db=<db_name> -o <path_to_dump_files>
+        mongorestore --verbose <path_to_dump_files>
+
+    Using gz file(just one file but this does not automatically create folder path if not existing
+    , you must manually create it and mongodump must run as administrator)
+        mongodump --db=<db_name> --archive="C:\test.gz"
+        mongorestore --archive="C:\test.gz"

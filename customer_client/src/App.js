@@ -1,5 +1,16 @@
-function App() {
-  return <h1>ALO</h1>;
-}
+// routes
+import Router from "./routes";
+// theme
+import ThemeConfig from "./theme";
+import GlobalStyles from "./theme/globalStyles";
 
-export default App;
+// ----------------------------------------------------------------------
+
+export default function App() {
+  return (
+    <ThemeConfig>
+      <GlobalStyles />
+      <Router />
+    </ThemeConfig>
+  );
+}
