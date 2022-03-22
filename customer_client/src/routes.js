@@ -15,7 +15,7 @@ export default function Router() {
       path: "/",
       element: <MainLayout />,
       children: [
-        { path: "", element: <Register /> },
+        { path: "", element: <Home /> },
         { path: "user", element: <User /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },

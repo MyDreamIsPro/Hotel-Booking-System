@@ -1,12 +1,13 @@
+import { forwardRef } from "react";
 import NumberFormat from "react-number-format";
 
-export const PhoneFormatCustom = (props) => {
-  const { inputRef, onChange, ...other } = props;
+export const PhoneFormatCustom = forwardRef((props, ref) => {
+  const { onChange, ...other } = props;
 
   return (
     <NumberFormat
       {...other}
-      getInputRef={inputRef}
+      getInputRef={ref}
       onValueChange={(values) => {
         onChange({
           target: {
@@ -19,15 +20,15 @@ export const PhoneFormatCustom = (props) => {
       mask="_"
     />
   );
-};
+});
 
-export const PriceFormatCustom = (props) => {
-  const { inputRef, onChange, ...other } = props;
+export const PriceFormatCustom = forwardRef((props, ref) => {
+  const { onChange, ...other } = props;
 
   return (
     <NumberFormat
       {...other}
-      getInputRef={inputRef}
+      getInputRef={ref}
       onValueChange={(values) => {
         onChange({
           target: {
@@ -42,14 +43,14 @@ export const PriceFormatCustom = (props) => {
       isNumericString
     />
   );
-};
-export const IdFormatCustom = (props) => {
-  const { inputRef, onChange, ...other } = props;
+});
+export const IdFormatCustom = forwardRef((props, ref) => {
+  const { onChange, ...other } = props;
 
   return (
     <NumberFormat
       {...other}
-      getInputRef={inputRef}
+      getInputRef={ref}
       onValueChange={(values) => {
         onChange({
           target: {
@@ -62,4 +63,4 @@ export const IdFormatCustom = (props) => {
       allowLeadingZeros={true}
     />
   );
-};
+});
