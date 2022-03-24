@@ -1,3 +1,4 @@
+import "./App.css";
 // routes
 import ScrollToTop from "./components/ScrollToTop";
 import Router from "./routes";

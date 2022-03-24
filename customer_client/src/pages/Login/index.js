@@ -23,10 +23,16 @@ import { Formik } from "formik";
 // UI custom
 import Page from "../../components/Page";
 
+// Logic custom
+import { INTEGER } from "../../constants";
+
 // -------------------------------------------
-const RootStyle = styled(Page)({
-  paddingTop: 5,
-});
+const RootStyle = styled(Page)(({ theme }) => ({
+  paddingTop: INTEGER.APP_BAR_MOBILE + 24,
+  [theme.breakpoints.up("lg")]: {
+    paddingTop: INTEGER.APP_BAR_DESKTOP + 24,
+  },
+}));
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
