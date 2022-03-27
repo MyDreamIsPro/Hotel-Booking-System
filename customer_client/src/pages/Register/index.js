@@ -28,12 +28,9 @@ import { PhoneFormatCustom } from "../../components/FormattedInput";
 import { INTEGER } from "../../constants";
 
 // -------------------------------------------
-const RootStyle = styled(Page)(({ theme }) => ({
-  paddingTop: INTEGER.APP_BAR_MOBILE + 24,
-  [theme.breakpoints.up("lg")]: {
-    paddingTop: INTEGER.APP_BAR_DESKTOP + 24,
-  },
-}));
+const RootStyle = styled(Page)({
+  paddingTop: INTEGER.APP_BAR_DESKTOP + 24,
+});
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);

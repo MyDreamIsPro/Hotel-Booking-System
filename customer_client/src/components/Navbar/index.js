@@ -1,21 +1,70 @@
 import { useEffect, useState } from "react";
 //UI lib
-import styled from "@emotion/styled";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Link from "@mui/material/Link";
+import {
+  Avatar,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
+  styled,
+  AppBar,
+  Toolbar,
+  Link,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 // logic lib
-import { Link as RouterLink } from "react-router-dom";
-// logic
+import { Link as RouterLink, useLocation } from "react-router-dom";
+// logic custom
 import { INTEGER } from "../../constants";
-import { Container, Stack, Typography } from "@mui/material";
+import AccountPopover from "../Popover/Account";
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
-  justifyContent: "center",
-  backgroundColor: "transparent",
   height: INTEGER.APP_BAR_MOBILE,
   [theme.breakpoints.up("lg")]: {
     height: INTEGER.APP_BAR_DESKTOP,
+  },
+}));
+
+const NavbarStyle = styled(Container)(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  position: "relative",
+  [theme.breakpoints.down(956)]: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}));
+
+const MenuStyle = styled(Stack)(({ theme }) => ({
+  flexGrow: 1,
+  paddingLeft: 40,
+  [theme.breakpoints.down(956)]: {
+    display: "none",
+  },
+}));
+
+const LinkStyle = styled(Link)(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+}));
+
+const AvatarStyle = styled(Stack)(({ theme }) => ({
+  position: "absolute",
+  right: 0,
+  display: "none",
+  [theme.breakpoints.down(956)]: {
+    display: "flex",
+  },
+}));
+
+const BurgerStyle = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  left: 0,
+  display: "none",
+  [theme.breakpoints.down(956)]: {
+    display: "flex",
   },
 }));
 
@@ -26,27 +75,27 @@ const links = [
   },
   {
     title: "KHÁCH SẠN",
-    link: "/login",
+    link: "/user",
   },
   {
     title: "KHU NGHỈ DƯỠNG",
-    link: "/login",
-  },
-  {
-    title: "KHUYẾN MÃI",
-    link: "/register",
+    link: "/booking",
   },
 ];
 
-const Navbar = () => {
+const Navbar = ({ openSidebar, setOpenSidebar }) => {
   const [active, setActive] = useState(false);
+  const pathname = useLocation().pathname;
+  var isLogged = false;
+  const border = active ? "4px solid #000" : "4px solid #FFF";
   useEffect(() => {
     changeBackground();
     // adding the event when scroll change Logo
     window.addEventListener("scroll", changeBackground);
   });
+
   const changeBackground = () => {
-    if (window.scrollY >= 66) {
+    if (window.scrollY >= 120) {
       setActive(true);
     } else {
       setActive(false);
@@ -54,49 +103,61 @@ const Navbar = () => {
   };
   return (
     <AppBar
-      elevation={0}
+      elevation={active ? 5 : 0}
       style={{
-        backgroundColor: active ? "#FFF" : "rgba(0, 0, 0, 0.5)",
-        transition: "background-color .5s ease, height .5s ease",
+        backgroundColor: active ? "#FFF" : "#1C1C1C",
+        transition: "background-color .4s ease, height .5s ease",
       }}
     >
       <ToolbarStyle>
-        <Container
-          maxWidth="xl"
-          sx={{
-            height: "100%",
-            display: "flex",
-            position: "relative",
-          }}
-        >
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            style={{ flexGrow: 1 }}
+        <NavbarStyle maxWidth="xl">
+          <Link component={RouterLink} to="/" style={{ height: "100%" }}>
+            <img src="/static/logo.jpg" alt="logo" style={{ height: "100%" }} />
+          </Link>
+          <BurgerStyle
+            style={{ color: active ? "#000" : "#FFF" }}
+            onClick={() => setOpenSidebar(!openSidebar)}
           >
+            <MenuIcon />
+          </BurgerStyle>
+          <AvatarStyle>
+            <AccountPopover />
+          </AvatarStyle>
+          <MenuStyle direction="row" justifyContent="space-between">
             <Stack direction="row" spacing={5} alignItems="center">
-              <Link component={RouterLink} to="/" style={{ height: "100%" }}>
-                <img src="/static/logo.jpg" style={{ height: "100%" }} />
-              </Link>
               {links.map((item, index) => (
-                <Link
+                <LinkStyle
                   key={index}
                   component={RouterLink}
                   underline="none"
                   to={item.link}
+                  style={{
+                    borderBottom: pathname === item.link ? border : "none",
+                    transition: "border-color .5s ease",
+                  }}
                 >
                   <Typography
                     variant="body2"
                     color={active ? "#000" : "#FFF"}
-                    style={{ transition: "color .5s ease" }}
+                    style={{
+                      transition: "color .5s ease",
+                    }}
                   >
                     {item.title}
                   </Typography>
-                </Link>
+                </LinkStyle>
               ))}
             </Stack>
             <Stack direction="row" spacing={5} alignItems="center">
-              <Link component={RouterLink} underline="none" to="/login">
+              {/* <AccountPopover /> */}
+              <LinkStyle
+                component={RouterLink}
+                underline="none"
+                to="/login"
+                style={{
+                  borderBottom: pathname === "/login" ? border : "none",
+                }}
+              >
                 <Typography
                   variant="body2"
                   color={active ? "#000" : "#FFF"}
@@ -104,8 +165,15 @@ const Navbar = () => {
                 >
                   ĐĂNG NHẬP
                 </Typography>
-              </Link>
-              <Link component={RouterLink} underline="none" to="/register">
+              </LinkStyle>
+              <LinkStyle
+                component={RouterLink}
+                underline="none"
+                to="/register"
+                style={{
+                  borderBottom: pathname === "/register" ? border : "none",
+                }}
+              >
                 <Typography
                   variant="body2"
                   color={active ? "#000" : "#FFF"}
@@ -113,10 +181,10 @@ const Navbar = () => {
                 >
                   ĐĂNG KÝ
                 </Typography>
-              </Link>
+              </LinkStyle>
             </Stack>
-          </Stack>
-        </Container>
+          </MenuStyle>
+        </NavbarStyle>
       </ToolbarStyle>
     </AppBar>
   );

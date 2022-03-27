@@ -6,9 +6,13 @@ import {
   styled,
   Typography,
   Container,
+  Link,
 } from "@mui/material";
+// logic lib
+import { Link as RouterLink } from "react-router-dom";
 // UI custom
 import Page from "../../components/Page";
+import Slider from "./Slider";
 
 const Frame = styled(Stack)(({ theme }) => ({
   width: "100%",
@@ -31,7 +35,6 @@ const ResortFrame = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "90vh",
   position: "relative",
-  marginBottom: 20,
 }));
 
 const LeftResortFrame = styled(Stack)(({ theme }) => ({
@@ -71,6 +74,7 @@ const TypoStyle = styled(Typography)({
 const Home = () => {
   return (
     <Page title="Trang chủ | TuanVQ">
+      {/* BANNER */}
       <Box
         sx={{
           width: "100%",
@@ -78,18 +82,51 @@ const Home = () => {
           position: "relative",
         }}
       >
-        {/* <Box
+        <div
           style={{
             position: "absolute",
             width: "100%",
             height: "100%",
-            top: 0,
             left: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            top: 0,
+            background:
+              "linear-gradient(270deg,rgba(0,0,0,0) 30%,rgba(0,0,0,0.54) 54.29%,rgba(0,0,0,0.62) 61%)",
           }}
-        ></Box> */}
+        >
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="flex-start"
+            style={{
+              height: "100%",
+              width: "100%",
+              paddingLeft: "8%",
+              cursor: "default",
+            }}
+            spacing={2}
+          >
+            <Typography variant="h3" color="#FFF">
+              KHÁCH SẠN, KHU NGHỈ DƯỠNG & HƠN THẾ NỮA
+            </Typography>
+            <Typography variant="h6" color="#FFF">
+              Nhận giá tốt nhất cho trên 80.000 chỗ nghỉ
+            </Typography>
+            <Link
+              component={RouterLink}
+              to="/"
+              underline="none"
+              style={{
+                padding: 10,
+                backgroundColor: "#FFF",
+                color: "#000",
+              }}
+            >
+              ĐẶT CHỖ NGAY
+            </Link>
+          </Stack>
+        </div>
         <img
-          src="/static/banner.webp"
+          src="/static/home/banner.jpg"
           alt="banner"
           height="100%"
           width="100%"
@@ -109,15 +146,16 @@ const Home = () => {
           >
             <img
               src="/static/logo.jpg"
+              alt="logo"
               height={90}
               width={90}
               style={{ objectFit: "cover" }}
             />
             <TypoStyle variant="body1">
-              CHÀO MỪNG ĐẾN MỚI TUANVU COTO RESORT
+              CHÀO MỪNG ĐẾN MỚI TUANVU COTO HOTEL
             </TypoStyle>
             <TypoStyle variant="h5">
-              Tiêu chuẩn cho khách sạn, khu nghỉ dưỡng sang trọng ở Việt Nam
+              Tiêu chuẩn cho khách sạn, resort sang trọng ở Việt Nam
             </TypoStyle>
             <TypoStyle variant="body2">
               Conceived by the Fernando family, Sri Lankan tea producers &
@@ -145,7 +183,7 @@ const Home = () => {
           />
         </HalfFrame>
       </Frame>
-      {/* RESORT */}
+      {/* Resort */}
       <Box style={{ width: "100%", backgroundColor: "#F4F4F4" }}>
         <Container maxWidth="xl">
           <Stack
@@ -154,7 +192,7 @@ const Home = () => {
             spacing={2}
             alignItems="center"
           >
-            <TypoStyle variant="h6">KHU NGHỈ DƯỠNG</TypoStyle>
+            <TypoStyle variant="h6">RESORT</TypoStyle>
             <TypoStyle variant="body1">
               Tận hưởng mùa hè không thể nào quên cùng TUANVU COTO HOTEL, với
               trải nghiệm nghỉ dưỡng đỉnh cao và những cuộc vui bất tận bên
@@ -177,7 +215,7 @@ const Home = () => {
         <LeftResortFrame direction="row" alignItems="center">
           <InnerResortFrame direction="column" spacing={2} alignItems="center">
             <Typography variant="h6" color="#000">
-              KHU NGHỈ DƯỠNG BÁN ĐẢO SƠN TRÀ
+              RESORT BÁN ĐẢO SƠN TRÀ
             </Typography>
             <Typography variant="body2" color="#000" textAlign="center">
               Tận hưởng mùa hè không thể nào quên cùng TUANVU HOTEL, với trải
@@ -201,7 +239,7 @@ const Home = () => {
         <RightResortFrame direction="row" alignItems="center">
           <InnerResortFrame direction="column" spacing={2} alignItems="center">
             <Typography variant="h6" color="#000">
-              KHU NGHỈ DƯỠNG NHA TRANG
+              RESORT NHA TRANG
             </Typography>
             <Typography variant="body2" color="#000" textAlign="center">
               Tận hưởng mùa hè không thể nào quên cùng TUANVU HOTEL, với trải
@@ -225,7 +263,7 @@ const Home = () => {
         <LeftResortFrame direction="row" alignItems="center">
           <InnerResortFrame direction="column" spacing={2} alignItems="center">
             <Typography variant="h6" color="#000">
-              KHU NGHỈ DƯỠNG PHÚ QUỐC
+              RESORT PHÚ QUỐC
             </Typography>
             <Typography variant="body2" color="#000" textAlign="center">
               Tận hưởng mùa hè không thể nào quên cùng TUANVU HOTEL, với trải
@@ -238,6 +276,95 @@ const Home = () => {
           </InnerResortFrame>
         </LeftResortFrame>
       </ResortFrame>
+      {/* HOTEL */}
+      <Slider />
+      {/* AUTH */}
+      <Box
+        style={{
+          width: "100%",
+          height: "70vh",
+          marginBottom: 50,
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          cursor: "default",
+        }}
+      >
+        <Container
+          style={{
+            position: "absolute",
+            top: 0,
+            zIndex: 3,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            height: "100%",
+          }}
+          maxWidth="lg"
+        >
+          <Typography variant="h4" color="#FFF">
+            Tham gia ngay
+          </Typography>
+          <Typography
+            variant="body1"
+            color="#FFF"
+            style={{ paddingTop: 10, paddingBottom: 20 }}
+          >
+            Mức giá độc quyền, tích điểm và hơn thế nữa. Đăng ký miễn phí ngay
+            hôm nay
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Link
+              component={RouterLink}
+              to="/login"
+              underline="none"
+              sx={{
+                color: "#FFF",
+                py: 1,
+                px: 2,
+                border: "1px solid #FFF",
+              }}
+            >
+              Đăng nhập
+            </Link>
+            <Link
+              component={RouterLink}
+              to="/register"
+              underline="none"
+              sx={{
+                color: "#FFF",
+                backgroundColor: "#000",
+                py: 1,
+                px: 2,
+              }}
+            >
+              Đăng ký
+            </Link>
+          </Stack>
+        </Container>
+        <Box
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, .4  )",
+            position: "absolute",
+            top: 0,
+            zIndex: 2,
+          }}
+        ></Box>
+        <img
+          src="/static/home/auth.jpg"
+          alt="banner"
+          style={{
+            zIndex: 1,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            position: "absolute",
+            top: 0,
+          }}
+        />
+      </Box>
     </Page>
   );
 };
