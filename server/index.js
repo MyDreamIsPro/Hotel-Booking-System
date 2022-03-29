@@ -1,18 +1,30 @@
+// lib
 import express from "express";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+// custom
+import userRoutes from "./routes/user.js";
 
-// import userRoutes from "./routes/user.js";
-
+// pre-config
+dotenv.config();
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+};
+// express
 const app = express();
-//Middleware
-app.use(express.json({ limit: "50mb" }));
-app.use(cors());
-// app.use("/user", userRoutes);
+// middleware
+app.use(express.json({ limit: "100mb" }));
+app.use(cors(corsOptions));
+app.use(cookieParser());
+// routes
+app.use("/user", userRoutes);
 
 //Connect to DB
-const PORT = process.env.PORT || 5000;
-const CONNECTION_URL = "mongodb://127.0.0.1:27017/tuanvq";
+const PORT = process.env.PORT;
+const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";
 
 mongoose
   .connect(CONNECTION_URL, {

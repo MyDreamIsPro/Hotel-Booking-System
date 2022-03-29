@@ -1,11 +1,13 @@
 import express from "express";
-import { getUserInfo, login, signup, updateUser } from "../controllers/user.js";
-import { isLoggedIn } from "../middlewares/auth.js";
+import { login, signup, ping, logout } from "../controllers/user.js";
+import { authMiddleware } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.get("/:id", isLoggedIn, getUserInfo);
+// router.get("/:id", isLoggedIn, getUserInfo);
 router.post("/login", login);
 router.post("/signup", signup);
-router.patch("/update/:id", isLoggedIn, updateUser);
+router.post("/ping", ping);
+router.post("/logout", logout);
+// router.patch("/update/:id", isLoggedIn, updateUser);
 export default router;

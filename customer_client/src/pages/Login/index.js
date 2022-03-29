@@ -12,11 +12,13 @@ import {
   Typography,
   Divider,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import Iconify from "../../components/Iconify";
 
 // Logic lib
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
@@ -24,6 +26,7 @@ import { Formik } from "formik";
 import Page from "../../components/Page";
 
 // Logic custom
+import { login } from "../../redux/actions/user";
 import { INTEGER } from "../../constants";
 
 // -------------------------------------------
@@ -33,6 +36,12 @@ const RootStyle = styled(Page)({
 });
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -78,16 +87,50 @@ const Login = () => {
             </Typography>
           </Divider>
 
+          {hasError && (
+            <Box
+              boxShadow={3}
+              style={{
+                borderLeft: "5px solid #E12D2D",
+                padding: 10,
+                marginBottom: 15,
+              }}
+            >
+              <Typography variant="body1">{errorMessage}</Typography>
+            </Box>
+          )}
+
           <Formik
             initialValues={{
               username: "",
               password: "",
             }}
             validationSchema={Yup.object().shape({
-              username: Yup.string().max(255).required("Chưa nhập tài khoản"),
-              password: Yup.string().max(255).required("Chưa nhập mật khẩu"),
+              username: Yup.string()
+                .max(100, "Tài khoản dài tối đa 100 kí tự")
+                .required("Chưa nhập tài khoản"),
+              password: Yup.string()
+                .min(1, "Mật khẩu dài tối thiểu 6 kí tự")
+                .max(100, "Mật khẩu dài tối đa 100 kí tự")
+                .required("Chưa nhập mật khẩu"),
             })}
-            onSubmit={(values, { setSubmitting }) => {}}
+            onSubmit={(values, { setSubmitting }) => {
+              if (hasError) setHasError(false);
+              dispatch(
+                login(
+                  { ...values },
+                  () => {
+                    navigate("/user");
+                  },
+                  (errorMessage) => {
+                    setErrorMessage(errorMessage);
+                    setHasError(true);
+                    setSubmitting(false);
+                    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+                  }
+                )
+              );
+            }}
           >
             {({
               errors,
@@ -143,9 +186,15 @@ const Login = () => {
                 <Button
                   sx={{ marginTop: 2, height: 50 }}
                   fullWidth
+                  type="submit"
                   variant="contained"
+                  disabled={isSubmitting ? true : false}
                 >
-                  Đăng nhập
+                  {isSubmitting ? (
+                    <CircularProgress style={{ color: "#252525" }} />
+                  ) : (
+                    "ĐĂNG NHẬP"
+                  )}
                 </Button>
                 <Stack
                   direction="row"

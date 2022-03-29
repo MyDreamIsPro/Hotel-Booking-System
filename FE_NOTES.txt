@@ -21,12 +21,3 @@
             backgroundColor: 'red'
         },
 
-@MONGODB BACKUP AND RESTORE
-    Using bson file(generate so much file)
-        mongodump --db=<db_name> -o <path_to_dump_files>
-        mongorestore --verbose <path_to_dump_files>
-
-    Using gz file(just one file but this does not automatically create folder path if not existing
-    , you must manually create it and mongodump must run as administrator)
-        mongodump --db=<db_name> --archive="C:\test.gz"
-        mongorestore --archive="C:\test.gz"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 //UI lib
 import {
-  Avatar,
   Container,
   IconButton,
   Stack,
@@ -12,7 +12,6 @@ import {
   Link,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 // logic lib
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // logic custom
@@ -86,7 +85,6 @@ const links = [
 const Navbar = ({ openSidebar, setOpenSidebar }) => {
   const [active, setActive] = useState(false);
   const pathname = useLocation().pathname;
-  var isLogged = false;
   const border = active ? "4px solid #000" : "4px solid #FFF";
   useEffect(() => {
     changeBackground();
@@ -188,6 +186,11 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
       </ToolbarStyle>
     </AppBar>
   );
+};
+
+Navbar.propTypes = {
+  openSidebar: PropTypes.bool,
+  setOpenSidebar: PropTypes.func,
 };
 
 export default Navbar;

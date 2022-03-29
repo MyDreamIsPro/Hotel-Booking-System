@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import PropTypes from "prop-types";
 // UI lib
 import {
   styled,
@@ -62,10 +63,10 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
   const pathname = useLocation().pathname;
   useEffect(() => {
     if (isDesktop) setOpenSidebar(false);
-  }, [isDesktop]);
+  }, [isDesktop, setOpenSidebar]);
   useEffect(() => {
     setOpenSidebar(false);
-  }, [pathname]);
+  }, [pathname, setOpenSidebar]);
   return (
     <Drawer
       variant="temporary"
@@ -105,6 +106,11 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
       </DrawerInner>
     </Drawer>
   );
+};
+
+Sidebar.propTypes = {
+  openSidebar: PropTypes.bool,
+  setOpenSidebar: PropTypes.func,
 };
 
 export default Sidebar;

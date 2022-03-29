@@ -15,12 +15,14 @@ export default function Router() {
       path: "/",
       element: <MainLayout />,
       children: [
+        // Public routes
         { path: "", element: <Home /> },
-        { path: "user", element: <User /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         { path: "404", element: <NotFound /> },
         { path: "*", element: <Navigate to="/404" /> },
+        // Protected routes
+        { path: "user", element: <User /> },
       ],
     },
     { path: "*", element: <Navigate to="/404" replace /> },

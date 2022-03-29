@@ -8,11 +8,13 @@ import {
   Container,
   Link,
 } from "@mui/material";
-// logic lib
-import { Link as RouterLink } from "react-router-dom";
 // UI custom
 import Page from "../../components/Page";
 import Slider from "./Slider";
+// logic lib
+import { Link as RouterLink } from "react-router-dom";
+// logic custom
+import { STRING } from "../../constants";
 
 const Frame = styled(Stack)(({ theme }) => ({
   width: "100%",
@@ -72,6 +74,7 @@ const TypoStyle = styled(Typography)({
 });
 
 const Home = () => {
+  console.log(localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY));
   return (
     <Page title="Trang chủ | TuanVQ">
       {/* BANNER */}
