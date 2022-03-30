@@ -69,7 +69,6 @@ export const signup = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  console.log(req.body);
   res.status(200).clearCookie("token").send("Logout completely");
 };
 

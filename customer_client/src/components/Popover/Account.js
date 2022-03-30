@@ -15,31 +15,20 @@ import {
 import Iconify from "../../components/Iconify";
 import MenuPopover from "./index";
 // logic custom
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/actions/user";
 import useReponsive from "../../theme/useReponsive";
+import { STRING } from "../../constants";
 
 // ----------------------------------------------------------------------
-
-const MENU_OPTIONS = [
-  {
-    label: "Home",
-    icon: "eva:home-fill",
-    linkTo: "/",
-  },
-  {
-    label: "Profile",
-    icon: "eva:person-fill",
-    linkTo: "#",
-  },
-  {
-    label: "Settings",
-    icon: "eva:settings-2-fill",
-    linkTo: "#",
-  },
-];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const dispatch = useDispatch();
+  const isAuthenticated = localStorage.getItem(
+    STRING.LOCAL_STORAGE_PROFILE_KEY
+  );
   const autoClose = useReponsive("up", 950);
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -77,7 +66,18 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src="/static/venom.jpg" alt="photoURL" />
+        {isAuthenticated ? (
+          <Avatar src="/static/venom.jpg" alt="photoURL" />
+        ) : (
+          <Iconify
+            icon="bi:person-circle"
+            color="#FFF"
+            sx={{
+              width: 35,
+              height: 35,
+            }}
+          />
+        )}
       </IconButton>
 
       <MenuPopover
@@ -86,43 +86,92 @@ export default function AccountPopover() {
         anchorEl={anchorRef.current}
         sx={{ width: 220 }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle1" noWrap>
-            Bùi Huỳnh Đức
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            duc.bh@gmail.com
-          </Typography>
-        </Box>
+        {isAuthenticated ? (
+          <>
+            <Box sx={{ my: 1.5, px: 2.5 }}>
+              <Typography variant="subtitle1" noWrap>
+                Bùi Huỳnh Đức
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary" }}
+                noWrap
+              >
+                duc.bh@gmail.com
+              </Typography>
+            </Box>
 
-        <Divider sx={{ my: 1 }} />
-
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem
-            key={option.label}
-            to={option.linkTo}
-            component={RouterLink}
-            onClick={handleClose}
-            sx={{ typography: "body2", py: 1, px: 2.5 }}
-          >
-            <Iconify
-              icon={option.icon}
-              sx={{
-                mr: 2,
-                width: 24,
-                height: 24,
-              }}
-            />
-
-            {option.label}
-          </MenuItem>
-        ))}
-
-        <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
-            Logout
-          </Button>
-        </Box>
+            <Divider sx={{ my: 1 }} />
+            <MenuItem
+              to="/user"
+              component={RouterLink}
+              onClick={handleClose}
+              sx={{ typography: "body2", py: 1, px: 2.5 }}
+            >
+              <Iconify
+                icon="eva:person-fill"
+                sx={{
+                  mr: 2,
+                  width: 24,
+                  height: 24,
+                }}
+              />
+              Profile
+            </MenuItem>
+            <Box
+              sx={{ p: 2, pt: 1.5 }}
+              onClick={() =>
+                dispatch(
+                  logout(
+                    () => {
+                      window.location.reload();
+                    },
+                    () => {}
+                  )
+                )
+              }
+            >
+              <Button fullWidth color="inherit" variant="outlined">
+                Logout
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <MenuItem
+              to="/login"
+              component={RouterLink}
+              onClick={handleClose}
+              sx={{ typography: "body2", py: 1, px: 2.5 }}
+            >
+              <Iconify
+                icon="mdi:login"
+                sx={{
+                  mr: 2,
+                  width: 24,
+                  height: 24,
+                }}
+              />
+              Đăng nhập
+            </MenuItem>
+            <MenuItem
+              to="/register"
+              component={RouterLink}
+              onClick={handleClose}
+              sx={{ typography: "body2", py: 1, px: 2.5 }}
+            >
+              <Iconify
+                icon="ant-design:user-add-outlined"
+                sx={{
+                  mr: 2,
+                  width: 24,
+                  height: 24,
+                }}
+              />
+              Đăng ký
+            </MenuItem>
+          </>
+        )}
       </MenuPopover>
     </>
   );

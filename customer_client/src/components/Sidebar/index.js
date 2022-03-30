@@ -41,16 +41,12 @@ const AvatarStyle = styled(Link)({
 
 const data = [
   {
+    title: "TRANG CHỦ",
+    link: "/",
+  },
+  {
     title: "ĐẶT CHỖ",
     link: "/login",
-  },
-  {
-    title: "KHÁCH SẠN",
-    link: "/login",
-  },
-  {
-    title: "KHU NGHỈ DƯỠNG",
-    link: "/register",
   },
   {
     title: "KHUYẾN MÃI",
@@ -83,7 +79,7 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
             justifyContent: "center",
           }}
         >
-          <AvatarStyle component={RouterLink} to="/" underline="none">
+          <AvatarStyle component={RouterLink} to="/user" underline="none">
             <Avatar style={{ marginRight: 10 }} src="/static/venom.jpg" />
             <Typography
               variant="body1"

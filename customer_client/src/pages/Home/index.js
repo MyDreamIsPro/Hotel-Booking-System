@@ -16,6 +16,9 @@ import { Link as RouterLink } from "react-router-dom";
 // logic custom
 import { STRING } from "../../constants";
 
+//-----------------------------------------------------
+//#region CSS
+
 const Frame = styled(Stack)(({ theme }) => ({
   width: "100%",
   height: "100vh",
@@ -73,8 +76,9 @@ const TypoStyle = styled(Typography)({
   textAlign: "center",
 });
 
+//#endregion
+
 const Home = () => {
-  console.log(localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY));
   return (
     <Page title="Trang chủ | TuanVQ">
       {/* BANNER */}

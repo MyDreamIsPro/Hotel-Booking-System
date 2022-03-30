@@ -15,9 +15,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 // logic lib
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // logic custom
-import { INTEGER } from "../../constants";
+import { INTEGER, STRING } from "../../constants";
 import AccountPopover from "../Popover/Account";
 
+//#region CSS
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   height: INTEGER.APP_BAR_MOBILE,
   [theme.breakpoints.up("lg")]: {
@@ -67,6 +68,8 @@ const BurgerStyle = styled(IconButton)(({ theme }) => ({
   },
 }));
 
+//#endregion
+
 const links = [
   {
     title: "TRANG CHỦ",
@@ -99,6 +102,10 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
       setActive(false);
     }
   };
+  const isAuthenticated = localStorage.getItem(
+    STRING.LOCAL_STORAGE_PROFILE_KEY
+  );
+
   return (
     <AppBar
       elevation={active ? 5 : 0}
@@ -118,9 +125,11 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
           >
             <MenuIcon />
           </BurgerStyle>
+
           <AvatarStyle>
             <AccountPopover />
           </AvatarStyle>
+
           <MenuStyle direction="row" justifyContent="space-between">
             <Stack direction="row" spacing={5} alignItems="center">
               {links.map((item, index) => (
@@ -147,7 +156,6 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
               ))}
             </Stack>
             <Stack direction="row" spacing={5} alignItems="center">
-              {/* <AccountPopover /> */}
               <LinkStyle
                 component={RouterLink}
                 underline="none"

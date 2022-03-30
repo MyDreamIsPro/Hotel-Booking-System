@@ -24,13 +24,13 @@ export const signup =
     }
   };
 
-export const logout =
-  (user, performSuccess, performFailure) => async (dispatch) => {
-    try {
-      const { data } = await api.logout(user);
-      dispatch({ type: STRING.LOG_OUT, payload: data });
-      performSuccess();
-    } catch (error) {
-      performFailure(error.response.data);
-    }
-  };
+export const logout = (performSuccess, performFailure) => async (dispatch) => {
+  try {
+    await api.logout();
+    dispatch({ type: STRING.LOG_OUT });
+    performSuccess();
+  } catch (error) {
+    if (error.response) performFailure(error.response.data);
+    else console.log(error);
+  }
+};

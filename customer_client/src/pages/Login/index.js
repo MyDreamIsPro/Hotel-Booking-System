@@ -17,7 +17,7 @@ import {
 import Iconify from "../../components/Iconify";
 
 // Logic lib
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -27,7 +27,7 @@ import Page from "../../components/Page";
 
 // Logic custom
 import { login } from "../../redux/actions/user";
-import { INTEGER } from "../../constants";
+import { INTEGER, STRING } from "../../constants";
 
 // -------------------------------------------
 const RootStyle = styled(Page)({
@@ -46,6 +46,13 @@ const Login = () => {
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  const isAuthenticated = localStorage.getItem(
+    STRING.LOCAL_STORAGE_PROFILE_KEY
+  );
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <RootStyle title="Login | TuanVQ">

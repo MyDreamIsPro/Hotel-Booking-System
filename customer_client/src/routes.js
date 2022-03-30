@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import User from "./pages/User";
 import NotFound from "./pages/NotFound";
+import PrivateRoute from "./components/PrivateRoute";
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -19,6 +20,14 @@ export default function Router() {
         { path: "", element: <Home /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
+        {
+          path: "user",
+          element: (
+            <PrivateRoute redirectPath="/login">
+              <User />
+            </PrivateRoute>
+          ),
+        },
         { path: "404", element: <NotFound /> },
         { path: "*", element: <Navigate to="/404" /> },
         // Protected routes
