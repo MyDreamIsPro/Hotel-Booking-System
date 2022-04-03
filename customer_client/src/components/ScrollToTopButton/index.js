@@ -31,6 +31,8 @@ const ScrollToTopButton = () => {
         opacity: active ? 1 : 0,
         visibility: active ? "visible" : "hidden",
         transition: "opacity .3s ease, visibility .3s ease, bottom .3s ease",
+        width: 55,
+        height: 55,
       }}
     >
       <ArrowUpwardSharpIcon style={{ fontSize: 40 }} />

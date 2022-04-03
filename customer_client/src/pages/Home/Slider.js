@@ -140,7 +140,7 @@ const Slider = () => {
               borderRadius: 8,
             }}
           >
-            <LinkStyle component={RouterLink} style={{}} to="/"></LinkStyle>
+            <LinkStyle component={RouterLink} to="/"></LinkStyle>
             <ImgStyle src={slide.path} alt="banner" />
             <Box
               style={{

@@ -59,7 +59,7 @@ const Register = () => {
   }
 
   return (
-    <RootStyle title="Register | TuanVQ">
+    <RootStyle title="Đăng ký | TuanVQ">
       <Container maxWidth="sm">
         <Box sx={{ boxShadow: 3, borderRadius: 4, padding: 3 }}>
           <Typography variant="h5">Đăng ký</Typography>
@@ -142,7 +142,7 @@ const Register = () => {
                 signup(
                   { ...values },
                   () => {
-                    navigate("/user");
+                    navigate("/");
                   },
                   (errorMessage) => {
                     setErrorMessage(errorMessage);

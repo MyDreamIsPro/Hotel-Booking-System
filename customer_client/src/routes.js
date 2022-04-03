@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import User from "./pages/User";
 import NotFound from "./pages/NotFound";
+import Booking from "./pages/Booking";
 import PrivateRoute from "./components/PrivateRoute";
 // ----------------------------------------------------------------------
 
@@ -18,6 +19,7 @@ export default function Router() {
       children: [
         // Public routes
         { path: "", element: <Home /> },
+        { path: "booking", element: <Booking /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         {

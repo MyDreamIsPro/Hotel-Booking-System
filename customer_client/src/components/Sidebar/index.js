@@ -8,8 +8,6 @@ import {
   ListItem,
   List,
   ListItemText,
-  Link,
-  Avatar,
   Typography,
 } from "@mui/material";
 // logic lib
@@ -17,28 +15,18 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 // Logic custom
 import useReponsive from "../../theme/useReponsive";
 import { INTEGER } from "../../constants";
+import { STRING } from "../../constants";
 //--------------------------------------------------
 
-const DrawerInner = styled(Box)(({ theme }) => ({
+//#region CSS
+const DrawerInner = styled("div")(({ theme }) => ({
   width: INTEGER.DRAWER_WIDTH,
   minHeight: "100vh",
   display: "flex",
   flexDirection: "column",
 }));
 
-const AvatarStyle = styled(Link)({
-  width: "90%",
-  height: 70,
-  backgroundColor: "#1C1C1C",
-  borderRadius: 8,
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-around",
-  paddingRight: 10,
-  paddingLeft: 10,
-});
-
+//#endregion
 const data = [
   {
     title: "TRANG CHỦ",
@@ -46,15 +34,14 @@ const data = [
   },
   {
     title: "ĐẶT CHỖ",
-    link: "/login",
-  },
-  {
-    title: "KHUYẾN MÃI",
-    link: "/",
+    link: "/booking",
   },
 ];
 
 const Sidebar = ({ openSidebar, setOpenSidebar }) => {
+  const user = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
+  );
   const isDesktop = useReponsive("up", 956);
   const pathname = useLocation().pathname;
   useEffect(() => {
@@ -75,22 +62,46 @@ const Sidebar = ({ openSidebar, setOpenSidebar }) => {
           style={{
             width: "100%",
             display: "flex",
-            marginTop: 20,
             justifyContent: "center",
+            height: 200,
+            position: "relative",
           }}
         >
-          <AvatarStyle component={RouterLink} to="/user" underline="none">
-            <Avatar style={{ marginRight: 10 }} src="/static/venom.jpg" />
-            <Typography
-              variant="body1"
-              style={{
-                color: "#FFF",
-              }}
-              noWrap
-            >
-              Hoàng Hoành Anh Tuấn
-            </Typography>
-          </AvatarStyle>
+          <Box
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 2,
+              background:
+                "linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.05) 40%,rgba(0,0,0,.9))",
+              display: "flex",
+              alignItems: "flex-end",
+              paddingLeft: 10,
+              paddingBottom: 10,
+            }}
+          >
+            {user && (
+              <Typography variant="h6" color="#FFF">
+                Xin chào {user.full_name}!
+              </Typography>
+            )}
+          </Box>
+          <img
+            style={{
+              zIndex: 1,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            src="/static/home/nhatrang.jpg"
+            alt="banner"
+          />
         </Box>
         <List>
           {data.map((item, index) => (

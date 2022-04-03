@@ -10,3 +10,5 @@
     , you must manually create it and mongodump must run as administrator)
         mongodump --db=<db_name> --archive="C:\test.gz"
         mongorestore --archive="C:\test.gz"
+@COOKIE EXPIRES FIELD MEANING
+    This field means the cookie will be automatically remove from the request header (Chrome dev tool too)

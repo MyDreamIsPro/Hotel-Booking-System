@@ -59,6 +59,13 @@ const AvatarStyle = styled(Stack)(({ theme }) => ({
   },
 }));
 
+const AvatarStyle2 = styled(Stack)(({ theme }) => ({
+  display: "flex",
+  [theme.breakpoints.down(956)]: {
+    display: "none",
+  },
+}));
+
 const BurgerStyle = styled(IconButton)(({ theme }) => ({
   position: "absolute",
   left: 0,
@@ -67,7 +74,6 @@ const BurgerStyle = styled(IconButton)(({ theme }) => ({
     display: "flex",
   },
 }));
-
 //#endregion
 
 const links = [
@@ -76,11 +82,7 @@ const links = [
     link: "/",
   },
   {
-    title: "KHÁCH SẠN",
-    link: "/user",
-  },
-  {
-    title: "KHU NGHỈ DƯỠNG",
+    title: "ĐẶT CHỖ",
     link: "/booking",
   },
 ];
@@ -111,7 +113,7 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
       elevation={active ? 5 : 0}
       style={{
         backgroundColor: active ? "#FFF" : "#1C1C1C",
-        transition: "background-color .4s ease, height .5s ease",
+        transition: "background-color .4s ease",
       }}
     >
       <ToolbarStyle>
@@ -127,7 +129,7 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
           </BurgerStyle>
 
           <AvatarStyle>
-            <AccountPopover />
+            <AccountPopover iconColor={active ? "#000" : "#FFF"} />
           </AvatarStyle>
 
           <MenuStyle direction="row" justifyContent="space-between">
@@ -156,38 +158,9 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
               ))}
             </Stack>
             <Stack direction="row" spacing={5} alignItems="center">
-              <LinkStyle
-                component={RouterLink}
-                underline="none"
-                to="/login"
-                style={{
-                  borderBottom: pathname === "/login" ? border : "none",
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  color={active ? "#000" : "#FFF"}
-                  style={{ transition: "color .5s ease" }}
-                >
-                  ĐĂNG NHẬP
-                </Typography>
-              </LinkStyle>
-              <LinkStyle
-                component={RouterLink}
-                underline="none"
-                to="/register"
-                style={{
-                  borderBottom: pathname === "/register" ? border : "none",
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  color={active ? "#000" : "#FFF"}
-                  style={{ transition: "color .5s ease" }}
-                >
-                  ĐĂNG KÝ
-                </Typography>
-              </LinkStyle>
+              <AvatarStyle2>
+                <AccountPopover iconColor={active ? "#000" : "#FFF"} />
+              </AvatarStyle2>
             </Stack>
           </MenuStyle>
         </NavbarStyle>

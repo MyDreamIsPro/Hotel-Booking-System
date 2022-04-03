@@ -24,10 +24,10 @@ import { STRING } from "../../constants";
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover({ iconColor }) {
   const dispatch = useDispatch();
-  const isAuthenticated = localStorage.getItem(
-    STRING.LOCAL_STORAGE_PROFILE_KEY
+  const user = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   );
   const autoClose = useReponsive("up", 950);
   const anchorRef = useRef(null);
@@ -66,13 +66,14 @@ export default function AccountPopover() {
           }),
         }}
       >
-        {isAuthenticated ? (
+        {user ? (
           <Avatar src="/static/venom.jpg" alt="photoURL" />
         ) : (
           <Iconify
             icon="bi:person-circle"
-            color="#FFF"
+            color={iconColor}
             sx={{
+              transition: "color .4s ease",
               width: 35,
               height: 35,
             }}
@@ -86,11 +87,11 @@ export default function AccountPopover() {
         anchorEl={anchorRef.current}
         sx={{ width: 220 }}
       >
-        {isAuthenticated ? (
+        {user ? (
           <>
             <Box sx={{ my: 1.5, px: 2.5 }}>
               <Typography variant="subtitle1" noWrap>
-                Bùi Huỳnh Đức
+                {user.full_name}
               </Typography>
               <Typography
                 variant="body2"
@@ -116,7 +117,7 @@ export default function AccountPopover() {
                   height: 24,
                 }}
               />
-              Profile
+              Hồ sơ
             </MenuItem>
             <Box
               sx={{ p: 2, pt: 1.5 }}

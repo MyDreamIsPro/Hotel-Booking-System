@@ -14,7 +14,6 @@ import Slider from "./Slider";
 // logic lib
 import { Link as RouterLink } from "react-router-dom";
 // logic custom
-import { STRING } from "../../constants";
 
 //-----------------------------------------------------
 //#region CSS
@@ -120,7 +119,7 @@ const Home = () => {
             </Typography>
             <Link
               component={RouterLink}
-              to="/"
+              to="/booking"
               underline="none"
               style={{
                 padding: 10,

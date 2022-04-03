@@ -55,7 +55,7 @@ const Login = () => {
   }
 
   return (
-    <RootStyle title="Login | TuanVQ">
+    <RootStyle title="Đăng nhập | TuanVQ">
       <Container maxWidth="sm">
         <Box sx={{ boxShadow: 3, borderRadius: 4, padding: 3 }}>
           <Typography variant="h5">Đăng nhập</Typography>
@@ -127,7 +127,7 @@ const Login = () => {
                 login(
                   { ...values },
                   () => {
-                    navigate("/user");
+                    navigate("/");
                   },
                   (errorMessage) => {
                     setErrorMessage(errorMessage);
