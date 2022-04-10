@@ -60,6 +60,7 @@ const Filter = ({ setIsLoading }) => {
   return (
     <Box
       style={{
+        width: "100%",
         backgroundColor: "#f4f4f4",
         padding: 20,
       }}
@@ -134,6 +135,7 @@ const Filter = ({ setIsLoading }) => {
                   dateAdapter={CustomDateAdapter}
                 >
                   <DateRangePicker
+                    calendars={2}
                     disabled={isSubmitting}
                     inputFormat="dd/MM/yyyy"
                     disablePast

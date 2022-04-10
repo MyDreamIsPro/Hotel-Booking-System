@@ -9,7 +9,9 @@ export const login =
       dispatch({ type: STRING.LOG_IN, payload: data });
       performSuccess();
     } catch (error) {
-      performFailure(error.response.data);
+      if (!error.response)
+        performFailure("Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau");
+      else performFailure(error.response.data);
     }
   };
 
@@ -20,7 +22,9 @@ export const signup =
       dispatch({ type: STRING.SIGN_UP, payload: data });
       performSuccess();
     } catch (error) {
-      performFailure(error.response.data);
+      if (!error.response)
+        performFailure("Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau");
+      else performFailure(error.response.data);
     }
   };
 
@@ -30,7 +34,8 @@ export const logout = (performSuccess, performFailure) => async (dispatch) => {
     dispatch({ type: STRING.LOG_OUT });
     performSuccess();
   } catch (error) {
-    if (error.response) performFailure(error.response.data);
-    else console.log(error);
+    if (!error.response)
+      performFailure("Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau");
+    else performFailure(error.response.data);
   }
 };

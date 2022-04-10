@@ -2,7 +2,6 @@ import { useState } from "react";
 // UI lib
 import {
   Button,
-  styled,
   Container,
   TextField,
   InputAdornment,
@@ -27,13 +26,9 @@ import Page from "../../components/Page";
 
 // Logic custom
 import { login } from "../../redux/actions/user";
-import { INTEGER, STRING } from "../../constants";
+import { STRING } from "../../constants";
 
 // -------------------------------------------
-const RootStyle = styled(Page)({
-  paddingTop: INTEGER.APP_BAR_DESKTOP + 24,
-  minHeight: "100vh",
-});
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -55,8 +50,8 @@ const Login = () => {
   }
 
   return (
-    <RootStyle title="Đăng nhập | TuanVQ">
-      <Container maxWidth="sm">
+    <Page title="Đăng nhập | TuanVQ">
+      <Container maxWidth="sm" style={{ paddingTop: 20 }}>
         <Box sx={{ boxShadow: 3, borderRadius: 4, padding: 3 }}>
           <Typography variant="h5">Đăng nhập</Typography>
           <Typography variant="body1">
@@ -232,7 +227,7 @@ const Login = () => {
           </Formik>
         </Box>
       </Container>
-    </RootStyle>
+    </Page>
   );
 };
 

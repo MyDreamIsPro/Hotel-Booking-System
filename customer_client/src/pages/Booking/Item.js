@@ -164,7 +164,7 @@ const BookingItem = () => {
         <TitleSection
           variant="h4"
           component={RouterLink}
-          to="/login"
+          to="/hotel/1"
           fontWeight="bold"
           underline="hover"
         >

@@ -1,3 +1,5 @@
+@SOME USEFUL LIBS TO BE USED
+    https://fullcalendar.io/docs/react
 @BREAK_POINTS
     xs, extra-small: 0px
     sm, small: 600px

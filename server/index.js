@@ -19,6 +19,7 @@ const app = express();
 app.use(express.json({ limit: "100mb" }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(express.static("static"));
 // routes
 app.use("/user", userRoutes);
 

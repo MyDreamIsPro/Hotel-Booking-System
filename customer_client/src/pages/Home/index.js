@@ -79,7 +79,7 @@ const TypoStyle = styled(Typography)({
 
 const Home = () => {
   return (
-    <Page title="Trang chủ | TuanVQ">
+    <Page title="Trang chủ | TuanVQ" style={{ paddingTop: 0 }}>
       {/* BANNER */}
       <Box
         sx={{

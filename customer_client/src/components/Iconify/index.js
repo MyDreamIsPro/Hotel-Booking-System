@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 
 // ----------------------------------------------------------------------
 
-const Iconify = ({ icon, sx, ...other }) => {
+const Iconify = ({ icon, size, sx, ...other }) => {
   return <Box component={Icon} icon={icon} sx={{ ...sx }} {...other} />;
 };
 

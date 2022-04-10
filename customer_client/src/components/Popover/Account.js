@@ -104,7 +104,7 @@ export default function AccountPopover({ iconColor }) {
 
             <Divider sx={{ my: 1 }} />
             <MenuItem
-              to="/user"
+              to="/account"
               component={RouterLink}
               onClick={handleClose}
               sx={{ typography: "body2", py: 1, px: 2.5 }}
@@ -117,7 +117,7 @@ export default function AccountPopover({ iconColor }) {
                   height: 24,
                 }}
               />
-              Hồ sơ
+              Tài khoản
             </MenuItem>
             <Box
               sx={{ p: 2, pt: 1.5 }}

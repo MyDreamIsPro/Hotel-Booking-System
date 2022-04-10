@@ -10,3 +10,6 @@ export const ping = (user) =>
   API.post("/user/ping", user, { withCredentials: true })
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
+
+export const upload = (data) =>
+  API.post("/user/upload", data, { withCredentials: true });

@@ -15,14 +15,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 // logic lib
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // logic custom
-import { INTEGER, STRING } from "../../constants";
+import { INTEGER } from "../../constants";
 import AccountPopover from "../Popover/Account";
 
 //#region CSS
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
-  height: INTEGER.APP_BAR_MOBILE,
-  [theme.breakpoints.up("lg")]: {
-    height: INTEGER.APP_BAR_DESKTOP,
+  height: INTEGER.APP_BAR_DESKTOP,
+  [theme.breakpoints.down(600)]: {
+    height: INTEGER.APP_BAR_MOBILE,
   },
 }));
 
@@ -85,6 +85,10 @@ const links = [
     title: "ĐẶT CHỖ",
     link: "/booking",
   },
+  {
+    title: "TEST",
+    link: "/test",
+  },
 ];
 
 const Navbar = ({ openSidebar, setOpenSidebar }) => {
@@ -104,9 +108,6 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
       setActive(false);
     }
   };
-  const isAuthenticated = localStorage.getItem(
-    STRING.LOCAL_STORAGE_PROFILE_KEY
-  );
 
   return (
     <AppBar

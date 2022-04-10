@@ -2,7 +2,6 @@ import { useState } from "react";
 // UI lib
 import {
   Button,
-  styled,
   Container,
   TextField,
   InputAdornment,
@@ -28,12 +27,9 @@ import { useDispatch } from "react-redux";
 import { signup } from "../../redux/actions/user";
 
 // Logic custom
-import { INTEGER, STRING } from "../../constants";
+import { STRING } from "../../constants";
 
 // -------------------------------------------
-const RootStyle = styled(Page)({
-  paddingTop: INTEGER.APP_BAR_DESKTOP + 24,
-});
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -59,8 +55,8 @@ const Register = () => {
   }
 
   return (
-    <RootStyle title="Đăng ký | TuanVQ">
-      <Container maxWidth="sm">
+    <Page title="Đăng ký | TuanVQ">
+      <Container maxWidth="sm" style={{ paddingTop: 20 }}>
         <Box sx={{ boxShadow: 3, borderRadius: 4, padding: 3 }}>
           <Typography variant="h5">Đăng ký</Typography>
           <Stack direction="row" spacing={2} sx={{ my: 2 }}>
@@ -314,7 +310,7 @@ const Register = () => {
           </Formik>
         </Box>
       </Container>
-    </RootStyle>
+    </Page>
   );
 };
 
