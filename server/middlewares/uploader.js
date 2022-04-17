@@ -1,11 +1,14 @@
 import multer from "multer";
+import path from "path";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "static/hotel");
+    cb(null, "static/user");
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    const fileName = req.body._id + path.extname(file.originalname);
+    req.body.profile_image = "http://localhost:5000/user/" + fileName;
+    cb(null, fileName);
   },
 });
 

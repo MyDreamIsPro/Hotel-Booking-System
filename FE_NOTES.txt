@@ -1,16 +1,19 @@
 @SOME USEFUL LIBS TO BE USED
     https://fullcalendar.io/docs/react
+
 @BREAK_POINTS
     xs, extra-small: 0px
     sm, small: 600px
     md, medium: 900px
     lg, large: 1200px
     xl, extra-large: 1536px
-@DETAIL
+
+@SCREEN SIZES
     size        0px      600px    900px    1200px   1536px
     innerWidth  |xs      sm       md       lg       xl
                 |--------|--------|--------|--------|-------->
     width       |   xs   |   sm   |   md   |   lg   |   xl
+
 @QUERY
     Up query
         //Match [md, ∞) <=> [900px, ∞)
@@ -23,3 +26,42 @@
             backgroundColor: 'red'
         },
 
+@useEffect DETAILS
+    useEffect(callback)
+        Callback được gọi sau khi component được mount
+        Callback được gọi mỗi khi component được re-render
+        Callback được gọi mỗi khi component thêm element vào DOM
+
+    useEffect(callback, [])
+        Callback được gọi sau khi component được mount
+        (Dùng khi cần xử lý logic 1 lần sau khi component được mount)
+
+    useEffect(callback, [dependencies])
+        Callback được gọi sau khi component được mount
+        Callback được gọi mỗi khi dependencies thay đổi
+
+    Cleanup function
+        Function được trả về bởi useEffect
+        Luôn được gọi trước khi component unmount
+
+@useState DETAILS
+    Component chỉ re-render khi giá trị của state thay đổi khác so với giá trị trước đó
+    (Nếu true => true sẽ không trigger component re-render)
+
+    useState(callback): Giá trị khởi tạo sẽ là giá trị trả về của callback
+    setState(callback): Giá trị thay đổi sẽ là giá trị trả về của callback
+    one-way binding: Giao diện tác động lên Dữ liệu
+    two-ways binding: Giao diện tác động lên Dữ liệu && Dữ liệu tác động lên Giao diện
+
+@MOUNT & UNMOUNT
+    Mount là thời điểm component được add vào React
+    Unmount là thời điểm component bị gỡ ra khỏi React
+
+@TO PREVENT "Can't perform a React state update on an unmounted component" WARNING WHEN USING useEffect
+    useEffect(() => {
+        let isMounted = true;               // note mutable flag
+        someAsyncOperation().then(data => {
+            if (isMounted) setState(data);  // add conditional check
+        })
+        return () => { isMounted = false }; // cleanup toggles value, if unmounted
+    }, []);                                 // adjust dependencies to your needs

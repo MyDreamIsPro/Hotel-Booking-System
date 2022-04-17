@@ -1,6 +1,7 @@
 @HTTP RESPONSE MEANING
     403: Token has expired
     401: Wrong authenticated info
+
 @MONGODB BACKUP AND RESTORE
     Using bson file(generate so much file)
         mongodump --db=<db_name> -o <path_to_dump_files>
@@ -10,5 +11,10 @@
     , you must manually create it and mongodump must run as administrator)
         mongodump --db=<db_name> --archive="C:\test.gz"
         mongorestore --archive="C:\test.gz"
+
 @COOKIE EXPIRES FIELD MEANING
     This field means the cookie will be automatically remove from the request header (Chrome dev tool too)
+
+@undefined && null
+    "undefined" means that variable value has not been defined; it is not know what the value is
+    "null" means that the variable value is defined and set to null(has no value)

@@ -1,4 +1,35 @@
-tiimport './App.css'; import {useState,useEffect} from 'react' import axios from 'axios' funcon App() 
-{ //creating IP state const [ip, setIP] = useState(''); 
-//creating function to load ip address from the API 
-const getData = async () => { const res = await axios.get('https://geolocation-db.com/json/') console.log(res.data); setIP(res.data.IPv4) } useEffect( () => { //passing getData method to the lifecycle method getData() }, []) return ( <div className="App"> <h2>Your IP Address is</h2> <h4>{ip}</h4> </div> ); }
+@ERR RESPONSE OBJECT: {
+    "data": "Qúy khách vui lòng đăng nhập để thực hiện chức năng này",
+    "status": 401,
+    "statusText": "Unauthorized",
+    "headers": {
+        "content-length": "73",
+        "content-type": "text/html; charset=utf-8"
+    },
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "headers": {
+            "Accept": "application/json, text/plain, */*"
+        },
+        "withCredentials": true,
+        "baseURL": "http://localhost:5000",
+        "method": "get",
+        "url": "/user"
+    },
+    "request": {}
+}

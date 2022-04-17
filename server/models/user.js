@@ -6,6 +6,10 @@ const UserSchema = mongoose.Schema({
   password: { type: String, trim: true },
   full_name: { type: String, trim: true, required: true },
   phone: { type: String, trim: true },
+  profile_image: {
+    type: String,
+    default: "http://localhost:5000/default/profile_image.png",
+  },
   banned: { type: Boolean, default: false },
   role: { type: Number, default: INTEGER.CUSTOMER_ROLE },
   created_date: { type: Date, default: new Date() },
