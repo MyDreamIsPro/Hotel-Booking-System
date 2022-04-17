@@ -53,11 +53,11 @@ const INFO = {
   contrastText: "#fff",
 };
 const SUCCESS = {
-  lighter: "#E9FCD4",
-  light: "#AAF27F",
+  lighter: "#C8FACD",
+  light: "#5BE584",
   main: "#00AB55",
-  dark: "#229A16",
-  darker: "#08660D",
+  dark: "#007B55",
+  darker: "#005249",
   contrastText: GREY[800],
 };
 const WARNING = {

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
 // UI lib
 import { alpha } from "@mui/material/styles";
 import {
@@ -11,14 +10,23 @@ import {
   Avatar,
   IconButton,
 } from "@mui/material";
+
 // UI custom
-import Iconify from "../../components/Iconify";
 import MenuPopover from "./index";
-// logic custom
+import Iconify from "../../components/Iconify";
+
+// logic lib
+import { Link as RouterLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
+// logic custom
 import { logout } from "../../redux/actions/user";
 import useReponsive from "../../theme/useReponsive";
 import { STRING } from "../../constants";
+
+//#region CSS
+
+//#endregion
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +75,7 @@ export default function AccountPopover({ iconColor }) {
         }}
       >
         {user ? (
-          <Avatar src="/static/venom.jpg" alt="photoURL" />
+          <Avatar src={user.profile_image} alt="photoURL" />
         ) : (
           <Iconify
             icon="bi:person-circle"
@@ -92,13 +100,6 @@ export default function AccountPopover({ iconColor }) {
             <Box sx={{ my: 1.5, px: 2.5 }}>
               <Typography variant="subtitle1" noWrap>
                 {user.full_name}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "text.secondary" }}
-                noWrap
-              >
-                duc.bh@gmail.com
               </Typography>
             </Box>
 

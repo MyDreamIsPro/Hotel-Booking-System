@@ -83,7 +83,7 @@ const links = [
   },
   {
     title: "ĐẶT CHỖ",
-    link: "/booking",
+    link: "/hotel",
   },
   {
     title: "TEST",
@@ -96,18 +96,18 @@ const Navbar = ({ openSidebar, setOpenSidebar }) => {
   const pathname = useLocation().pathname;
   const border = active ? "4px solid #000" : "4px solid #FFF";
   useEffect(() => {
-    changeBackground();
+    const changeBackground = () => {
+      if (window.scrollY >= 120) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    };
     // adding the event when scroll change Logo
     window.addEventListener("scroll", changeBackground);
-  });
 
-  const changeBackground = () => {
-    if (window.scrollY >= 120) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
-  };
+    return () => window.removeEventListener("scroll", changeBackground);
+  }, []);
 
   return (
     <AppBar

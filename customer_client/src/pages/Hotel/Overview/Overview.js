@@ -1,7 +1,7 @@
 // UI lib
 import { Box, Divider, Grid, Stack, styled, Typography } from "@mui/material";
 // UI custom
-import Iconify from "../../components/Iconify";
+import Iconify from "../../../components/Iconify";
 
 // logic lib
 

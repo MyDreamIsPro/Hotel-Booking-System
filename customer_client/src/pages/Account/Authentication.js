@@ -20,6 +20,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 // logic custom
+import { changePassword } from "../../api/user";
 import { formatDate } from "../../utils/Date";
 import { getDeviceSpec } from "../../utils/Device";
 //#region CSS
@@ -78,17 +79,23 @@ const Authentication = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   //creating function to load ip address from the API
-  const getData = async () => {
-    const res = await axios.get("https://geolocation-db.com/json/", {
-      withCredentials: false,
-    });
-    setInfo(res.data);
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    //passing getData method to the lifecycle method
+    let isMounted = true;
+    const getData = async () => {
+      const res = await axios.get("https://geolocation-db.com/json/", {
+        withCredentials: false,
+      });
+      if (isMounted) {
+        setInfo(res.data);
+        setIsLoading(false);
+      }
+    };
+
     getData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -121,16 +128,20 @@ const Authentication = () => {
               .max(100, "Mật khẩu dài tối đa 100 kí tự")
               .required("Chưa nhập mật khẩu"),
             new_password: Yup.string()
-              .min(6, "Mật khẩu dài tối thiểu 6 kí tự")
-              .max(100, "Mật khẩu dài tối đa 100 kí tự")
+              // .min(6, "Mật khẩu dài tối thiểu 6 kí tự")
+              // .max(100, "Mật khẩu dài tối đa 100 kí tự")
               .required("Chưa nhập mật khẩu"),
             confirm_new_password: Yup.string()
-              .min(6, "Mật khẩu dài tối thiểu 6 kí tự")
-              .max(100, "Mật khẩu dài tối đa 100 kí tự")
+              // .min(6, "Mật khẩu dài tối thiểu 6 kí tự")
+              // .max(100, "Mật khẩu dài tối đa 100 kí tự")
               .oneOf([Yup.ref("new_password"), null], "Mật khẩu không khớp")
               .required("Chưa nhập mật khẩu"),
           })}
-          onSubmit={(values, { setSubmitting }) => {}}
+          onSubmit={(values, { setSubmitting }) => {
+            changePassword(values)
+              .then((res) => {})
+              .catch((err) => {});
+          }}
         >
           {({
             errors,

@@ -8,7 +8,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import Iconify from "../../components/Iconify";
+import Iconify from "../../../components/Iconify";
 // UI custom
 
 // logic lib

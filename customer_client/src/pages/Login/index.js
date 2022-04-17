@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 // UI lib
 import {
   Button,
@@ -16,7 +16,12 @@ import {
 import Iconify from "../../components/Iconify";
 
 // Logic lib
-import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
+import {
+  Link as RouterLink,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -25,14 +30,17 @@ import { Formik } from "formik";
 import Page from "../../components/Page";
 
 // Logic custom
+import NotificationContext from "../../context/Context";
 import { login } from "../../redux/actions/user";
 import { STRING } from "../../constants";
 
 // -------------------------------------------
 
 const Login = () => {
+  const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const state = useLocation().state;
 
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,12 +50,12 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const isAuthenticated = localStorage.getItem(
-    STRING.LOCAL_STORAGE_PROFILE_KEY
-  );
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  // const isAuthenticated = localStorage.getItem(
+  //   STRING.LOCAL_STORAGE_PROFILE_KEY
+  // );
+  // if (isAuthenticated) {
+  //   return <Navigate to="/" replace />;
+  // }
 
   return (
     <Page title="Đăng nhập | TuanVQ">
@@ -122,7 +130,12 @@ const Login = () => {
                 login(
                   { ...values },
                   () => {
-                    navigate("/");
+                    context.setNotification({
+                      type: "success",
+                      content: "Đăng nhập thành công",
+                    });
+                    context.setOpen(true);
+                    navigate(state ? state.returnUrl : "/");
                   },
                   (errorMessage) => {
                     setErrorMessage(errorMessage);

@@ -119,7 +119,7 @@ const Home = () => {
             </Typography>
             <Link
               component={RouterLink}
-              to="/booking"
+              to="/hotel"
               underline="none"
               style={{
                 padding: 10,

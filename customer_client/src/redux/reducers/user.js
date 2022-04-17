@@ -2,6 +2,8 @@ import { STRING } from "../../constants";
 
 export default (state = {}, action) => {
   switch (action.type) {
+    case STRING.GET_INFO:
+      return action.payload;
     case STRING.LOG_IN:
       localStorage.setItem(
         STRING.LOCAL_STORAGE_PROFILE_KEY,
@@ -16,7 +18,7 @@ export default (state = {}, action) => {
       return action.payload;
     case STRING.LOG_OUT:
       localStorage.clear();
-      return { ...state, auth: null };
+      return null;
     default:
       return state;
   }

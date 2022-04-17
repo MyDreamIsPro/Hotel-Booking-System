@@ -121,7 +121,7 @@ const BookingItem = () => {
             objectFit: "cover",
             marginBottom: 1,
           }}
-          src="/static/booking/item_1.webp"
+          src="/static/hotel_list/item_1.webp"
           alt="detail"
         />
         <Stack
@@ -138,7 +138,7 @@ const BookingItem = () => {
               width: "33.333%",
               objectFit: "cover",
             }}
-            src="/static/booking/item_2.webp"
+            src="/static/hotel_list/item_2.webp"
             alt="detail"
           />
           <img
@@ -149,12 +149,12 @@ const BookingItem = () => {
               marginLeft: 1,
               marginRight: 1,
             }}
-            src="/static/booking/item_4.jpg"
+            src="/static/hotel_list/item_4.jpg"
             alt="detail"
           />
           <img
             style={{ height: "100%", width: "33.333%", objectFit: "cover" }}
-            src="/static/booking/item_3.jpg"
+            src="/static/hotel_list/item_3.jpg"
             alt="detail"
           />
         </Stack>
@@ -266,11 +266,11 @@ const BookingItem = () => {
           <Button
             variant="contained"
             component={RouterLink}
-            to="/login"
+            to="/hotel/1"
             style={{ display: "flex", alignItems: "center", padding: 10 }}
           >
             <Typography variant="body1" fontWeight="bold">
-              CHỌN PHÒNG
+              CHI TIẾT
             </Typography>{" "}
             <Iconify
               icon="eva:arrow-ios-forward-fill"

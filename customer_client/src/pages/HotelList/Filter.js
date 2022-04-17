@@ -17,7 +17,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import viLocale from "date-fns/locale/vi";
 // logic custom
-import CustomDateAdapter from "./CustomDateAdapter";
+import CustomDateAdapter from "../../components/CustomDateAdapter";
 import { city } from "../../__MOCK__/city";
 
 //#region CSS

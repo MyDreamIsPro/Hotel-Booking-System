@@ -1,12 +1,12 @@
 // UI lib
-import { Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 // UI custom
 import Page from "../../components/Page";
 // logic lib
 import { Formik } from "formik";
 import * as Yup from "yup";
 // logic custom
-import { upload } from "../../api/user";
+import { upload, ping } from "../../api/user";
 
 //#region CSS
 
@@ -15,7 +15,7 @@ import { upload } from "../../api/user";
 //----------------------------
 const Test = () => {
   return (
-    <Page>
+    <Page title="TEST | TuanVQ">
       <Formik
         initialValues={{
           images: "",
@@ -76,6 +76,7 @@ const Test = () => {
           </form>
         )}
       </Formik>
+      <Button onClick={() => ping()}>PING</Button>
     </Page>
   );
 };

@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 // UI lib
 import {
   Box,
   Button,
   CircularProgress,
   Grid,
+  Skeleton,
   Stack,
   styled,
   TextField,
@@ -20,8 +21,10 @@ import {
 // logic lib
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
 // logic custom
+import NotificationContext from "../../context/Context";
+import { getInfo, updateInfo } from "../../api/user";
 
 //#region CSS
 const RootStyle = styled(Stack)(({ theme }) => ({
@@ -55,8 +58,49 @@ const InfoSection = styled(Stack)(({ theme }) => ({
 
 //----------------------------
 const Info = () => {
+  const context = useContext(NotificationContext);
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const inputFile = useRef(null);
+  const [avatar, setAvatar] = useState();
+  const [preview, setPreview] = useState();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const getData = async () => {
+      await getInfo()
+        .then((res) => {
+          if (isMounted) setUser(res.data);
+        })
+        .catch((err) => {
+          console.log(err.response);
+          context.setNotification({
+            type: "error",
+            content: err.response.data,
+          });
+          context.setOpen(true);
+          navigate("/login", { state: { returnUrl: "/account" } });
+        });
+    };
+
+    getData();
+
+    // To prevent "Can't perform a React state update on an unmounted component" warning, avoid memory leak
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleChangeAvatar = (image) => {
+    setAvatar(image);
+    setPreview(URL.createObjectURL(image));
+  };
+
+  useEffect(() => {
+    return () => URL.revokeObjectURL(preview);
+  }, [preview]);
+
   return (
     <RootStyle>
       {/* IMAGE */}
@@ -72,6 +116,7 @@ const Info = () => {
             borderRadius: "50%",
             position: "relative",
             marginBottom: 15,
+            border: "1px solid #637381",
           }}
           onMouseEnter={(e) => {
             setShow(true);
@@ -80,16 +125,25 @@ const Info = () => {
             setShow(false);
           }}
         >
-          <img
-            src="/static/venom.jpg"
-            alt="profile"
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
+          {user ? (
+            <img
+              src={preview ? preview : user.profile_image + "?" + Date.now()}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <Skeleton
+              variant="circular"
+              animation="wave"
+              style={{ width: "100%", height: "100%" }}
+            />
+          )}
+
           {show && (
             <Box
               style={{
@@ -120,7 +174,13 @@ const Info = () => {
               <Typography variant="body1" color="#FFF">
                 Thay ảnh
               </Typography>
-              <input type="file" hidden ref={inputFile} />
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                ref={inputFile}
+                onChange={(e) => handleChangeAvatar(e.target.files[0])}
+              />
             </Box>
           )}
         </Box>
@@ -134,12 +194,22 @@ const Info = () => {
       {/* INFO */}
       <InfoSection>
         <Formik
-          initialValues={{
-            username: "tuanvq",
-            full_name: "Vũ Quốc Tuấn",
-            phone: "0904543840",
-            identification: "123456789111",
-          }}
+          enableReinitialize
+          initialValues={
+            user
+              ? {
+                  username: user.username,
+                  full_name: user.full_name,
+                  phone: user.phone,
+                  identification: "123456789111",
+                }
+              : {
+                  username: "",
+                  full_name: "",
+                  phone: "",
+                  identification: "",
+                }
+          }
           validationSchema={Yup.object().shape({
             full_name: Yup.string().max(255).required("Chưa nhập họ và tên"),
             phone: Yup.string()
@@ -153,7 +223,33 @@ const Info = () => {
               .max(12, "CMT không hợp lệ")
               .required("Chưa nhập chứng minh thư"),
           })}
-          onSubmit={(values, { setSubmitting }) => {}}
+          onSubmit={(values, { setSubmitting }) => {
+            let formData = new FormData();
+            formData.append("_id", user._id);
+
+            for (let key in values) {
+              formData.append(key, values[key]);
+            }
+            if (avatar) formData.append("profile_image", avatar);
+
+            updateInfo(formData)
+              .then((res) => {
+                context.setNotification({
+                  type: "success",
+                  content: "Sửa thông tin thành công",
+                });
+                context.setOpen(true);
+                setSubmitting(false);
+              })
+              .catch((err) => {
+                context.setNotification({
+                  type: "error",
+                  content: "Đã có lỗi xảy ra",
+                });
+                context.setOpen(true);
+                setSubmitting(false);
+              });
+          }}
         >
           {({
             errors,
@@ -164,7 +260,7 @@ const Info = () => {
             touched,
             values,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ position: "relative" }}>
               <Grid container justifyContent="space-between">
                 <Grid item xs={5.6}>
                   <TextField

@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 // UI lib
 import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 // UI custom
-import Overview from "./Overview";
-import Room from "./Room";
-import Review from "./Review";
+import Overview from "./Overview/Overview";
+import Room from "./Room/Room";
+import Review from "./Review/Review";
 // logic lib
 
 // logic custom

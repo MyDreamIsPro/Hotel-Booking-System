@@ -34,7 +34,7 @@ const data = [
   },
   {
     title: "ĐẶT CHỖ",
-    link: "/booking",
+    link: "/hotel",
   },
 ];
 

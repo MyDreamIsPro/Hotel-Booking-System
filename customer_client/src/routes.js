@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
+import HotelList from "./pages/HotelList";
 import Booking from "./pages/Booking";
 import PrivateRoute from "./components/PrivateRoute";
 import Test from "./pages/Test";
@@ -21,16 +22,17 @@ export default function Router() {
       children: [
         // Public routes
         { path: "", element: <Home /> },
+        { path: "hotel", element: <HotelList /> },
+        { path: "hotel/:id", element: <Hotel /> },
         { path: "booking", element: <Booking /> },
         { path: "login", element: <Login /> },
         { path: "test", element: <Test /> },
         { path: "register", element: <Register /> },
-        { path: "hotel/:id", element: <Hotel /> },
         // Protected routes
         {
           path: "account",
           element: (
-            <PrivateRoute redirectPath="/login">
+            <PrivateRoute redirectPath="/login" returnUrl="/account">
               <Account />
             </PrivateRoute>
           ),
@@ -39,6 +41,6 @@ export default function Router() {
         { path: "*", element: <Navigate to="/404" /> },
       ],
     },
-    { path: "*", element: <Navigate to="/404" replace /> },
+    // { path: "*", element: <Navigate to="/404" replace /> },
   ]);
 }

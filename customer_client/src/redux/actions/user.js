@@ -28,6 +28,19 @@ export const signup =
     }
   };
 
+export const getInfo = (performSuccess, performFailure) => async (dispatch) => {
+  try {
+    const { data } = await api.getInfo();
+    dispatch({ type: STRING.GET_INFO, payload: data });
+    performSuccess();
+  } catch (error) {
+    console.log("ERROR");
+    if (!error.response)
+      performFailure("Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau");
+    else performFailure(error.response.data);
+  }
+};
+
 export const logout = (performSuccess, performFailure) => async (dispatch) => {
   try {
     await api.logout();

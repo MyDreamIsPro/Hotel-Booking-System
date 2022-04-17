@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 // UI custom
-import Iconify from "../../components/Iconify";
+import Iconify from "../../../components/Iconify";
 
 // logic lib
 import { Link as RouterLink } from "react-router-dom";
@@ -22,10 +22,11 @@ import { Link as RouterLink } from "react-router-dom";
 const RootStyle = styled(Box)(({ theme }) => ({
   padding: 10,
   borderRadius: 4,
-  marginTop: 30,
+  marginBottom: 30,
   display: "flex",
   flexDirection: "row",
-  [theme.breakpoints.down(850)]: {
+  boxShadow: "0 0 3pt 0 gray",
+  [theme.breakpoints.down(759)]: {
     flexDirection: "column",
   },
 }));
@@ -34,7 +35,7 @@ const ImageSection = styled(Box)(({ theme }) => ({
   width: "40%",
   marginRight: 20,
   position: "relative",
-  [theme.breakpoints.down(850)]: {
+  [theme.breakpoints.down(759)]: {
     width: "100%",
   },
 }));
@@ -43,9 +44,17 @@ const InfoSection = styled(Box)(({ theme }) => ({
   width: "60%",
   display: "flex",
   flexDirection: "column",
-  [theme.breakpoints.down(850)]: {
+  [theme.breakpoints.down(759)]: {
     marginTop: 15,
     width: "100%",
+  },
+}));
+
+const InfoButton = styled(Typography)(({ theme }) => ({
+  cursor: "pointer",
+  color: theme.palette.primary.main,
+  "&:hover": {
+    textDecoration: "underline",
   },
 }));
 //#endregion
@@ -53,7 +62,7 @@ const InfoSection = styled(Box)(({ theme }) => ({
 //----------------------------
 const Item = () => {
   return (
-    <RootStyle boxShadow={4}>
+    <RootStyle>
       <ImageSection>
         <img
           src="/static/room/banner.jpg"
@@ -107,20 +116,20 @@ const Item = () => {
             2 người lớn và 2 trẻ em
           </Typography>
         </Stack>
-        <Typography variant="body2" textAlign="justify">
-          Với diện tích 32-37m², Phòng Studio, 2 giường đơn là phòng khách sạn
-          thiết kế hiện đại, sang trọng, tích hợp đầy đủ tiện nghi cho kỳ lưu
-          trú của bạn. Vị trí thuận tiện, du khách có thể thoải mái tham quan,
-          khám phá các điểm du lịch nổi tiếng, là lựa chọn lý tưởng dành cho các
-          cặp đôi, gia đình nhỏ hay du khách đi công tác.
-        </Typography>
+        <InfoButton variant="body1" onClick={() => alert("Chi tiết phòng")}>
+          Chi tiết phòng
+        </InfoButton>
         <Stack
-          flexDirection="row"
+          flexDirection="column"
           alignItems="flex-end"
-          justifyContent="space-between"
+          justifyContent="flex-end"
           style={{ flexGrow: 1 }}
         >
-          <Stack flexDirection="row" alignItems="center">
+          <Stack
+            flexDirection="row"
+            alignItems="center"
+            style={{ marginBottom: 10 }}
+          >
             <Typography variant="body2">Chỉ từ</Typography>
             <Typography
               variant="h4"
@@ -131,7 +140,7 @@ const Item = () => {
             </Typography>
             <Typography variant="body2">/ đêm</Typography>
           </Stack>
-          <Button variant="contained" component={RouterLink} to="/login">
+          <Button variant="contained" component={RouterLink} to="#">
             <Typography variant="h6">ĐẶT PHÒNG</Typography>
           </Button>
         </Stack>

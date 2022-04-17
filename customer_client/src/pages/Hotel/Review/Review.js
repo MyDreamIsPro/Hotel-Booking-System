@@ -14,7 +14,7 @@ import {
   Pagination,
 } from "@mui/material";
 // UI custom
-import Iconify from "../../components/Iconify";
+import Iconify from "../../../components/Iconify";
 import CommentList from "./CommentList";
 // logic lib
 
