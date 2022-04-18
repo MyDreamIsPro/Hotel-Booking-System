@@ -7,6 +7,7 @@ import {
   getInfo,
   updateInfo,
   changePassword,
+  checkAuth,
 } from "../controllers/user.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import { uploader } from "../middlewares/uploader.js";
@@ -14,6 +15,7 @@ import { uploader } from "../middlewares/uploader.js";
 const router = express.Router();
 
 // router.get("/:id", isLoggedIn, getUserInfo);
+router.get("/check", authMiddleware, checkAuth);
 router.post("/change-password", authMiddleware, changePassword);
 router.post("/login", login);
 router.post("/signup", signup);

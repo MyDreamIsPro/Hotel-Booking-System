@@ -2,6 +2,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 const API = axios.create({ baseURL: "http://localhost:5000" });
 
+export const checkAuth = () =>
+  API.get("/user/check", { withCredentials: true });
 export const changePassword = (data) =>
   API.post("/user/change-password", data, { withCredentials: true });
 export const updateInfo = (data) =>

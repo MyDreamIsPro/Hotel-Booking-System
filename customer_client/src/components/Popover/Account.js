@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 // UI lib
 import { alpha } from "@mui/material/styles";
 import {
@@ -16,13 +16,15 @@ import MenuPopover from "./index";
 import Iconify from "../../components/Iconify";
 
 // logic lib
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 // logic custom
+import NotificationContext from "../../context/Context";
 import { logout } from "../../redux/actions/user";
 import useReponsive from "../../theme/useReponsive";
 import { STRING } from "../../constants";
+import { checkAuth } from "../../api/user";
 
 //#region CSS
 
@@ -33,7 +35,9 @@ import { STRING } from "../../constants";
 // ----------------------------------------------------------------------
 
 export default function AccountPopover({ iconColor }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const context = useContext(NotificationContext);
   const user = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   );
@@ -48,8 +52,19 @@ export default function AccountPopover({ iconColor }) {
   const handleOpen = () => {
     setOpen(true);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleMoveToAccountPage = async () => {
+    await checkAuth()
+      .then((res) => {
+        setOpen(false);
+        navigate("/account");
+      })
+      .catch((err) => {
+        context.setNotification({ type: "error", content: err.response.data });
+        context.setOpen(true);
+        setOpen(false);
+        if (err.response.status === 401)
+          navigate("/login", { state: { returnUrl: "/account" } });
+      });
   };
 
   return (
@@ -91,7 +106,7 @@ export default function AccountPopover({ iconColor }) {
 
       <MenuPopover
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         anchorEl={anchorRef.current}
         sx={{ width: 220 }}
       >
@@ -105,9 +120,9 @@ export default function AccountPopover({ iconColor }) {
 
             <Divider sx={{ my: 1 }} />
             <MenuItem
-              to="/account"
-              component={RouterLink}
-              onClick={handleClose}
+              // to="/account"
+              // component={RouterLink}
+              onClick={handleMoveToAccountPage}
               sx={{ typography: "body2", py: 1, px: 2.5 }}
             >
               <Iconify
@@ -126,7 +141,8 @@ export default function AccountPopover({ iconColor }) {
                 dispatch(
                   logout(
                     () => {
-                      window.location.reload();
+                      setOpen(false);
+                      navigate("/login");
                     },
                     () => {}
                   )
@@ -143,7 +159,7 @@ export default function AccountPopover({ iconColor }) {
             <MenuItem
               to="/login"
               component={RouterLink}
-              onClick={handleClose}
+              onClick={() => setOpen(false)}
               sx={{ typography: "body2", py: 1, px: 2.5 }}
             >
               <Iconify
@@ -159,7 +175,7 @@ export default function AccountPopover({ iconColor }) {
             <MenuItem
               to="/register"
               component={RouterLink}
-              onClick={handleClose}
+              onClick={() => setOpen(false)}
               sx={{ typography: "body2", py: 1, px: 2.5 }}
             >
               <Iconify

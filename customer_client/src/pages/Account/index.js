@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 // UI lib
-import { Box, Button, Container, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -14,7 +14,7 @@ import Authentication from "./Authentication";
 import SecurityIcon from "@mui/icons-material/Security";
 
 // logic lib
-
+import { useSearchParams } from "react-router-dom";
 // logic custom
 
 //#region CSS
@@ -53,24 +53,28 @@ function a11yProps(index) {
 
 const data = [
   {
+    tab: "info",
     icon: <AccountBoxIcon />,
     label: "THÔNG TIN",
     index: 0,
     page: <Info />,
   },
   {
+    tab: "bookings",
     icon: <CreditScoreIcon />,
     label: "LỊCH SỬ ĐẶT CHỖ",
     index: 1,
     page: <Billing />,
   },
   {
+    tab: "payment",
     icon: <AccountBalanceWalletIcon />,
     label: "PHƯƠNG THỨC THANH TOÁN",
     index: 2,
     page: <Payment />,
   },
   {
+    tab: "security",
     icon: <SecurityIcon />,
     label: "MẬT KHẨU VÀ BẢO MẬT",
     index: 3,
@@ -79,7 +83,15 @@ const data = [
 ];
 
 const User = () => {
-  const [value, setValue] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [value, setValue] = useState(() => {
+    const item = data.filter((item) => searchParams.get("tab") === item.tab)[0];
+    if (item === undefined) {
+      return 0;
+    } else {
+      return item.index;
+    }
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -100,6 +112,7 @@ const User = () => {
           >
             {data.map((item, index) => (
               <Tab
+                onClick={() => setSearchParams({ tab: item.tab })}
                 key={index}
                 icon={item.icon}
                 iconPosition="start"

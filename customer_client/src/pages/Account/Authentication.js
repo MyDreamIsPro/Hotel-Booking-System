@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 // UI lib
 import {
   Box,
@@ -16,10 +16,12 @@ import {
 // UI custom
 import Iconify from "../../components/Iconify";
 // logic lib
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 // logic custom
+import NotificationContext from "../../context/Context";
 import { changePassword } from "../../api/user";
 import { formatDate } from "../../utils/Date";
 import { getDeviceSpec } from "../../utils/Device";
@@ -50,7 +52,7 @@ const LoadingList = () => {
         animation="wave"
         style={{
           width: "100%",
-          height: 120,
+          height: 100,
           marginBottom: 20,
           borderRadius: 4,
         }}
@@ -60,7 +62,7 @@ const LoadingList = () => {
         animation="wave"
         style={{
           width: "100%",
-          height: 120,
+          height: 100,
           marginBottom: 20,
           borderRadius: 4,
         }}
@@ -70,6 +72,8 @@ const LoadingList = () => {
 };
 
 const Authentication = () => {
+  const navigate = useNavigate();
+  const context = useContext(NotificationContext);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -105,7 +109,7 @@ const Authentication = () => {
       }}
     >
       <Typography variant="h4" style={{ marginBottom: 20 }}>
-        Thay đổi mật khẩu
+        Đổi mật khẩu
       </Typography>
       {/* CHANGE PW */}
       <Box
@@ -137,10 +141,30 @@ const Authentication = () => {
               .oneOf([Yup.ref("new_password"), null], "Mật khẩu không khớp")
               .required("Chưa nhập mật khẩu"),
           })}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, resetForm }) => {
             changePassword(values)
-              .then((res) => {})
-              .catch((err) => {});
+              .then((res) => {
+                context.setNotification({
+                  type: "success",
+                  content: "Đổi mật khẩu thành công",
+                });
+                context.setOpen(true);
+                setSubmitting(false);
+                resetForm();
+              })
+              .catch((err) => {
+                context.setNotification({
+                  type: "error",
+                  content: err.response.data,
+                });
+                context.setOpen(true);
+                setSubmitting(false);
+                if (err.response.status === 401) {
+                  navigate("/login", {
+                    state: { returnUrl: "/account?tab=security" },
+                  });
+                }
+              });
           }}
         >
           {({

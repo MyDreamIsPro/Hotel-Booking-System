@@ -33,7 +33,7 @@
         Callback được gọi mỗi khi component thêm element vào DOM
 
     useEffect(callback, [])
-        Callback được gọi sau khi component được mount
+        Callback được gọi 1 lần sau khi component được mount
         (Dùng khi cần xử lý logic 1 lần sau khi component được mount)
 
     useEffect(callback, [dependencies])

@@ -16,6 +16,14 @@ const generateToken = (_id) => {
   });
 };
 
+export const checkAuth = async (req, res) => {
+  try {
+    res.status(200).send("You're authenticated");
+  } catch (error) {
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
 export const changePassword = async (req, res) => {
   const user = req.body;
   const id = req._id;
@@ -23,13 +31,13 @@ export const changePassword = async (req, res) => {
     const existedUser = await User.findOne({
       _id: id,
     });
-    if (!existedUser) return res.status(401).send(STRING.AUTHENTICATION_FAILED);
     const isPasswordCorrect = await bcrypt.compare(
       user.current_password,
       existedUser.password
     );
+
     if (!isPasswordCorrect)
-      return res.status(401).send(STRING.OLD_PASSWORD_WRONG);
+      return res.status(403).send(STRING.OLD_PASSWORD_WRONG);
 
     const hashedPassword = await bcrypt.hash(user.new_password, 12);
     await User.findByIdAndUpdate(
@@ -37,7 +45,7 @@ export const changePassword = async (req, res) => {
       { password: hashedPassword },
       { new: true }
     );
-    return res.status(200).send("Đổi mật khẩu thành công");
+    res.status(200).send("Đổi mật khẩu thành công");
   } catch (error) {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }

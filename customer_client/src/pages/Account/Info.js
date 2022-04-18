@@ -59,12 +59,12 @@ const InfoSection = styled(Stack)(({ theme }) => ({
 //----------------------------
 const Info = () => {
   const context = useContext(NotificationContext);
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const inputFile = useRef(null);
   const [avatar, setAvatar] = useState();
   const [preview, setPreview] = useState();
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
@@ -74,13 +74,13 @@ const Info = () => {
           if (isMounted) setUser(res.data);
         })
         .catch((err) => {
-          console.log(err.response);
           context.setNotification({
             type: "error",
             content: err.response.data,
           });
           context.setOpen(true);
-          navigate("/login", { state: { returnUrl: "/account" } });
+          if (err.response.status === 401)
+            navigate("/login", { state: { returnUrl: "/account?tab=info" } });
         });
     };
 
@@ -90,7 +90,7 @@ const Info = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [navigate, context]);
 
   const handleChangeAvatar = (image) => {
     setAvatar(image);
