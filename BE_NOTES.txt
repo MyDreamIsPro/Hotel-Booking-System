@@ -18,3 +18,10 @@
 @undefined && null
     "undefined" means that variable value has not been defined; it is not know what the value is
     "null" means that the variable value is defined and set to null(has no value)
+
+@CRYPTO RANDOM BYTES
+    >> node
+    >> crypto.randomBytes(48).toString('hex')
+
+@CREATE A FIXED DATASET IN MONGO DB
+    Create json file and import to mongo db using MongoDB Compass

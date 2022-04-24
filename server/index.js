@@ -6,11 +6,13 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 // custom
 import userRoutes from "./routes/user.js";
+import adminRoutes from "./routes/admin.js";
+import cityRoutes from "./routes/city.js";
 
 // pre-config
 dotenv.config();
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   credentials: true, //access-control-allow-credentials:true
 };
 // express
@@ -22,6 +24,8 @@ app.use(cookieParser());
 app.use(express.static("static"));
 // routes
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/city", cityRoutes);
 
 //Connect to DB
 const PORT = process.env.PORT;
@@ -33,6 +37,8 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() =>
-    app.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`))
+    app.listen(PORT, () =>
+      console.log(`Server is running on http://localhost:${PORT}`)
+    )
   )
   .catch((error) => console.log(error.message));

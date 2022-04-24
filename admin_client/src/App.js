@@ -1,5 +1,22 @@
-function App() {
-  return <h1>ALO</h1>;
-}
+import "./App.css";
+// routes
+import ScrollToTop from "./components/ScrollToTop";
+import Router from "./routes";
+// theme
+import ThemeConfig from "./theme";
+import GlobalStyles from "./theme/globalStyles";
 
-export default App;
+import Notification from "./components/Notification";
+
+// ----------------------------------------------------------------------
+
+export default function App() {
+  return (
+    <ThemeConfig>
+      <ScrollToTop />
+      <GlobalStyles />
+      <Router />
+      <Notification />
+    </ThemeConfig>
+  );
+}

@@ -65,3 +65,14 @@
         })
         return () => { isMounted = false }; // cleanup toggles value, if unmounted
     }, []);                                 // adjust dependencies to your needs
+
+@TO PREVENT "MUI: License key not found" WARNING FROM MUI-X
+    Insert [-License] or [-trial-only] to Chrome's Filter bar
+
+@INDEX ROUTE IN REACT ROUTER V6
+    <Route path="/" element={<ProtectedRoute />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        ...
+    This means everytime user enter "/" route, it will automatically re-direct to "/dashboard" route
+

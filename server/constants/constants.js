@@ -17,6 +17,7 @@ export const STRING = {
     "Sai tài khoản hoặc mật khẩu. Quý khách vui lòng thử lại",
   UNEXPECTED_ERROR_MESSAGE: "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau",
   OLD_PASSWORD_WRONG: "Mật khẩu cũ không chính xác",
+  PERMISSION_DENIED: "Tài khoản này không được cấp quyền truy cập",
 
   AUTHENTICATION_FAILED:
     "Qúy khách vui lòng đăng nhập để thực hiện chức năng này",

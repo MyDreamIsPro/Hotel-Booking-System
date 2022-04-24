@@ -85,6 +85,10 @@ export const login = async (req, res) => {
     });
     if (!existedUser)
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
+
+    if (existedUser.role === 1998)
+      return res.status(401).send(STRING.PERMISSION_DENIED);
+
     const isPasswordCorrect = await bcrypt.compare(
       user.password,
       existedUser.password
@@ -93,34 +97,20 @@ export const login = async (req, res) => {
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
 
     const token = generateToken(existedUser._id);
-    if (existedUser.role === 1998) {
-      return res
-        .status(200)
-        .cookie("token", token, {
-          expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
-          httpOnly: true,
-          secure: false,
-        })
-        .json({
-          _id: existedUser._id,
-          full_name: existedUser.full_name,
-          profile_image: existedUser.profile_image,
-        });
-    } else {
-      return res
-        .status(200)
-        .cookie("token", token, {
-          expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
-          httpOnly: true,
-          secure: false,
-        })
-        .json({
-          _id: existedUser._id,
-          full_name: existedUser.full_name,
-          profile_image: existedUser.profile_image,
-          role: existedUser.role,
-        });
-    }
+
+    return res
+      .status(200)
+      .cookie("token", token, {
+        expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
+        httpOnly: true,
+        secure: false,
+      })
+      .json({
+        _id: existedUser._id,
+        full_name: existedUser.full_name,
+        profile_image: existedUser.profile_image,
+        role: existedUser.role,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
@@ -137,6 +127,7 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(user.password, 12);
     const newUser = new User({
       ...user,
+      role: 2412,
       password: hashedPassword,
     });
     await newUser.save();
@@ -154,6 +145,7 @@ export const signup = async (req, res) => {
         _id: newUser._id,
         full_name: newUser.full_name,
         profile_image: newUser.profile_image,
+        role: newUser.role,
       });
   } catch (error) {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
