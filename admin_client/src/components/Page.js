@@ -2,15 +2,14 @@ import { forwardRef } from "react";
 // UI lib
 import { Box, Container, styled } from "@mui/material";
 import { Helmet } from "react-helmet-async";
+import { INTEGER } from "../constants";
 // UI custom
-
 // logic lib
 import PropTypes from "prop-types";
 // logic custom
-
 //#region CSS
 const RootStyle = styled(Box)({
-  minHeight: "100vh",
+  minHeight: `calc(100vh - ${INTEGER.APP_BAR_DESKTOP}px)`,
 });
 
 //#endregion

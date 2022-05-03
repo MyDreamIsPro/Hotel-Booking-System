@@ -43,7 +43,7 @@ function a11yProps(index) {
   };
 }
 
-const Content = () => {
+const Content = ({ hotel }) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -68,13 +68,13 @@ const Content = () => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Overview />
+        <Overview hotel={hotel} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Room />
+        <Room hotel={hotel} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Review />
+        <Review hotel={hotel} />
       </TabPanel>
     </Container>
   );

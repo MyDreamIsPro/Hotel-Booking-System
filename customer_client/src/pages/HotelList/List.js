@@ -1,5 +1,6 @@
 // UI lib
 import { Container } from "@mui/material";
+import { useSelector } from "react-redux";
 // UI custom
 
 // logic lib
@@ -10,14 +11,18 @@ import Item from "./Item";
 
 //#endregion
 
-const BookingList = () => {
+const BookingList = ({ setOpenImageViewer, setImages }) => {
+  const hotels = useSelector((state) => state.hotelList);
   return (
     <Container maxWidth="lg" style={{ marginTop: 20 }}>
-      <Item />
-      <Item />
-      <Item />
-      <Item />
-      <Item />
+      {hotels.map((hotel, index) => (
+        <Item
+          key={index}
+          setImages={setImages}
+          setOpenImageViewer={setOpenImageViewer}
+          hotel={hotel}
+        />
+      ))}
     </Container>
   );
 };

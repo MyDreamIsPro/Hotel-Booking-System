@@ -6,6 +6,8 @@ import Iconify from "../../../components/Iconify";
 // logic lib
 
 // logic custom
+import { HOTEL_SERVICES } from "../../../__MOCK__";
+import { formatNumber } from "../../../utils/Number";
 
 //#region CSS
 const TitleStyle = styled(Typography)({
@@ -81,7 +83,7 @@ const data = [
   },
 ];
 
-const Overview = () => {
+const Overview = ({ hotel }) => {
   return (
     <Box
       style={{
@@ -94,15 +96,7 @@ const Overview = () => {
       </TitleStyle>
       <DetailContent>
         <Typography variant="body1" textAlign="justify" style={{ flex: 1 }}>
-          Trên “đảo thiên đường” Hòn Tre, Vinpearl Resort & Spa Nha Trang Bay
-          với kiến trúc hình cánh cung trắng muốt luôn hút mắt với vẻ tinh khôi
-          riêng biệt. Mỗi phòng nghỉ đều sở hữu view biển sống động đặc trưng
-          vào lúc bình minh. Thiết kế khung cửa toàn kính bao quanh các căn biệt
-          thự liền kề bờ cát trắng mịn mang tới trải nghiệm “thức giấc ngay giữa
-          bãi biển riêng tư”. Trải nghiệm đặc trưng tại đây là một liệu trình
-          thư giãn trên mặt hồ yên ả, thưởng thức bữa tối trong khung cảnh hoàng
-          hôn tại nhà hàng Lagoon hay thả mình trên ghế lười xem bộ phim yêu
-          thích tại Beach Cinema.
+          {hotel.description}
         </Typography>
         <DetailRight boxShadow={3}>
           <Stack flexDirection="row" alignItems="center">
@@ -114,7 +108,7 @@ const Overview = () => {
               Diện tích:
             </Typography>
             <Typography variant="body1" fontWeight="bold" color="primary">
-              112.000 m<sup>2</sup>
+              {formatNumber(hotel.size)} m<sup>2</sup>
             </Typography>
           </Stack>
           <Divider style={{ width: "80%" }} />
@@ -130,7 +124,7 @@ const Overview = () => {
               Số phòng:
             </Typography>
             <Typography variant="body1" fontWeight="bold" color="primary">
-              1.122
+              {formatNumber(hotel.numberOfRooms)}
             </Typography>
           </Stack>
         </DetailRight>
@@ -147,7 +141,7 @@ const Overview = () => {
           padding: 10,
         }}
       >
-        {data.map((item, index) => (
+        {hotel.services.map((item, index) => (
           <ServiceCard
             key={index}
             item
@@ -163,11 +157,11 @@ const Overview = () => {
             }}
           >
             <Iconify
-              icon={item.icon}
-              sx={{ width: 30, height: 30, color: "primary.main" }}
+              icon={HOTEL_SERVICES[item].icon}
+              sx={{ width: 40, height: 40, color: "primary.main" }}
             />
             <Typography variant="body1" textAlign="center">
-              {item.text}
+              {HOTEL_SERVICES[item].name}
             </Typography>
           </ServiceCard>
         ))}

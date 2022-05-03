@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 // layouts
 // pages
@@ -10,6 +10,7 @@ import User from "./pages/User";
 import Room from "./pages/Room";
 import Hotel from "./pages/Hotel";
 import Test from "./pages/Test";
+import HotelService from "./pages/HotelServices";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -26,8 +27,8 @@ export default function AppRoutes() {
         <Route path="hotel" element={<Hotel />} />
         {/* <Route path="hotel" element={<Outlet />}>
           <Route index element={<Navigate to="/hotel/list" replace />} />
-          <Route path="new" element={<AddHotel />} />
-          <Route path="list" element={<HotelList />} />
+          <Route path="list" element={<Hotel />} />
+          <Route path="services" element={<HotelService />} />
         </Route> */}
         <Route path="room" element={<Room />} />
         <Route path="test" element={<Test />} />

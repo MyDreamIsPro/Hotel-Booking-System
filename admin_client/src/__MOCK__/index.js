@@ -1,5 +1,6 @@
 // fake is city_number in db
 export const city = [
+  { name: "", fake: 0 }, //default value
   { name: "An Giang", fake: 1 },
   { name: "Bà Rịa - Vũng Tàu", fake: 2 },
   { name: "Bạc Liêu", fake: 3 },
@@ -64,4 +65,15 @@ export const city = [
   { name: "Vĩnh Long", fake: 62 },
   { name: "Vĩnh Phúc", fake: 63 },
   { name: "Yên Bái", fake: 64 },
+];
+
+export const HOTEL_SERVICES = [
+  { name: "Wi-Fi miễn phí trong tất cả các phòng!", icon: "bx:wifi", id: 0 },
+  { name: "Dọn phòng hằng ngày", icon: "carbon:clean", id: 1 },
+  { name: "Đưa đón sân bay", icon: "bxs:taxi", id: 2 },
+  { name: "Quán bar", icon: "emojione-monotone:tropical-drink", id: 3 },
+  { name: "Gym", icon: "iconoir:gym", id: 4 },
+  { name: "Hồ bơi 4 mùa", icon: "icon-park-outline:swimming-pool", id: 5 },
+  { name: "Sân golf", icon: "ic:baseline-golf-course", id: 6 },
+  { name: "Bãi đỗ xe", icon: "uil:parking-circle", id: 7 },
 ];

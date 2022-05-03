@@ -17,7 +17,7 @@ import Iconify from "../../components/Iconify";
 // logic lib
 import { Link as RouterLink } from "react-router-dom";
 // logic custom
-
+import { HOTEL_SERVICES } from "../../__MOCK__";
 //#region CSS
 const ItemStyle = styled(Box)(({ theme }) => ({
   borderRadius: 4,
@@ -86,30 +86,7 @@ const ServiceStyle = styled(IconButton)(({ theme }) => ({
 
 //----------------------------
 
-const services = [
-  {
-    icon: "map:spa",
-    tooltip: "Spa",
-  },
-  {
-    icon: "emojione-monotone:tropical-drink",
-    tooltip: "Bar",
-  },
-  {
-    icon: "icon-park-outline:swimming-pool",
-    tooltip: "Hồ bơi",
-  },
-  {
-    icon: "emojione-monotone:beach-with-umbrella",
-    tooltip: "Bãi biển",
-  },
-  {
-    icon: "iconoir:gym",
-    tooltip: "Gym",
-  },
-];
-
-const BookingItem = () => {
+const BookingItem = ({ setOpenImageViewer, setImages, hotel }) => {
   return (
     <ItemStyle>
       {/* Images */}
@@ -121,7 +98,7 @@ const BookingItem = () => {
             objectFit: "cover",
             marginBottom: 1,
           }}
-          src="/static/hotel_list/item_1.webp"
+          src={hotel.images[0]}
           alt="detail"
         />
         <Stack
@@ -138,7 +115,7 @@ const BookingItem = () => {
               width: "33.333%",
               objectFit: "cover",
             }}
-            src="/static/hotel_list/item_2.webp"
+            src={hotel.images[1]}
             alt="detail"
           />
           <img
@@ -149,14 +126,39 @@ const BookingItem = () => {
               marginLeft: 1,
               marginRight: 1,
             }}
-            src="/static/hotel_list/item_4.jpg"
+            src={hotel.images[2]}
             alt="detail"
           />
-          <img
-            style={{ height: "100%", width: "33.333%", objectFit: "cover" }}
-            src="/static/hotel_list/item_3.jpg"
-            alt="detail"
-          />
+          <Box
+            style={{ height: "100%", width: "33.333%", position: "relative" }}
+          >
+            <img
+              style={{ height: "100%", width: "100%", objectFit: "cover" }}
+              src={hotel.images[3]}
+              alt="detail"
+            />
+            <div
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                top: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.65 )",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onClick={() => {
+                setImages(hotel.images);
+                setOpenImageViewer(true);
+              }}
+            >
+              <Typography color="#FFF" textAlign="center" fontWeight="bold">
+                Xem tất cả
+              </Typography>
+            </div>
+          </Box>
         </Stack>
       </ImageSection>
       <InfoSection>
@@ -164,23 +166,28 @@ const BookingItem = () => {
         <TitleSection
           variant="h4"
           component={RouterLink}
-          to="/hotel/1"
+          to={`/hotel/${hotel._id}`}
           fontWeight="bold"
           underline="hover"
         >
-          Vinpearl Condotel Empire Nha Trang
+          {hotel.name}
         </TitleSection>
         {/* Address */}
         <Typography variant="body2">
           <Iconify icon="carbon:location-star-filled" color="#252525" /> 44 – 46
-          Lê Thánh Tôn, P. Lộc Thọ, Tp. Nha Trang, Tỉnh Khánh Hoà, Việt Nam
+          {hotel.address}
         </Typography>
         {/* Services */}
         <Stack flexDirection="row" sx={{ my: 1 }}>
-          {services.map((service, index) => (
-            <Tooltip key={index} title={service.tooltip} arrow placement="top">
+          {hotel.services.map((service, index) => (
+            <Tooltip
+              key={index}
+              title={HOTEL_SERVICES[service].name}
+              arrow
+              placement="top"
+            >
               <ServiceStyle>
-                <Iconify icon={service.icon} color="#252525" />
+                <Iconify icon={HOTEL_SERVICES[service].icon} color="#252525" />
               </ServiceStyle>
             </Tooltip>
           ))}
@@ -196,37 +203,6 @@ const BookingItem = () => {
           <Typography variant="body2" style={{ color: "#9E9E9E" }}>
             (2.412 đánh giá)
           </Typography>
-        </Stack>
-        {/* More services */}
-        <Stack flexDirection="row" flexWrap="wrap" sx={{ my: 1 }}>
-          <Chip
-            label="Bể bơi 4 mùa"
-            variant="outlined"
-            onClick={() => {}}
-            style={{ marginRight: 5, marginBottom: 5 }}
-            color="primary"
-          />
-          <Chip
-            label="Bể bơi 4 mùa"
-            variant="outlined"
-            onClick={() => {}}
-            style={{ marginRight: 5 }}
-            color="primary"
-          />
-          <Chip
-            label="Bể bơi 4 mùa"
-            variant="outlined"
-            onClick={() => {}}
-            style={{ marginRight: 5 }}
-            color="primary"
-          />
-          <Chip
-            label="Bể bơi 4 mùa"
-            variant="outlined"
-            onClick={() => {}}
-            style={{ marginRight: 5 }}
-            color="primary"
-          />
         </Stack>
         {/* HOT */}
         <Stack flexDirection="row" alignItems="center">
@@ -266,7 +242,7 @@ const BookingItem = () => {
           <Button
             variant="contained"
             component={RouterLink}
-            to="/hotel/1"
+            to={`/hotel/${hotel._id}`}
             style={{ display: "flex", alignItems: "center", padding: 10 }}
           >
             <Typography variant="body1" fontWeight="bold">

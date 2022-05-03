@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 // custom
 import userRoutes from "./routes/user.js";
 import adminRoutes from "./routes/admin.js";
+import hotelRoutes from "./routes/hotel.js";
 import cityRoutes from "./routes/city.js";
 
 // pre-config
@@ -26,6 +27,7 @@ app.use(express.static("static"));
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/city", cityRoutes);
+app.use("/hotel", hotelRoutes);
 
 //Connect to DB
 const PORT = process.env.PORT;

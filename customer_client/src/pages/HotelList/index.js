@@ -11,9 +11,10 @@ import {
 import { useState } from "react";
 // UI custom
 import Page from "../../components/Page";
-import Filter from "./Filter";
+import Filter from "../../components/Filter";
 import List from "./List";
 import LoadingList from "./LoadingList";
+import ImageViewer from "../../components/ImageViewer";
 // logic lib
 // logic custom
 
@@ -36,36 +37,100 @@ const ResultStyle = styled(Box)(({ theme }) => ({
 //----------------------------
 
 const HotelList = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState({ loading: false, num: -1 });
   const [filterValue, setFilterValue] = useState(1);
+  const [openImageViewer, setOpenImageViewer] = useState(false);
+  const [images, setImages] = useState([]);
   return (
     <Page title="Booking | TuanVQ">
-      <Filter setIsLoading={setIsLoading} />
-      <Container maxWidth="lg">
-        <ResultStyle>
-          <Typography variant="h6">Hiển thị 41 kết quả phù hợp</Typography>
-          <Stack flexDirection="row" alignItems="center">
-            <Typography variant="body1" style={{ marginRight: 10 }}>
-              Sắp xếp theo
-            </Typography>
-            <TextField
-              label=""
-              name="filter"
-              variant="outlined"
-              select
-              value={filterValue}
-              disabled={isLoading}
-              onChange={(e) => setFilterValue(e.target.value)}
+      <Filter setResult={setResult} />
+      {result.loading ? (
+        <LoadingList />
+      ) : result.num !== -1 ? (
+        <>
+          {result.num > 0 ? (
+            <>
+              <Container maxWidth="lg">
+                <ResultStyle>
+                  <Typography variant="h6">
+                    Hiển thị {result.num} kết quả phù hợp
+                  </Typography>
+                  <Stack flexDirection="row" alignItems="center">
+                    <Typography variant="body1" style={{ marginRight: 10 }}>
+                      Sắp xếp theo
+                    </Typography>
+                    <TextField
+                      label=""
+                      name="filter"
+                      variant="outlined"
+                      select
+                      value={filterValue}
+                      disabled={result.loading}
+                      onChange={(e) => setFilterValue(e.target.value)}
+                    >
+                      <MenuItem value={1}>Gần đây nhất</MenuItem>
+                      <MenuItem value={2}>Đánh giá, cao đến thấp</MenuItem>
+                      <MenuItem value={3}>Đánh giá, thấp đến cao</MenuItem>
+                      <MenuItem value={4}>Hữu ích nhất</MenuItem>
+                    </TextField>
+                  </Stack>
+                </ResultStyle>
+              </Container>
+              <List
+                setOpenImageViewer={setOpenImageViewer}
+                setImages={setImages}
+              />
+            </>
+          ) : (
+            <Container
+              maxWidth="lg"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
-              <MenuItem value={1}>Gần đây nhất</MenuItem>
-              <MenuItem value={2}>Đánh giá, cao đến thấp</MenuItem>
-              <MenuItem value={3}>Đánh giá, thấp đến cao</MenuItem>
-              <MenuItem value={4}>Hữu ích nhất</MenuItem>
-            </TextField>
-          </Stack>
-        </ResultStyle>
-      </Container>
-      {isLoading ? <LoadingList /> : <List />}
+              <img
+                src="/static/hotel_list/no-result.webp"
+                alt="banner"
+                width="100%"
+                style={{ maxHeight: "50vh", objectFit: "contain" }}
+              />
+              <Typography textAlign="center" variant="h6">
+                Rất tiếc, không có khách sạn theo lựa chọn của quý khách.
+              </Typography>
+              <Typography textAlign="center" variant="h6">
+                Vui lòng thay đổi thời gian lưu trú hoặc khách sạn cùng khu vực
+                (nếu có).
+              </Typography>
+            </Container>
+          )}
+        </>
+      ) : (
+        <Container
+          maxWidth="lg"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src="/static/hotel_list/not-search.webp"
+            alt="banner"
+            width="100%"
+            style={{ maxHeight: "60vh", objectFit: "contain" }}
+          />
+          <Typography textAlign="center" variant="h3">
+            Tìm kiếm chỗ nghỉ chân ngay nào!!
+          </Typography>
+        </Container>
+      )}
+      <ImageViewer
+        open={openImageViewer}
+        setOpen={setOpenImageViewer}
+        images={images}
+      />
     </Page>
   );
 };

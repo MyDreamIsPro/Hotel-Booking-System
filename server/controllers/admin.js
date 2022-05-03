@@ -20,6 +20,7 @@ export const checkAuth = async (req, res) => {
   try {
     res.status(200).send("You're authenticated");
   } catch (error) {
+    console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
@@ -148,6 +149,7 @@ export const signup = async (req, res) => {
         role: newUser.role,
       });
   } catch (error) {
+    console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };

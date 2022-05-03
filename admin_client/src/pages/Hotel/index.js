@@ -3,17 +3,22 @@ import { useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 // UI custom
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 import Page from "../../components/Page";
 import Form from "./HotelForm";
 import List from "./HotelList";
 // logic lib
+
 // logic custom
 
 //----------------------------
+
 const Hotel = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [editedId, setEditedId] = useState();
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const handleOpenDialog = () => {
-    setOpenDialog(true);
+    setOpenEditDialog(true);
   };
   return (
     <Page title="Thêm mới khách sạn">
@@ -33,8 +38,26 @@ const Hotel = () => {
           THÊM MỚI
         </Button>
       </Stack>
-      <Form openDialog={openDialog} setOpenDialog={setOpenDialog} />
-      <List />
+      <List
+        setOpenDeleteDialog={setOpenDeleteDialog}
+        setOpenEditDialog={setOpenEditDialog}
+        setEditedId={setEditedId}
+      />
+      <Form
+        setEditedId={setEditedId}
+        editedId={editedId}
+        open={openEditDialog}
+        setOpen={setOpenEditDialog}
+      />
+      <ConfirmationDialog
+        deleteType="HOTEL"
+        open={openDeleteDialog}
+        setOpen={setOpenDeleteDialog}
+        id={editedId}
+        setId={setEditedId}
+        title="Xóa khách sạn"
+        content="Hành động này sẽ không thể khôi phục. Bạn chắc chắn muốn xóa chứ ?"
+      />
     </Page>
   );
 };

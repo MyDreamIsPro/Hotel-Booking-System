@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -16,21 +16,26 @@ import {
   styled,
   TextField,
   Typography,
-  DialogActions,
+  Divider,
 } from "@mui/material";
 // UI custom
 import Iconify from "../../components/Iconify";
 import SlideTransition from "../../components/SlideTransition";
-// logic lib
-import { Formik, ErrorMessage } from "formik";
-import * as Yup from "yup";
-// logic custom
 import {
   TelephoneFormatCustom,
   PriceFormatCustom,
 } from "../../components/FormattedInput";
 import ImageUploader from "../../components/ImageUploader";
-import { city } from "../../__MOCK__";
+// logic lib
+import { useDispatch, useSelector } from "react-redux";
+import { Formik, ErrorMessage } from "formik";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+// logic custom
+import NotificationContext from "../../context/Context";
+import { createHotel } from "../../redux/actions/hotel";
+import { city, HOTEL_SERVICES } from "../../__MOCK__";
+import { updateHotel } from "../../redux/actions/hotel";
 
 //#region CSS
 const ImagePreview = styled(Box)({
@@ -55,30 +60,30 @@ const DeleteImageButton = styled(IconButton)({
 
 //----------------------------
 
-const SERVICE_DATA = [
-  { name: "Wi-Fi miễn phí trong tất cả các phòng!", id: 1 },
-  { name: "Dọn phòng hằng ngày", id: 2 },
-  { name: "Đưa đón sân bay", id: 3 },
-  { name: "Quán bar", id: 4 },
-  { name: "Gym", id: 5 },
-  { name: "Hồ bơi 4 mùa", id: 6 },
-  { name: "Sân golf", id: 7 },
-];
-
-const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
+const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const context = useContext(NotificationContext);
   const [files, setFiles] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
+  const hotel = useSelector((state) =>
+    editedId ? state.hotel.find((item) => item._id === editedId) : null
+  );
   useEffect(() => {
-    // console.log("useEffect", files);
-    return files.forEach((file) => URL.revokeObjectURL(file.preview));
+    return () => {
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
   }, [files]);
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
-    if (hotelId) setHotelId(null);
+    if (editedId) setEditedId();
+    setFiles([]);
+    setDeletedImages([]);
+    setOpen(false);
   };
   return (
     <Dialog
-      open={openDialog}
+      open={open}
       onClose={handleCloseDialog}
       aria-labelledby="form-dialog-title"
       TransitionComponent={SlideTransition}
@@ -88,18 +93,37 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
       <DialogTitle id="form-dialog-title">Thêm mới khách sạn</DialogTitle>
       <DialogContent>
         <Formik
-          initialValues={{
-            name: "",
-            address: "",
-            phone: "",
-            email: "",
-            size: "",
-            numberOfRooms: "",
-            fake: -1,
-            description: "",
-            services: [],
-            images: [],
-          }}
+          initialValues={
+            hotel
+              ? {
+                  name: hotel.name,
+                  address: hotel.address,
+                  phone: hotel.phone,
+                  email: hotel.email,
+                  size: hotel.size,
+                  numberOfRooms: hotel.numberOfRooms,
+                  fake: hotel.city,
+                  description: hotel.description,
+                  services: hotel.services.map(
+                    (service) => HOTEL_SERVICES[service]
+                  ),
+                  images: [],
+                  current_images: hotel.images,
+                }
+              : {
+                  name: "",
+                  address: "",
+                  phone: "",
+                  email: "",
+                  size: "",
+                  numberOfRooms: "",
+                  fake: 0,
+                  description: "",
+                  services: [],
+                  images: [],
+                  current_images: [],
+                }
+          }
           validationSchema={Yup.object().shape({
             name: Yup.string().required("Chưa nhập tên khách sạn"),
             address: Yup.string().required("Chưa nhập địa chỉ"),
@@ -112,11 +136,96 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
               .max(64, "Chọn tỉnh / thành phố"),
             description: Yup.string().required("Chưa nhập mô tả"),
             services: Yup.array().min(1, "Chưa chọn dịch vụ"),
-            images: Yup.array().min(1, "Chưa nhập ảnh"),
+            images: Yup.array().test(
+              "images_required", // test name
+              "Chưa nhập ảnh", // error message
+              function (item) {
+                //item is the current field (images in this case)
+                return item.length > 0 || this.parent.current_images.length > 0;
+              }
+            ),
+            current_images: Yup.array().test(
+              "current_images_required",
+              "Chưa nhập ảnh",
+              function (item) {
+                return item.length > 0 || this.parent.images.length;
+              }
+            ),
           })}
           onSubmit={(values, { setSubmitting }) => {
-            console.log(values);
-            setSubmitting(false);
+            let formData = new FormData();
+            for (let i = 0; i < values.images.length; i++) {
+              formData.append("images", values.images[i]);
+            }
+            for (let i = 0; i < values.current_images.length; i++) {
+              formData.append("current_images", values.current_images[i]);
+            }
+            deletedImages.forEach((item) => {
+              formData.append("deleted_images", item);
+            });
+            for (let i = 0; i < values.services.length; i++) {
+              formData.append("services", values.services[i].id);
+            }
+            for (let key in values) {
+              if (
+                key !== "images" &&
+                key !== "services" &&
+                key !== "current_images" &&
+                key !== "deleted_images"
+              )
+                formData.append(key, values[key]);
+            }
+            if (editedId) {
+              dispatch(
+                updateHotel(
+                  editedId,
+                  formData,
+                  () => {
+                    context.setNotification({
+                      type: "success",
+                      content: "Cập nhật khách sạn thành công",
+                    });
+                    context.setOpen(true);
+                    handleCloseDialog();
+                    setSubmitting(false);
+                  },
+                  (needLogin, message) => {
+                    context.setNotification({
+                      type: "error",
+                      content: message,
+                    });
+                    context.setOpen(true);
+                    setSubmitting(false);
+                    if (needLogin) navigate("/login", { replace: true });
+                  }
+                )
+              );
+              setSubmitting(false);
+            } else {
+              dispatch(
+                createHotel(
+                  formData,
+                  () => {
+                    context.setNotification({
+                      type: "success",
+                      content: "Thêm khách sạn thành công",
+                    });
+                    context.setOpen(true);
+                    setSubmitting(false);
+                    handleCloseDialog();
+                  },
+                  (needLogin, message) => {
+                    context.setNotification({
+                      type: "error",
+                      content: message,
+                    });
+                    context.setOpen(true);
+                    setSubmitting(false);
+                    if (needLogin) navigate("/login", { replace: true });
+                  }
+                )
+              );
+            }
           }}
         >
           {({
@@ -166,17 +275,11 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
                   <Autocomplete
                     id="fake"
                     name="fake"
-                    // value={{ name: "An Giang", fake: 1 }}
-                    isOptionEqualToValue={(option, value) =>
-                      option.fake === value.fake
-                    }
+                    value={city[values.fake]}
                     getOptionLabel={(option) => option.name}
                     onChange={(e, value) => {
-                      setFieldValue("fake", value !== null ? value.fake : -1);
+                      setFieldValue("fake", value !== null ? value.fake : 0);
                     }}
-                    // isOptionEqualToValue={(option, value) =>
-                    //   option.fake === value.fake
-                    // }
                     options={city}
                     renderInput={(params) => (
                       <TextField
@@ -299,9 +402,11 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
                 multiple
                 name="services"
                 id="checkboxes-tags-demo"
-                options={SERVICE_DATA}
+                options={HOTEL_SERVICES}
+                value={values.services}
                 disableCloseOnSelect
                 getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
                   <Box {...props}>
                     <Checkbox style={{ marginRight: 8 }} checked={selected} />
@@ -330,22 +435,110 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
                 files={files}
                 setFiles={setFiles}
                 setFieldValue={setFieldValue}
-                hasError={errors.images && touched.images}
+                hasError={
+                  (errors.images && touched.images) ||
+                  (errors.current_images && touched.current_images)
+                }
               />
-              <ErrorMessage name="images">
-                {(msg) => (
-                  <Typography
-                    variant="body2"
-                    marginLeft={1.5}
-                    marginTop={0.5}
-                    color="error"
-                  >
-                    {msg}
-                  </Typography>
-                )}
-              </ErrorMessage>
-              {files.length > 0 ? (
+              {/* IMAGE ERROR MESSAGE */}
+              {errors.images ? (
+                <ErrorMessage name="images">
+                  {(msg) => (
+                    <Typography
+                      variant="body2"
+                      marginLeft={1.5}
+                      marginTop={0.5}
+                      color="error"
+                    >
+                      {msg}
+                    </Typography>
+                  )}
+                </ErrorMessage>
+              ) : (
+                errors.current_images && (
+                  <ErrorMessage name="current_images">
+                    {(msg) => (
+                      <Typography
+                        variant="body2"
+                        marginLeft={1.5}
+                        marginTop={0.5}
+                        color="error"
+                      >
+                        {msg}
+                      </Typography>
+                    )}
+                  </ErrorMessage>
+                )
+              )}
+              {/* CURRENT IMAGES */}
+              {editedId && values.current_images.length > 0 && (
                 <ImagePreview>
+                  <Typography variant="body1">Ảnh hiện tại</Typography>
+                  <Grid container rowSpacing={1} columnSpacing={2}>
+                    {values.current_images.map((item, index) => (
+                      <Grid key={index} item lg={1.5}>
+                        <Box
+                          style={{
+                            width: "100%",
+                            height: 90,
+                            borderRadius: 8,
+                            overflow: "hidden",
+                            position: "relative",
+                          }}
+                        >
+                          <DeleteImageButton
+                            onClick={() => {
+                              setFieldValue(
+                                "current_images",
+                                values.current_images.filter(
+                                  (image) => image !== item
+                                )
+                              );
+                              setDeletedImages([...deletedImages, item]);
+                            }}
+                          >
+                            <Iconify icon="akar-icons:minus" />
+                          </DeleteImageButton>
+                          <img
+                            src={item}
+                            alt="preview"
+                            style={{
+                              width: "100%",
+                              height: 90,
+                              objectFit: "cover",
+                            }}
+                          />
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <Stack
+                    flexDirection="row"
+                    justifyContent="flex-end"
+                    marginTop={2}
+                  >
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => {
+                        setDeletedImages([
+                          ...values.current_images,
+                          ...deletedImages,
+                        ]);
+                        setFieldValue("current_images", []);
+                      }}
+                    >
+                      XÓA HẾT
+                    </Button>
+                  </Stack>
+                </ImagePreview>
+              )}
+              {/* NEW IMAGES */}
+              {files.length > 0 && (
+                <ImagePreview>
+                  {editedId && (
+                    <Typography variant="body1">Thêm ảnh</Typography>
+                  )}
                   <Grid container rowSpacing={1} columnSpacing={2}>
                     {files.map((item, index) => (
                       <Grid key={index} item lg={1.5}>
@@ -376,7 +569,7 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
                             <Iconify icon="akar-icons:minus" />
                           </DeleteImageButton>
                           <img
-                            src={URL.createObjectURL(item)}
+                            src={item.preview}
                             alt="preview"
                             style={{
                               width: "100%",
@@ -405,28 +598,26 @@ const HotelForm = ({ openDialog, setOpenDialog, hotelId, setHotelId }) => {
                     </Button>
                   </Stack>
                 </ImagePreview>
-              ) : null}
+              )}
               {/* SUBMIT BUTTON */}
               <Stack
                 flexDirection="row"
                 justifyContent="flex-end"
                 marginTop={3}
               >
-                <Button
-                  variant="outlined"
-                  onClick={handleCloseDialog}
-                  sx={{ height: 50 }}
-                >
+                <Button variant="outlined" onClick={handleCloseDialog}>
                   HỦY
                 </Button>
                 <Button
-                  sx={{ height: 50, marginLeft: 2 }}
+                  sx={{ marginLeft: 2 }}
                   type="submit"
                   variant="contained"
                   disabled={isSubmitting ? true : false}
                 >
                   {isSubmitting ? (
                     <CircularProgress style={{ color: "#252525" }} />
+                  ) : editedId ? (
+                    "SỬA KHÁCH SẠN"
                   ) : (
                     "TẠO KHÁCH SẠN"
                   )}

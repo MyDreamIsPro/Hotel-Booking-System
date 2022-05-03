@@ -1,8 +1,8 @@
+import { useState, useEffect, useContext } from "react";
 // UI lib
 import {
   Box,
-  Paper,
-  styled,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -10,14 +10,17 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
-import { useState } from "react";
-
 // UI custom
+import OptionMenu from "./HotelOptionMenu";
 // logic lib
-
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 // logic custom
+import NotificationContext from "../../context/Context";
+import { getAllHotel } from "../../redux/actions/hotel";
+import { formatNumber } from "../../utils";
+import { city } from "../../__MOCK__";
 
 //#region CSS
 
@@ -26,54 +29,25 @@ import { useState } from "react";
 //----------------------------
 
 const columns = [
-  { id: "name", label: "Name" },
-  { id: "code", label: "ISO\u00a0Code" },
-  {
-    id: "population",
-    label: "Population",
-    // minWidth: 170,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "size",
-    label: "Size\u00a0(km\u00b2)",
-    // minWidth: 170,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "density",
-    label: "Density",
-    // minWidth: 170,
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
+  { id: "name", label: "Tên", minWidth: 150 },
+  { id: "city", label: "Thành phố", minWidth: 120 },
+  { id: "size", label: "Diện tích (m\u00b2)", minWidth: 150 },
+  { id: "numberOfRooms", label: "Số phòng", minWidth: 120 },
+  { id: "phone", label: "Số điện thoại", minWidth: 150 },
+  { id: "email", label: "Email", minWidth: 120 },
+  { id: "action", label: "", minWidth: 50 },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+function createData(id, name, city, size, numberOfRooms, phone, email) {
+  return { id, name, city, size, numberOfRooms, phone, email };
 }
 
-const rows = [
-  createData("India", "IN", 1324171354, 3287263),
-  createData("China", "CN", 1403500365, 9596961),
-  createData("Italy", "IT", 60483973, 301340),
-  createData("United States", "US", 327167434, 9833520),
-  createData("Canada", "CA", 37602103, 9984670),
-  createData("Australia", "AU", 25475400, 7692024),
-  createData("Germany", "DE", 83019200, 357578),
-  createData("Ireland", "IE", 4857000, 70273),
-  createData("Mexico", "MX", 126577691, 1972550),
-  createData("Japan", "JP", 126317000, 377973),
-  createData("France", "FR", 67022000, 640679),
-  createData("United Kingdom", "GB", 67545757, 242495),
-  createData("Russia", "RU", 146793744, 17098246),
-  createData("Nigeria", "NG", 200962417, 923768),
-  createData("Brazil", "BR", 210147125, 8515767),
-];
-const HotelList = () => {
+const HotelList = ({ setEditedId, setOpenEditDialog, setOpenDeleteDialog }) => {
+  const navigate = useNavigate();
+  const context = useContext(NotificationContext);
+  const hotelList = useSelector((state) => state.hotel);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -85,46 +59,119 @@ const HotelList = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    dispatch(
+      getAllHotel(
+        () => {
+          if (isMounted) setLoading(false);
+        },
+        (needLogin, message) => {
+          if (isMounted) {
+            context.setNotification({ type: "error", content: message });
+            context.setOpen(true);
+            setLoading(false);
+            if (needLogin) navigate("/login", { replace: true });
+          }
+        }
+      )
+    );
+    return () => {
+      isMounted = false;
+    };
+  }, [context, dispatch, navigate]);
+
+  const rows =
+    hotelList.length > 0
+      ? hotelList.map((hotel) =>
+          createData(
+            hotel._id,
+            hotel.name,
+            city[hotel.city].name,
+            formatNumber(hotel.size),
+            formatNumber(hotel.numberOfRooms),
+            hotel.phone,
+            hotel.email
+          )
+        )
+      : [];
+
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer>
-        <Table stickyHeader aria-label="sticky table">
+    <Box boxShadow={3} style={{ borderRadius: 8 }}>
+      <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
+        <Table stickyHeader aria-label="sticky table" style={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    backgroundColor: "#F4F6F8",
+                  }}
                 >
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
+          {loading ? (
+            <TableBody>
+              <TableRow hover role="checkbox" tabIndex={-1}>
+                {columns.map((column, index) => {
+                  return (
+                    <TableCell key={index}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+              <TableRow hover role="checkbox" tabIndex={-1}>
+                {columns.map((column, index) => {
+                  return (
+                    <TableCell key={index}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === "number"
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell align="right">
+                        <OptionMenu
+                          setOpenEditDialog={setOpenEditDialog}
+                          setOpenDeleteDialog={setOpenDeleteDialog}
+                          setEditedId={setEditedId}
+                          id={row.id}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <TablePagination
+        labelRowsPerPage="Số hàng"
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={rows.length}
@@ -133,7 +180,7 @@ const HotelList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </Box>
   );
 };
 

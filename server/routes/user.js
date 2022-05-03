@@ -9,20 +9,20 @@ import {
   changePassword,
   checkAuth,
 } from "../controllers/user.js";
-import { authMiddleware } from "../middlewares/auth.js";
+import { userAuthMiddleware } from "../middlewares/auth.js";
 import { uploader } from "../middlewares/uploader.js";
 
 const router = express.Router();
 
 // router.get("/:id", isLoggedIn, getUserInfo);
-router.get("/check", authMiddleware, checkAuth);
-router.post("/change-password", authMiddleware, changePassword);
+router.get("/check", userAuthMiddleware, checkAuth);
+router.post("/change-password", userAuthMiddleware, changePassword);
 router.post("/login", login);
 router.post("/signup", signup);
-router.get("/", authMiddleware, getInfo);
+router.get("/", userAuthMiddleware, getInfo);
 router.post(
   "/update",
-  [authMiddleware, uploader.single("profile_image")],
+  [userAuthMiddleware, uploader.single("profile_image")],
   updateInfo
 );
 router.post("/logout", logout);

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 // UI lib
 import { Box, Typography, styled, Stack, Divider } from "@mui/material";
 // UI custom
@@ -5,7 +6,10 @@ import Page from "../../components/Page";
 import Iconify from "../../components/Iconify";
 import Content from "./Content";
 // logic lib
-
+import { useParams } from "react-router-dom";
+import { getHotelById } from "../../api/hotel";
+import Loading from "./Loading";
+import { formatPhoneNumber } from "../../utils/Number";
 // logic custom
 
 //#region CSS
@@ -64,86 +68,110 @@ const BannerImage = styled("img")({
 //----------------------------
 
 const Hotel = () => {
+  const id = useParams().id;
+  const [loading, setLoading] = useState(true);
+  const [hotel, setHotel] = useState({});
+  useEffect(() => {
+    let isMounted = true;
+    getHotelById(id)
+      .then((res) => {
+        if (isMounted) {
+          setHotel(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => console.log(err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   return (
     <Page title="Khách sạn | TuanVQ">
-      <BannerStyle>
-        <InfoStyle>
-          <Typography variant="h3" color="#FFF" marginBottom={2}>
-            COTO EMPIRE NHA TRANG
-          </Typography>
-          <InfoInner>
-            <Stack
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Iconify
-                icon="ep:location"
-                color="#FFF"
-                style={{ marginRight: 5 }}
-              />
-              <Typography variant="body1" color="#FFF" textAlign="center">
-                46 Đường Lê Thánh Tôn, phường Lộc Thọ, thành phố Nha Trang
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <BannerStyle>
+            <InfoStyle>
+              <Typography variant="h3" color="#FFF" marginBottom={2}>
+                {hotel.name}
               </Typography>
-            </Stack>
-            <DividerStyle orientation="vertical" />
-            <Stack
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Iconify
-                icon="clarity:phone-handset-line"
-                color="#FFF"
-                style={{ marginRight: 5 }}
-              />
-              <Typography variant="body1" color="#FFF" textAlign="center">
-                <a
-                  href="tel:(+84) 258 359 9888"
-                  style={{ textDecoration: "none", color: "#FFF" }}
+              <InfoInner>
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="center"
                 >
-                  (+84) 258 359 9888
-                </a>
-              </Typography>
-            </Stack>
-            <DividerStyle orientation="vertical" />
+                  <Iconify
+                    icon="ep:location"
+                    color="#FFF"
+                    style={{ marginRight: 5 }}
+                  />
+                  <Typography variant="body1" color="#FFF" textAlign="center">
+                    {hotel.address}
+                  </Typography>
+                </Stack>
+                <DividerStyle orientation="vertical" />
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Iconify
+                    icon="clarity:phone-handset-line"
+                    color="#FFF"
+                    style={{ marginRight: 5 }}
+                  />
+                  <Typography variant="body1" color="#FFF" textAlign="center">
+                    <a
+                      href={`tel:${hotel.phone}`}
+                      style={{ textDecoration: "none", color: "#FFF" }}
+                    >
+                      {formatPhoneNumber(hotel.phone)}
+                    </a>
+                  </Typography>
+                </Stack>
+                <DividerStyle orientation="vertical" />
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Iconify
+                    icon="fluent:mail-48-regular"
+                    color="#FFF"
+                    style={{ marginRight: 5 }}
+                  />
+                  <Typography variant="body1" color="#FFF" textAlign="center">
+                    {hotel.email}
+                  </Typography>
+                </Stack>
+              </InfoInner>
+            </InfoStyle>
+            <BannerImage src={hotel.images[0]} alt="banner" />
             <Stack
+              style={{
+                position: "absolute",
+                bottom: 15,
+                left: 15,
+                padding: "10px 20px",
+                borderRadius: 4,
+                color: "#FFF",
+                cursor: "pointer",
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+              }}
               flexDirection="row"
               alignItems="center"
-              justifyContent="center"
+              onClick={() => alert("DMM")}
             >
-              <Iconify
-                icon="fluent:mail-48-regular"
-                color="#FFF"
-                style={{ marginRight: 5 }}
-              />
-              <Typography variant="body1" color="#FFF" textAlign="center">
-                coto.support@tuanvq.com
-              </Typography>
+              <Iconify icon="bi:image" style={{ marginRight: 10 }} />
+              <Typography>ẢNH</Typography>
             </Stack>
-          </InfoInner>
-        </InfoStyle>
-        <BannerImage src="/static/hotel/banner.jpg" alt="banner" />
-        <Stack
-          style={{
-            position: "absolute",
-            bottom: 15,
-            left: 15,
-            padding: "10px 20px",
-            borderRadius: 4,
-            color: "#FFF",
-            cursor: "pointer",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-          }}
-          flexDirection="row"
-          alignItems="center"
-          onClick={() => alert("DMM")}
-        >
-          <Iconify icon="bi:image" style={{ marginRight: 10 }} />
-          <Typography>ẢNH</Typography>
-        </Stack>
-      </BannerStyle>
-      <Content />
+          </BannerStyle>
+          <Content hotel={hotel} />
+        </>
+      )}
     </Page>
   );
 };

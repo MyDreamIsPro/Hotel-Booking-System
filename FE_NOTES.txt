@@ -76,3 +76,83 @@
         ...
     This means everytime user enter "/" route, it will automatically re-direct to "/dashboard" route
 
+@flexGrow PARENT BREAKS TABLE SCROLLBAR
+
+@CONTROLLED COMPONENT VS UNCONTROLLED COMPONENT
+    Either you use
+        an uncontrolled Component (-onChange, -value,+defaultValue, +ref)
+        OR you use a controlled component (+onChange, +value, -defaultValue, ref->only if needed).
+    
+    DefaultValue should be used for the uncontrolled ones!
+    
+    - CONTROLLED COMPONENT
+        <Autocomplete className="cb" id={"ansType"} options={ansTypes}
+            ...
+            onChange={obj => this.selectAnsType(obj)}
+            value={this.state.quest.ansType}
+            ... />
+    
+    - UNCONTROLLED COMPONENT
+            defaultAnsType={...};
+            myUncontrolledAutocomplete=React.createRef();
+            <Autocomplete className="cb" id={"ansType"} options={ansTypes}
+                ...
+                defaultValue={this.defaultAnsType}
+                ref={this.myUncontrolledAutocomplete}
+                ... />
+
+@Promise
+    3 states:
+        1 - Pending
+        2 - Fulfilled (resolve)
+        3 - Rejected (reject)
+    Syntax:
+        var my_promise = new Promise(
+            // Executor function
+            function(resolve, reject) {
+                //Do your logic here and consider when to call
+                //data get passed from callback to then and catch below
+                if(OKAY) resolve(data);
+                else reject(data);
+            }
+        )
+        my_promise
+            .then(function(data) { // Resolve, data from above 
+                return 1;
+            })
+            .then(function(data) { // data returned from previous 'then' function, (1 in this case)
+                return 2;
+            })
+            .then(function(data) { // data returned from previous 'then' function, (2 in this case)
+                
+            })
+            .catch(function(data) { // Reject, data from above
+
+            })
+            .finally(function() {
+
+            });
+    Features
+        If 'then' function does not return a promise then the next 'then' function will execute
+        immediately after
+        If 'then' function return a promise then the next 'then' function will wait ultil
+        the promise get resolve to execute
+        If one of 'then' functions get rejected then all 'then' functions on the next will be ignored and 
+        'catch' function will execute
+    Create a fixed promise
+        var resolved_promise = Promise.resolve("success");
+        var rejected_promise = Promise.resolve("fail");
+    Promise.all
+        var promise1 = new Promise(function(resolve) {
+            resolve([1]);
+        })
+        var promise2 = new Promise(function(resolve) {
+            resolve([2, 3]);
+        })
+        Promise.all([promise1, promise2])
+            .then(function(data) { // data is an array of result from all promises
+            })
+            .catch(function() { 
+            })
+            // if a promise get rejected then all remaining promises will be ignored
+            // and catch will execute
