@@ -1,5 +1,5 @@
 import { useContext } from "react";
-
+// UI
 import {
   Button,
   DialogTitle,
@@ -8,13 +8,16 @@ import {
   DialogActions,
   Dialog,
 } from "@mui/material";
-
+// Logic
 import { useDispatch } from "react-redux";
+import { deleteRoomService } from "../redux/actions/room_service";
 import { deleteHotel } from "../redux/actions/hotel";
+import { deleteRoomType } from "../redux/actions/room_type";
 import NotificationContext from "../context/Context";
+import { deleteRoom } from "../redux/actions/room";
 
+// ----------------------------
 const ConfirmationDialog = ({
-  content,
   title,
   open,
   setOpen,
@@ -29,30 +32,37 @@ const ConfirmationDialog = ({
     setOpen(false);
   };
 
+  const handleSuccess = () => {
+    context.setNotification({
+      type: "success",
+      content: "Xóa thành công",
+    });
+    context.setOpen(true);
+    handleClose();
+  };
+
+  const handleFailure = () => {
+    context.setNotification({
+      type: "error",
+      content: "Đã có lỗi xảy ra",
+    });
+    context.setOpen(true);
+    handleClose();
+  };
+
   const handleDelete = () => {
     switch (deleteType) {
       case "HOTEL":
-        dispatch(
-          deleteHotel(
-            id,
-            () => {
-              context.setNotification({
-                type: "success",
-                content: "Xóa thành công",
-              });
-              context.setOpen(true);
-              handleClose();
-            },
-            () => {
-              context.setNotification({
-                type: "error",
-                content: "Đã có lỗi xảy ra",
-              });
-              context.setOpen(true);
-              handleClose();
-            }
-          )
-        );
+        dispatch(deleteHotel(id, handleSuccess, handleFailure));
+        break;
+      case "ROOM":
+        dispatch(deleteRoom(id, handleSuccess, handleFailure));
+        break;
+      case "ROOM_SERVICE":
+        dispatch(deleteRoomService(id, handleSuccess, handleFailure));
+        break;
+      case "ROOM_TYPE":
+        dispatch(deleteRoomType(id, handleSuccess, handleFailure));
         break;
     }
   };
@@ -68,7 +78,7 @@ const ConfirmationDialog = ({
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          {content}
+          Hành động này sẽ không thể khôi phục. Bạn chắc chắn muốn xóa chứ ?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

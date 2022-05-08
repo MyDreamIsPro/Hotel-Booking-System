@@ -1,5 +1,5 @@
 // UI lib
-import { Box, Container, Skeleton, Stack, styled } from "@mui/material";
+import { Box, Container, Stack, styled, Skeleton } from "@mui/material";
 // UI custom
 
 // logic lib
@@ -22,21 +22,26 @@ const ItemStyle = styled(Box)(({ theme }) => ({
 const Image = styled(Skeleton)(({ theme }) => ({
   width: "40%",
   height: "100%",
+  backgroundColor: "gray",
   [theme.breakpoints.down("md")]: {
     width: "100%",
     height: 200,
   },
 }));
+
+const Ske = styled(Skeleton)({
+  backgroundColor: "gray",
+});
 //#endregion
 
 //----------------------------
 
 const LoadingList = () => {
   return (
-    <Container maxWidth="lg" style={{ marginTop: 20 }}>
+    <Container maxWidth="lg" style={{ paddingTop: 95 }}>
       {/* ITEM 1 */}
       <ItemStyle>
-        <Image variant="rectangular" animation="wave" />
+        <Image variant="rectangular" animation="pulse" />
         <Box
           style={{
             flexGrow: 1,
@@ -45,34 +50,34 @@ const LoadingList = () => {
             flexDirection: "column",
           }}
         >
-          <Skeleton variant="text" width="90%" height={50} animation="wave" />
-          <Skeleton variant="text" width="70%" height={50} animation="wave" />
-          <Skeleton variant="text" width="50%" height={50} animation="wave" />
+          <Ske variant="text" width="90%" height={50} animation="pulse" />
+          <Ske variant="text" width="70%" height={50} animation="pulse" />
+          <Ske variant="text" width="50%" height={50} animation="pulse" />
           <Stack
             flexDirection="column"
             justifyContent="flex-end"
             alignItems="flex-end"
             style={{ flexGrow: 1, padding: 10 }}
           >
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="20%"
               height={50}
-              animation="wave"
+              animation="pulse"
               style={{ marginBottom: 5 }}
             />
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="30%"
               height={50}
-              animation="wave"
+              animation="pulse"
             />
           </Stack>
         </Box>
       </ItemStyle>
       {/* ITEM 2 */}
       <ItemStyle>
-        <Image variant="rectangular" animation="wave" />
+        <Image variant="rectangular" animation="pulse" />
         <Box
           style={{
             flexGrow: 1,
@@ -81,34 +86,34 @@ const LoadingList = () => {
             flexDirection: "column",
           }}
         >
-          <Skeleton variant="text" width="90%" height={50} animation="wave" />
-          <Skeleton variant="text" width="70%" height={50} animation="wave" />
-          <Skeleton variant="text" width="50%" height={50} animation="wave" />
+          <Ske variant="text" width="90%" height={50} animation="pulse" />
+          <Ske variant="text" width="70%" height={50} animation="pulse" />
+          <Ske variant="text" width="50%" height={50} animation="pulse" />
           <Stack
             flexDirection="column"
             justifyContent="flex-end"
             alignItems="flex-end"
             style={{ flexGrow: 1, padding: 10 }}
           >
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="20%"
               height={50}
-              animation="wave"
+              animation="pulse"
               style={{ marginBottom: 5 }}
             />
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="30%"
               height={50}
-              animation="wave"
+              animation="pulse"
             />
           </Stack>
         </Box>
       </ItemStyle>
       {/* ITEM 3 */}
       <ItemStyle>
-        <Image variant="rectangular" animation="wave" />
+        <Image variant="rectangular" animation="pulse" />
         <Box
           style={{
             flexGrow: 1,
@@ -117,27 +122,27 @@ const LoadingList = () => {
             flexDirection: "column",
           }}
         >
-          <Skeleton variant="text" width="90%" height={50} animation="wave" />
-          <Skeleton variant="text" width="70%" height={50} animation="wave" />
-          <Skeleton variant="text" width="50%" height={50} animation="wave" />
+          <Ske variant="text" width="90%" height={50} animation="pulse" />
+          <Ske variant="text" width="70%" height={50} animation="pulse" />
+          <Ske variant="text" width="50%" height={50} animation="pulse" />
           <Stack
             flexDirection="column"
             justifyContent="flex-end"
             alignItems="flex-end"
             style={{ flexGrow: 1, padding: 10 }}
           >
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="20%"
               height={50}
-              animation="wave"
+              animation="pulse"
               style={{ marginBottom: 5 }}
             />
-            <Skeleton
+            <Ske
               variant="rectangular"
               width="30%"
               height={50}
-              animation="wave"
+              animation="pulse"
             />
           </Stack>
         </Box>

@@ -46,12 +46,16 @@ const links = [
     icon: "ic:outline-meeting-room",
     children: [
       {
-        text: "Thêm mới",
-        path: "/room/new",
-      },
-      {
         text: "Danh sách",
         path: "/room/list",
+      },
+      {
+        text: "Loại phòng",
+        path: "/room/type",
+      },
+      {
+        text: "Dịch vụ",
+        path: "/room/service",
       },
     ],
   },

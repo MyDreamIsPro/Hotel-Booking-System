@@ -17,6 +17,7 @@ import Iconify from "../../../components/Iconify";
 import { Link as RouterLink } from "react-router-dom";
 
 // logic custom
+import { formatNumber } from "../../../utils/Number";
 
 //#region CSS
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -60,33 +61,22 @@ const InfoButton = styled(Typography)(({ theme }) => ({
 //#endregion
 
 //----------------------------
-const Item = () => {
+const Item = ({ setOpenViewer, setDataViewer, roomType }) => {
+  const handleOpenViewer = () => {
+    setDataViewer(roomType);
+    setOpenViewer(true);
+  };
   return (
     <RootStyle>
       <ImageSection>
         <img
-          src="/static/room/banner.jpg"
-          style={{ objectFit: "cover", borderRadius: 4 }}
+          src={roomType.images[0]}
+          style={{ objectFit: "cover", borderRadius: 4, height: "100%" }}
+          alt="banner"
         />
-        <Tooltip title="ẢNH" placement="top">
-          <IconButton
-            onClick={() => alert("TEST")}
-            style={{ position: "absolute", bottom: 8, left: 8 }}
-          >
-            <Iconify
-              icon="ion:images"
-              style={{
-                width: 30,
-                height: 30,
-                color: "#FFF",
-                cursor: "pointer",
-              }}
-            />
-          </IconButton>
-        </Tooltip>
       </ImageSection>
       <InfoSection>
-        <Typography variant="h4">Biệt thự 2 phòng ngủ, hướng biển</Typography>
+        <Typography variant="h5">{roomType.name}</Typography>
         <Stack
           sx={{ width: "100%", height: 50 }}
           alignItems="center"
@@ -97,7 +87,7 @@ const Item = () => {
             style={{ marginRight: 10, width: 20, height: 20 }}
           />
           <Typography variant="body2" style={{ marginRight: 10 }}>
-            37m²
+            {formatNumber(roomType.size)}m²
           </Typography>
           <Divider
             orientation="vertical"
@@ -113,10 +103,10 @@ const Item = () => {
             icon="bi:people"
           />
           <Typography variant="body2" style={{ marginRight: 10 }}>
-            2 người lớn và 2 trẻ em
+            {roomType.adult} người lớn và {roomType.kid} trẻ em
           </Typography>
         </Stack>
-        <InfoButton variant="body1" onClick={() => alert("Chi tiết phòng")}>
+        <InfoButton variant="body1" onClick={handleOpenViewer}>
           Chi tiết phòng
         </InfoButton>
         <Stack
@@ -136,12 +126,12 @@ const Item = () => {
               fontWeight={700}
               sx={{ color: "primary.main", px: 1 }}
             >
-              1.935.200 đ
+              {formatNumber(roomType.rent_bill)} đ
             </Typography>
             <Typography variant="body2">/ đêm</Typography>
           </Stack>
           <Button variant="contained" component={RouterLink} to="#">
-            <Typography variant="h6">ĐẶT PHÒNG</Typography>
+            ĐẶT PHÒNG
           </Button>
         </Stack>
       </InfoSection>

@@ -9,7 +9,6 @@ import {
   Button,
   Rating,
   Link,
-  Chip,
 } from "@mui/material";
 
 // UI custom
@@ -55,6 +54,7 @@ const ImageSection = styled(Box)(({ theme }) => ({
   borderBottomLeftRadius: 4,
   overflow: "hidden",
   marginRight: 10,
+  height: 325,
   [theme.breakpoints.down("md")]: {
     borderTopRightRadius: 4,
     borderBottomLeftRadius: 0,

@@ -90,7 +90,9 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle id="form-dialog-title">Thêm mới khách sạn</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {editedId ? "CẬP NHẬT KHÁCH SẠN" : "THÊM MỚI KHÁCH SẠN"}
+      </DialogTitle>
       <DialogContent>
         <Formik
           initialValues={
@@ -200,7 +202,6 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                   }
                 )
               );
-              setSubmitting(false);
             } else {
               dispatch(
                 createHotel(
@@ -617,7 +618,7 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                   {isSubmitting ? (
                     <CircularProgress style={{ color: "#252525" }} />
                   ) : editedId ? (
-                    "SỬA KHÁCH SẠN"
+                    "CẬP NHẬT"
                   ) : (
                     "TẠO KHÁCH SẠN"
                   )}

@@ -21,7 +21,7 @@ const ImageSelector = styled(Box)({
 
 const ImageUploader = ({ files, setFiles, setFieldValue, hasError }) => {
   const { getRootProps, getInputProps } = useDropzone({
-    accept: "image/jpeg,image/jpg,image/png",
+    accept: "image/jpeg,image/jpg,image/png,image/webp",
     onDrop: (acceptedFiles) => {
       const newArray = acceptedFiles.map((file) =>
         Object.assign(file, {

@@ -5,10 +5,13 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 // custom
-import userRoutes from "./routes/user.js";
-import adminRoutes from "./routes/admin.js";
-import hotelRoutes from "./routes/hotel.js";
-import cityRoutes from "./routes/city.js";
+import userRoutes from "./src/routes/user.js";
+import adminRoutes from "./src/routes/admin.js";
+import hotelRoutes from "./src/routes/hotel.js";
+import cityRoutes from "./src/routes/city.js";
+import roomRoutes from "./src/routes/room.js";
+import roomTypeRoutes from "./src/routes/room_type.js";
+import roomServiceRoutes from "./src/routes/room_service.js";
 
 // pre-config
 dotenv.config();
@@ -28,6 +31,9 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/city", cityRoutes);
 app.use("/hotel", hotelRoutes);
+app.use("/room", roomRoutes);
+app.use("/room_type", roomTypeRoutes);
+app.use("/room_service", roomServiceRoutes);
 
 //Connect to DB
 const PORT = process.env.PORT;

@@ -4,13 +4,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import User from "./pages/User";
-import Room from "./pages/Room";
 import Hotel from "./pages/Hotel";
+import Room from "./pages/Room";
+import RoomService from "./pages/RoomService";
+import RoomType from "./pages/RoomType";
 import Test from "./pages/Test";
-import HotelService from "./pages/HotelServices";
+import NotFound from "./pages/NotFound";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -25,12 +26,12 @@ export default function AppRoutes() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="user" element={<User />} />
         <Route path="hotel" element={<Hotel />} />
-        {/* <Route path="hotel" element={<Outlet />}>
-          <Route index element={<Navigate to="/hotel/list" replace />} />
-          <Route path="list" element={<Hotel />} />
-          <Route path="services" element={<HotelService />} />
-        </Route> */}
-        <Route path="room" element={<Room />} />
+        <Route path="room" element={<Outlet />}>
+          <Route index element={<Navigate to="/room/list" replace />} />
+          <Route path="list" element={<Room />} />
+          <Route path="service" element={<RoomService />} />
+          <Route path="type" element={<RoomType />} />
+        </Route>
         <Route path="test" element={<Test />} />
       </Route>
       <Route path="*" element={<NotFound />} />

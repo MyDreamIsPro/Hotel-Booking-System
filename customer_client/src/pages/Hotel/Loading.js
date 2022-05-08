@@ -1,6 +1,6 @@
 import { Container, Skeleton, Stack } from "@mui/material";
 
-const Loading = () => {
+const HotelLoading = () => {
   return (
     <Container
       maxWidth="lg"
@@ -41,4 +41,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default HotelLoading;

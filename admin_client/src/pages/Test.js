@@ -1,11 +1,9 @@
 import Page from "../components/Page";
-import { iconExists, loadIcons, Icon } from "@iconify/react";
+// import AsyncAutocomplete from "../components/AsynAutocomplete";
 
 //-----------------------------------------
-const icon = "emojione:locked-with-pen";
 const Test = () => {
-  loadIcons([icon]);
-  return <Page title="TEST">{iconExists(icon) && <Icon icon={icon} />}</Page>;
+  return <Page title="TEST"></Page>;
 };
 
 export default Test;

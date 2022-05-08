@@ -56,7 +56,6 @@ const Hotel = () => {
         id={editedId}
         setId={setEditedId}
         title="Xóa khách sạn"
-        content="Hành động này sẽ không thể khôi phục. Bạn chắc chắn muốn xóa chứ ?"
       />
     </Page>
   );
