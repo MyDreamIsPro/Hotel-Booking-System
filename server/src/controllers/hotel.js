@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Hotel from "../models/Hotel.js";
+import RoomType from "../models/room_type.js";
 import { existsSync, unlinkSync } from "fs";
+import { STRING } from "../constants/constants.js";
 
 const deleteImages = (images) => {
   if (images) {
@@ -103,9 +105,17 @@ export const updateHotel = async (req, res) => {
 export const getHotelByFilter = async (req, res) => {
   const filter = req.body;
   try {
-    const hotel = await Hotel.find({ city: filter.fake });
+    const hotelList = await Hotel.find({ city: filter.fake }).lean();
+    for (let hotel of hotelList) {
+      //if the value inside sort is 1, it returns in ascending order
+      //if the value inside sort is -1, it returns in descending order
+      const roomType = await RoomType.find({ hotel: hotel._id }, "rent_bill")
+        .sort({ rent_bill: 1 })
+        .limit(1);
+      hotel.min_price = roomType[0].rent_bill;
+    }
     setTimeout(() => {
-      return res.status(200).json(hotel);
+      return res.status(200).json(hotelList);
     }, 1000);
   } catch (error) {
     console.log(error);
@@ -119,7 +129,7 @@ export const getHotelById = async (req, res) => {
     const hotel = await Hotel.findOne({ _id: id });
     setTimeout(() => {
       return res.status(200).json(hotel);
-    }, 2000);
+    }, 1000);
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);

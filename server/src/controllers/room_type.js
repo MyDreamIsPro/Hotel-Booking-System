@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { existsSync, unlinkSync } from "fs";
 import RoomType from "../models/room_type.js";
 import Room from "../models/room.js";
-import { STRING } from "../constants/constants.js";
+import { STRING, INTEGER } from "../constants/constants.js";
 
 const deleteImages = (images) => {
   if (images) {
@@ -137,15 +137,29 @@ export const deleteRoomType = async (req, res) => {
 
 export const getAvailableRoomType = async (req, res) => {
   const { hotel_id } = req.params;
+  const filter = req.body;
   if (!mongoose.Types.ObjectId.isValid(hotel_id)) {
     return res.status(404).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
   try {
     const available_list = await Room.distinct("room_type", {
-      hotel: hotel_id,
-      status: false,
+      $or: [
+        {
+          hotel: hotel_id,
+          status: INTEGER.ROOM_EMPTY,
+        },
+        {
+          hotel: hotel_id,
+          status: INTEGER.ROOM_PENDING,
+          last_holding_time: { $lt: Date.now() },
+        },
+      ],
     }); // select all room_type is available to book
-    const room_type = await RoomType.find()
+    // if (available_list.length === 0) return res.status(202).json([]);
+    const room_type = await RoomType.find({
+      adult: { $gte: filter.adult },
+      kid: { $gte: filter.kid },
+    })
       .where("_id")
       .in(available_list)
       .populate("services", ["icon", "name"]); // select all room_type data from available _id list

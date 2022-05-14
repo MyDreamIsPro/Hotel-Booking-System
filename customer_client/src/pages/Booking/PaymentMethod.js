@@ -9,14 +9,14 @@ import {
   Box,
   Radio,
 } from "@mui/material";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 // UI custom
-
 // logic lib
-
 // logic custom
-
+import { createBooking } from "../../api/booking";
+import { INTERNAL_BANKS, EXTERNAL_BANKS } from "../../__MOCK__/index";
+import { STRING } from "../../constants/index";
 //#region CSS
 
 //#endregion
@@ -26,60 +26,31 @@ const PAYMENT_METHOD = [
     text: "Thẻ/tài khoản ngân hàng (ATM nội địa/quốc tế)",
     ariaControls: "panel1a-content",
     id: "panel1a-header",
-    banks: [
-      {
-        value: "BIDV",
-        img: "/static/bank/BIDV.png",
-      },
-      {
-        value: "MBANK",
-        img: "/static/bank/M_BANK.png",
-      },
-      {
-        value: "NCB",
-        img: "/static/bank/NCB.png",
-      },
-      {
-        value: "TCB",
-        img: "/static/bank/TECH_COM_BANK.png",
-      },
-      {
-        value: "TPB",
-        img: "/static/bank/TP_BANK.png",
-      },
-      {
-        value: "VCB",
-        img: "/static/bank/VIET_COM_BANK.png",
-      },
-      {
-        value: "VTB",
-        img: "/static/bank/VIETIN_BANK.png",
-      },
-    ],
+    banks: INTERNAL_BANKS,
   },
   {
     text: "Thẻ tín dụng/ghi nợ quốc tế",
     ariaControls: "panel2a-content",
     id: "panel2a-header",
-    banks: [
-      {
-        value: "VISA",
-        img: "/static/bank/VISA.png",
-      },
-      {
-        value: "MC",
-        img: "/static/bank/MASTER_CARD.png",
-      },
-      {
-        value: "JCB",
-        img: "/static/bank/JCB.png",
-      },
-    ],
+    banks: EXTERNAL_BANKS,
   },
 ];
 
+const VND_TO_DOLLAR = (vnd) => (vnd / 23000).toFixed(2);
+
 //----------------------------
-const PaymentMethod = ({ selectedBank, setSelectedBank }) => {
+const PaymentMethod = ({
+  selectedBank,
+  setSelectedBank,
+  setOpenCompleteDialog,
+}) => {
+  const booking = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_BOOKING_INFO)
+  );
+  console.log(VND_TO_DOLLAR(booking.amount));
+  const user = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
+  )._id;
   return (
     <div>
       {PAYMENT_METHOD.map((method) => (
@@ -134,6 +105,71 @@ const PaymentMethod = ({ selectedBank, setSelectedBank }) => {
           </AccordionDetails>
         </Accordion>
       ))}
+
+      {/* PAYPAL */}
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+          style={{ backgroundColor: "#F2F2F2" }}
+        >
+          <Typography variant="body1" fontWeight="bold">
+            Paypal
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ backgroundColor: "#F2F2F2" }}>
+          <PayPalScriptProvider
+            //client-id stands for the id of business account, who is the seller in this transaction
+            //you must log in with another account to purchase
+            options={{
+              "client-id":
+                "AQBTdnr3dm6TENNubrGRnauD8Dy_oReUCTL-5kuAvXE5pkCu78s_dDJs_jHp5Tuc4pHaWdHCJTaCnMH1",
+            }}
+          >
+            <PayPalButtons
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  intent: "CAPTURE",
+                  purchase_units: [
+                    {
+                      amount: {
+                        currency_code: "USD",
+                        value: VND_TO_DOLLAR(booking.amount),
+                      },
+                      payee: {
+                        email_address: "sb-pcny315242414@business.example.com",
+                      },
+                    },
+                  ],
+                });
+              }}
+              onApprove={(data, actions) => {
+                return actions.order.capture().then((details) => {
+                  createBooking({
+                    user: user,
+                    hotel: booking.hotel,
+                    room_list: booking.roomIds,
+                    amount: booking.amount,
+                    payment_method: "VISA",
+                    adult: booking.visitor.adult,
+                    kid: booking.visitor.kid,
+                    baby: booking.visitor.baby,
+                    effective_from: booking.startDate,
+                    effective_to: booking.endDate,
+                    payment_date: new Date(),
+                  })
+                    .then((res) => {
+                      setOpenCompleteDialog(true);
+                    })
+                    .catch((err) => console.log(err));
+                });
+              }}
+              onCancel={() => console.log("CANCEL")}
+            />
+          </PayPalScriptProvider>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 };

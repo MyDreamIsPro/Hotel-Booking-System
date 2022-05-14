@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 // logic custom
 import NotificationContext from "../../context/Context";
 import { getAllRoom } from "../../redux/actions/room";
+import { INTEGER } from "../../constants";
 
 //#region CSS
 
@@ -35,14 +36,22 @@ const columns = [
   { id: "action", label: "", minWidth: 50 },
 ];
 
-function createData(id, number, hotel, room_type, preStatus) {
+function createData(id, number, hotel, room_type, preStatus, lastHoldingTime) {
+  const isExpired = lastHoldingTime < Date.now();
   const status = (
     <>
-      {preStatus ? (
-        <Chip label="Đã thuê" color="error" variant="outlined" />
-      ) : (
+      {(preStatus === INTEGER.ROOM_EMPTY && (
         <Chip label="Trống" color="success" variant="outlined" />
-      )}
+      )) ||
+        (preStatus === INTEGER.ROOM_PENDING &&
+          (isExpired ? (
+            <Chip label="Trống" color="success" variant="outlined" />
+          ) : (
+            <Chip label="Đang giữ" color="warning" variant="outlined" />
+          ))) ||
+        (preStatus === INTEGER.ROOM_RENTED && (
+          <Chip label="Đã thuê" color="error" variant="outlined" />
+        ))}
     </>
   );
   return { id, number, hotel, room_type, status };
@@ -96,7 +105,8 @@ const RoomList = ({ setEditedId, setOpenEditDialog, setOpenDeleteDialog }) => {
             room.number,
             room.hotel.name,
             room.room_type.name,
-            room.status
+            room.status,
+            room.last_holding_time
           )
         )
       : [];

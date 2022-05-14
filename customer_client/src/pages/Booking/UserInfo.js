@@ -2,10 +2,7 @@
 import { Box, Stack, styled, TextField, Typography } from "@mui/material";
 // UI custom
 import Iconify from "../../components/Iconify";
-import {
-  PhoneFormatCustom,
-  IdFormatCustom,
-} from "../../components/FormattedInput";
+import { PhoneFormatCustom } from "../../components/FormattedInput";
 // logic lib
 import { useDispatch } from "react-redux";
 import { Formik } from "formik";
@@ -13,6 +10,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 // logic custom
 import { logout } from "../../redux/actions/user";
+import { STRING } from "../../constants";
 //#region CSS
 const LogoutButton = styled("span")(({ theme }) => ({
   textDecoration: "underline",
@@ -26,6 +24,17 @@ const LogoutButton = styled("span")(({ theme }) => ({
 const UserInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const data = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
+  );
+  const handleLogout = () => {
+    dispatch(
+      logout(
+        () => navigate("/", { replace: true }),
+        () => {}
+      )
+    );
+  };
   return (
     <Box>
       {/* IS ANONYMOUS ? */}
@@ -51,20 +60,8 @@ const UserInfo = () => {
           />
         </Stack>
         <Typography variant="body1">
-          Xin chào Quốc Tuấn Vũ! (không phải là Quốc Tuấn Vũ?{" "}
-          <LogoutButton
-            onClick={() =>
-              dispatch(
-                logout(
-                  () => navigate("/", { replace: true }),
-                  () => {}
-                )
-              )
-            }
-          >
-            Thoát
-          </LogoutButton>{" "}
-          )
+          Xin chào {data.full_name}! (không phải là {data.full_name}?{" "}
+          <LogoutButton onClick={handleLogout}>Thoát</LogoutButton> )
         </Typography>
       </Stack>
       {/* FORM */}
@@ -80,10 +77,8 @@ const UserInfo = () => {
         </Typography>
         <Formik
           initialValues={{
-            username: "tuanvq",
-            full_name: "Vũ Quốc Tuấn",
-            phone: "0904543840",
-            identification: "123456789111",
+            full_name: data.full_name,
+            phone: data.phone,
           }}
           validationSchema={Yup.object().shape({
             full_name: Yup.string().max(255).required("Chưa nhập họ và tên"),
@@ -94,9 +89,6 @@ const UserInfo = () => {
             username: Yup.string()
               .max(100, "Tài khoản dài tối đa 100 kí tự")
               .required("Chưa nhập tài khoản"),
-            identification: Yup.string()
-              .max(12, "CMT không hợp lệ")
-              .required("Chưa nhập chứng minh thư"),
           })}
           onSubmit={(values, { setSubmitting }) => {}}
         >
@@ -139,23 +131,6 @@ const UserInfo = () => {
                 autoComplete="new-password"
                 InputProps={{
                   inputComponent: PhoneFormatCustom,
-                }}
-              />
-              <TextField
-                fullWidth
-                error={Boolean(touched.identification && errors.identification)}
-                helperText={touched.identification && errors.identification}
-                label="Chứ minh thư"
-                margin="normal"
-                type="text"
-                name="identification"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.identification}
-                variant="outlined"
-                autoComplete="new-password"
-                InputProps={{
-                  inputComponent: IdFormatCustom,
                 }}
               />
             </form>

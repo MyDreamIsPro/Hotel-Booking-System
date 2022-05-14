@@ -17,6 +17,7 @@ import Iconify from "../../components/Iconify";
 import { Link as RouterLink } from "react-router-dom";
 // logic custom
 import { HOTEL_SERVICES } from "../../__MOCK__";
+import { formatNumber } from "../../utils/Number";
 //#region CSS
 const ItemStyle = styled(Box)(({ theme }) => ({
   borderRadius: 4,
@@ -227,7 +228,7 @@ const BookingItem = ({ setOpenImageViewer, setImages, hotel }) => {
                 fontFamily: "revert",
               }}
             >
-              1.301.500
+              {formatNumber(hotel.min_price)}
             </Typography>
             <Typography variant="h6" color="primary">
               ₫

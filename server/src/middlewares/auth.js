@@ -7,9 +7,9 @@ dotenv.config();
 
 export const userAuthMiddleware = async (req, res, next) => {
   try {
-    if (req.cookies.token === undefined)
+    if (req.cookies.customer === undefined)
       return res.status(401).send(STRING.AUTHENTICATION_FAILED);
-    const token = req.cookies.token;
+    const token = req.cookies.customer;
     const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req._id = decodedData.id;
     const user = await User.findOne({ _id: decodedData.id });
@@ -23,9 +23,9 @@ export const userAuthMiddleware = async (req, res, next) => {
 
 export const adminAuthMiddleware = async (req, res, next) => {
   try {
-    if (req.cookies.token === undefined)
+    if (req.cookies.admin === undefined)
       return res.status(401).send(STRING.AUTHENTICATION_FAILED);
-    const token = req.cookies.token;
+    const token = req.cookies.admin;
     const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req._id = decodedData.id;
     const user = await User.findOne({ _id: decodedData.id });

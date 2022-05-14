@@ -10,7 +10,7 @@ import { Box, Stack, styled, Skeleton } from "@mui/material";
 const ItemStyle = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
-  height: 220,
+  height: 213,
   boxShadow: "0 1px 2px 1px gray",
   borderRadius: 4,
   marginBottom: 30,

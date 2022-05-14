@@ -3,10 +3,15 @@ export const INTEGER = {
   EMPLOYEE_ROLE: 1108,
   CUSTOMER_ROLE: 1998,
 
-  PENDING: 1,
-  IN_PROGRESS: 2,
-  COMPLETED: 3,
-  CANCELED: 4,
+  //BOOKING STATUS
+  BOOKING_IN_PROGRESS: 1, // user paid but not check-in yet
+  BOOKING_COMPLETED: 2, // user check-out
+  BOOKING_CANCELED: 3, // user canceled booking before check-in
+
+  //ROOM STATUS
+  ROOM_EMPTY: 1,
+  ROOM_PENDING: 2,
+  ROOM_RENTED: 3,
 };
 
 export const STRING = {
@@ -24,9 +29,4 @@ export const STRING = {
 
   ROOM_ALREADY_EXIST: "Số phòng này đã tồn tại trong khách sạn",
   ROOM_TYPE_ALREADY_EXIST: "Loại phòng này đã tồn tại trong khách sạn",
-};
-
-export const BOOLEAN = {
-  EMPTY: false,
-  FILLED: true,
 };

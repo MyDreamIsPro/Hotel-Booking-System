@@ -3,9 +3,9 @@ import { STRING } from "../../constants";
 
 //ACTION creators
 export const getAvailableRoomType =
-  (filter, performSuccess, performFailure) => async (dispatch) => {
+  (hotel_id, filter, performSuccess, performFailure) => async (dispatch) => {
     try {
-      const { data } = await api.getAvailableRoomType(filter);
+      const { data } = await api.getAvailableRoomType(hotel_id, filter);
       dispatch({ type: STRING.GET_AVAILABLE_ROOM_TYPE, payload: data });
       performSuccess(data.length);
     } catch (error) {

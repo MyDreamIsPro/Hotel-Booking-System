@@ -56,48 +56,48 @@ const ImgStyle = styled("img")({
 
 const data = [
   {
-    link: "/",
+    location: 38,
     title: "Đà Lạt",
     path: "/static/home/dalat.webp",
   },
   {
-    link: "/",
+    location: 47,
     title: "Hội An",
     path: "/static/home/hoian.jpg",
   },
   {
-    link: "/",
+    location: 15,
     title: "Đà Nẵng",
     path: "/static/home/danang.jpg",
   },
   {
-    link: "/",
+    location: 24,
     title: "Hà Nội",
     path: "/static/home/hanoi.jpeg",
   },
   {
-    link: "/",
+    location: 57,
     title: "Huế",
     path: "/static/home/hue.jpg",
   },
   {
-    link: "/",
+    location: 32,
     title: "Nha Trang",
     path: "/static/home/nhatrang.jpg",
   },
   {
-    link: "/",
+    location: 2,
     title: "Vũng Tàu",
     path: "/static/home/vungtau.jpg",
   },
 
   {
-    link: "/",
+    location: 30,
     title: "Hồ Chí Minh",
     path: "/static/home/hochiminh.jpg",
   },
   {
-    link: "/",
+    location: 33,
     title: "Đảo Phú Quốc",
     path: "/static/home/phuquoc.png",
   },
@@ -140,7 +140,10 @@ const Slider = () => {
               borderRadius: 8,
             }}
           >
-            <LinkStyle component={RouterLink} to="/"></LinkStyle>
+            <LinkStyle
+              component={RouterLink}
+              to={`/hotel?locationId=${slide.location}`}
+            ></LinkStyle>
             <ImgStyle src={slide.path} alt="banner" />
             <Box
               style={{

@@ -15,6 +15,8 @@ import Result from "./Result";
 import List from "./List";
 import Loading from "./Loading";
 import Viewer from "./Viewer";
+import NotEnoughDialog from "./NotEnoughDialog";
+import AuthenticatedDialog from "./AuthenticatedDialog";
 // logic lib
 // logic custom
 //#region CSS
@@ -28,8 +30,8 @@ const ContentStyle = styled("div")(({ theme }) => ({
   },
 }));
 
-const RoomListWrapper = styled(Box)(({ theme }) => ({
-  width: "70%",
+const RoomListWrapper = styled("div")(({ theme }) => ({
+  width: "67%",
   marginRight: 25,
   [theme.breakpoints.down(1144)]: {
     width: "100%",
@@ -42,9 +44,18 @@ const RoomListWrapper = styled(Box)(({ theme }) => ({
 
 const Room = ({ hotel }) => {
   const [result, setResult] = useState({ loading: false, num: -1 });
-  const [filterValue, setFilterValue] = useState(1);
+  const [sortValue, setSortValue] = useState(1);
   const [openViewer, setOpenViewer] = useState(false);
   const [dataViewer, setDataViewer] = useState({});
+  const [openNotEnoughDialog, setOpenNotEnoughDialog] = useState(false);
+  const [notEnoughRooms, setNotEnoughRooms] = useState([]);
+  const [openAuthenticatedDialog, setOpenAuthenticatedDialog] = useState(false);
+
+  // BOOKING INFO
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date(Date.now() + 86400000));
+  const [visitor, setVisitor] = useState({ adult: 1, kid: 0, baby: 0 });
+  const [selectedRooms, setSelectedRooms] = useState([]);
   return (
     <Box
       style={{
@@ -52,7 +63,14 @@ const Room = ({ hotel }) => {
         paddingTop: 20,
       }}
     >
-      <Filter hotel_id={hotel._id} setResult={setResult} />
+      <Filter
+        hotel_id={hotel._id}
+        setResult={setResult}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setVisitor={setVisitor}
+        setSelectedRooms={setSelectedRooms}
+      />
       <Stack
         flexDirection="row"
         alignItems="center"
@@ -67,8 +85,8 @@ const Room = ({ hotel }) => {
           name="filter"
           variant="outlined"
           select
-          value={filterValue}
-          onChange={(e) => setFilterValue(e.target.value)}
+          value={sortValue}
+          onChange={(e) => setSortValue(e.target.value)}
         >
           <MenuItem value={1}>Gần đây nhất</MenuItem>
           <MenuItem value={2}>Đánh giá, cao đến thấp</MenuItem>
@@ -92,6 +110,8 @@ const Room = ({ hotel }) => {
                   <List
                     setOpenViewer={setOpenViewer}
                     setDataViewer={setDataViewer}
+                    selectedRooms={selectedRooms}
+                    setSelectedRooms={setSelectedRooms}
                   />
                   <Viewer
                     data={dataViewer}
@@ -144,7 +164,27 @@ const Room = ({ hotel }) => {
             </Box>
           )}
         </RoomListWrapper>
-        <Result />
+        <Result
+          hotelId={hotel._id}
+          hotelName={hotel.name}
+          startDate={startDate}
+          endDate={endDate}
+          visitor={visitor}
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
+          setOpenNotEnoughDialog={setOpenNotEnoughDialog}
+          setNotEnoughRooms={setNotEnoughRooms}
+          setOpenAuthenticatedDialog={setOpenAuthenticatedDialog}
+        />
+        <NotEnoughDialog
+          open={openNotEnoughDialog}
+          setOpen={setOpenNotEnoughDialog}
+          data={notEnoughRooms}
+        />
+        <AuthenticatedDialog
+          open={openAuthenticatedDialog}
+          setOpen={setOpenAuthenticatedDialog}
+        />
       </ContentStyle>
     </Box>
   );

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 // UI lib
 import {
   Accordion,
@@ -13,6 +14,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // UI custom
 import Iconify from "../../components/Iconify";
 // logic custom
+import { getDiffDays, formatDate } from "../../utils/Date";
+import { formatNumber } from "../../utils/Number";
+import useCountDown from "../../hooks/useCountDown";
 
 //#region CSS
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -45,7 +49,23 @@ const AccordionDetailsStyle = styled(AccordionDetails)({
 //#endregion
 
 //----------------------------
-const BookingInfo = () => {
+const BookingInfo = ({ data, setOpen }) => {
+  const [timeLeft, setEndTime] = useCountDown(data.expire, () => setOpen(true));
+  const diffDays = useMemo(
+    () => getDiffDays(new Date(data.startDate), new Date(data.endDate)),
+    []
+  );
+  const amount = useMemo(
+    () =>
+      data.selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
+      diffDays,
+    []
+  );
+  //TIMER
+  const minutes = Math.floor(timeLeft / 60000) % 60;
+  const seconds = Math.floor(timeLeft / 1000) % 60;
+  const renderMinutes = minutes < 10 ? "0" + minutes : minutes;
+  const renderSeconds = seconds > 9 ? seconds : "0" + seconds;
   return (
     <RootStyle boxShadow={3}>
       <Typography variant="h5" fontWeight="bold" textAlign="center">
@@ -59,8 +79,28 @@ const BookingInfo = () => {
           height: 1.5,
         }}
       />
+      <Stack
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Typography variant="h6">Thời gian giữ phòng</Typography>
+        <Typography
+          variant="h5"
+          fontWeight="bolder"
+          color="primary"
+        >{`${renderMinutes}:${renderSeconds}`}</Typography>
+      </Stack>
+      <Divider
+        style={{
+          backgroundColor: "#637381",
+          marginTop: 10,
+          marginBottom: 10,
+          height: 1.5,
+        }}
+      />
       <Typography variant="body1" fontWeight="bold">
-        Coto Empire Nha Trang
+        {data.hotelName}
       </Typography>
       {/* SCHEDULE */}
       <Stack
@@ -74,7 +114,7 @@ const BookingInfo = () => {
             Nhận phòng
           </Typography>
           <Typography variant="h6" textAlign="center">
-            11.04.2022
+            {formatDate(data.startDate)}
           </Typography>
         </Box>
         <Iconify
@@ -86,7 +126,7 @@ const BookingInfo = () => {
             Trả phòng
           </Typography>
           <Typography variant="h6" fontWeight="bold" textAlign="center">
-            11.04.2022
+            {formatDate(data.endDate)}
           </Typography>
         </Box>
       </Stack>
@@ -101,21 +141,24 @@ const BookingInfo = () => {
           style={{ padding: 10, borderRadius: 20, backgroundColor: "#e6e6e6" }}
         >
           <Typography variant="body2">
-            Người lớn: <span style={{ fontWeight: "bolder" }}>1</span>
+            Người lớn:{" "}
+            <span style={{ fontWeight: "bolder" }}>{data.visitor.adult}</span>
           </Typography>
         </Box>
         <Box
           style={{ padding: 10, borderRadius: 20, backgroundColor: "#e6e6e6" }}
         >
           <Typography variant="body2">
-            Trẻ em: <span style={{ fontWeight: "bolder" }}>1</span>
+            Trẻ em:{" "}
+            <span style={{ fontWeight: "bolder" }}>{data.visitor.kid}</span>
           </Typography>
         </Box>
         <Box
           style={{ padding: 10, borderRadius: 20, backgroundColor: "#e6e6e6" }}
         >
           <Typography variant="body2">
-            Em bé: <span style={{ fontWeight: "bolder" }}>1</span>
+            Em bé:{" "}
+            <span style={{ fontWeight: "bolder" }}>{data.visitor.kid}</span>
           </Typography>
         </Box>
       </Stack>
@@ -127,7 +170,7 @@ const BookingInfo = () => {
       >
         <Typography variant="body1">Số đêm</Typography>
         <Typography variant="body1" fontWeight="bold">
-          3 ngày 2 đêm
+          {diffDays + 1} ngày {diffDays} đêm
         </Typography>
       </Stack>
       <Stack
@@ -137,7 +180,7 @@ const BookingInfo = () => {
       >
         <Typography variant="body1">Số phòng</Typography>
         <Typography variant="body1" fontWeight="bold">
-          1
+          {data.selectedRooms.length}
         </Typography>
       </Stack>
       <Divider
@@ -159,24 +202,25 @@ const BookingInfo = () => {
         </AccordionSummaryStyle>
         <AccordionDetailsStyle>
           {/* LIST */}
-          <Stack flexDirection="row" justifyContent="space-between">
-            <Typography variant="body1" style={{ maxWidth: "60%" }}>
-              <span style={{ fontWeight: "bold" }}>Phòng 1:</span> Biệt thự 2
-              phòng ngủ, hướng biển
-            </Typography>
-            <Typography variant="body1" color="primary" fontWeight="bold">
-              123.000.000 đ
-            </Typography>
-          </Stack>
-          <Stack flexDirection="row" justifyContent="space-between">
-            <Typography variant="body1" style={{ maxWidth: "60%" }}>
-              <span style={{ fontWeight: "bold" }}>Phòng 2:</span> Biệt thự 2
-              phòng ngủ, hướng biển
-            </Typography>
-            <Typography variant="body1" color="primary" fontWeight="bold">
-              123.000.000 đ
-            </Typography>
-          </Stack>
+          {data.selectedRooms.length > 0 ? (
+            data.selectedRooms.map((room, index) => (
+              <Stack
+                key={index}
+                flexDirection="row"
+                justifyContent="space-between"
+              >
+                <Typography variant="body1" style={{ maxWidth: "60%" }}>
+                  <span style={{ fontWeight: "bold" }}>Phòng {index + 1}:</span>{" "}
+                  {room.name}
+                </Typography>
+                <Typography variant="body1" color="primary" fontWeight="bold">
+                  {formatNumber(room.rent_bill)} đ
+                </Typography>
+              </Stack>
+            ))
+          ) : (
+            <Typography variant="body1">Chưa chọn phòng</Typography>
+          )}
         </AccordionDetailsStyle>
       </AccordionStyle>
       <Divider
@@ -197,7 +241,7 @@ const BookingInfo = () => {
           Tổng tiền:
         </Typography>
         <Typography variant="h3" color="primary" fontWeight="bold">
-          123.987.000 <span style={{ fontSize: 17 }}>đ</span>
+          {formatNumber(amount)} <span style={{ fontSize: 17 }}>đ</span>
         </Typography>
       </Stack>
     </RootStyle>

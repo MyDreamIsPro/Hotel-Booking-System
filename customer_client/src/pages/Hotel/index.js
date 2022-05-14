@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography, styled, Stack, Divider } from "@mui/material";
 // UI custom
 import Page from "../../components/Page";
+import ImageViewer from "../../components/ImageViewer";
 import Iconify from "../../components/Iconify";
 import Content from "./Content";
 // logic lib
@@ -70,6 +71,7 @@ const BannerImage = styled("img")({
 const Hotel = () => {
   const id = useParams().id;
   const [loading, setLoading] = useState(true);
+  const [openImageViewer, setOpenImageViewer] = useState(false);
   const [hotel, setHotel] = useState({});
   useEffect(() => {
     let isMounted = true;
@@ -85,7 +87,12 @@ const Hotel = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [id]);
+
+  const handleOpenImageViewer = () => {
+    setOpenImageViewer(true);
+  };
+
   return (
     <Page title="Khách sạn | TuanVQ">
       {loading ? (
@@ -163,13 +170,18 @@ const Hotel = () => {
               }}
               flexDirection="row"
               alignItems="center"
-              onClick={() => alert("DMM")}
+              onClick={handleOpenImageViewer}
             >
               <Iconify icon="bi:image" style={{ marginRight: 10 }} />
               <Typography>ẢNH</Typography>
             </Stack>
           </BannerStyle>
           <Content hotel={hotel} />
+          <ImageViewer
+            images={hotel.images}
+            open={openImageViewer}
+            setOpen={setOpenImageViewer}
+          />
         </>
       )}
     </Page>

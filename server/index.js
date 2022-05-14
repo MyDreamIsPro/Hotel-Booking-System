@@ -12,6 +12,7 @@ import cityRoutes from "./src/routes/city.js";
 import roomRoutes from "./src/routes/room.js";
 import roomTypeRoutes from "./src/routes/room_type.js";
 import roomServiceRoutes from "./src/routes/room_service.js";
+import bookingRoutes from "./src/routes/booking.js";
 
 // pre-config
 dotenv.config();
@@ -34,6 +35,7 @@ app.use("/hotel", hotelRoutes);
 app.use("/room", roomRoutes);
 app.use("/room_type", roomTypeRoutes);
 app.use("/room_service", roomServiceRoutes);
+app.use("/booking", bookingRoutes);
 
 //Connect to DB
 const PORT = process.env.PORT;

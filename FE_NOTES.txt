@@ -53,6 +53,31 @@
     one-way binding: Giao diện tác động lên Dữ liệu
     two-ways binding: Giao diện tác động lên Dữ liệu && Dữ liệu tác động lên Giao diện
 
+@useMemo DETAILS
+    Syntax
+        useMemo(callback, [dependencies])
+    Detail
+        useMemo được sử dụng để tránh 1 logic nào đó bị thực hiện lại ko cần thiết bởi việc component re-render
+    Params
+        callback: logic cần tránh thực hiện lại ko cần thiết
+        [dependencies]: tương tự như useEffect, 1 array gồm các dependencies được truyền vào để react biết khi nào logic
+            bên trong callback cần được thực hiện lại
+
+@PASSING FUNCTION
+    const foo = () => {...some logics}
+
+    onClick={foo}
+        You're passing a reference of foo()
+        The function will be called if onClick event triggered
+
+    onClick={() => foo()}
+        You're passing a callback which returns a calling of foo()
+        The function will be called if onClick event triggered
+
+    onClick={foo()}
+        You're calling foo() directly, not passing it
+        The function will be called once and can not be called if onClick event triggered
+
 @MOUNT & UNMOUNT
     Mount là thời điểm component được add vào React
     Unmount là thời điểm component bị gỡ ra khỏi React

@@ -101,7 +101,7 @@ export const login = async (req, res) => {
 
     return res
       .status(200)
-      .cookie("token", token, {
+      .cookie("admin", token, {
         expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
         httpOnly: true,
         secure: false,
@@ -137,7 +137,7 @@ export const signup = async (req, res) => {
     const token = generateToken(newUser._id);
     return res
       .status(200)
-      .cookie("token", token, {
+      .cookie("admin", token, {
         expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
         httpOnly: true,
         secure: false,
@@ -155,7 +155,7 @@ export const signup = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.status(200).clearCookie("token").send("Logout completely");
+  res.status(200).clearCookie("admin").send("Logout completely");
 };
 
 export const ping = async (req, res) => {

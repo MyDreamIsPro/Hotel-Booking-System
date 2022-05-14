@@ -96,7 +96,7 @@ export const login = async (req, res) => {
     if (existedUser.role === 1998) {
       return res
         .status(200)
-        .cookie("token", token, {
+        .cookie("customer", token, {
           expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
           httpOnly: true,
           secure: false,
@@ -105,11 +105,12 @@ export const login = async (req, res) => {
           _id: existedUser._id,
           full_name: existedUser.full_name,
           profile_image: existedUser.profile_image,
+          phone: existedUser.phone,
         });
     } else {
       return res
         .status(200)
-        .cookie("token", token, {
+        .cookie("customer", token, {
           expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
           httpOnly: true,
           secure: false,
@@ -119,6 +120,7 @@ export const login = async (req, res) => {
           full_name: existedUser.full_name,
           profile_image: existedUser.profile_image,
           role: existedUser.role,
+          phone: existedUser.phone,
         });
     }
   } catch (error) {
@@ -145,7 +147,7 @@ export const signup = async (req, res) => {
     const token = generateToken(newUser._id);
     return res
       .status(200)
-      .cookie("token", token, {
+      .cookie("customer", token, {
         expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
         httpOnly: true,
         secure: false,
@@ -154,6 +156,7 @@ export const signup = async (req, res) => {
         _id: newUser._id,
         full_name: newUser.full_name,
         profile_image: newUser.profile_image,
+        phone: newUser.phone,
       });
   } catch (error) {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
@@ -161,7 +164,7 @@ export const signup = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.status(200).clearCookie("token").send("Logout completely");
+  res.status(200).clearCookie("customer").send("Logout completely");
 };
 
 export const ping = async (req, res) => {

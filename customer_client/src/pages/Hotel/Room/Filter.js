@@ -25,15 +25,17 @@ import viLocale from "date-fns/locale/vi";
 // logic custom
 import CustomDateAdapter from "../../../components/CustomDateAdapter";
 import { getAvailableRoomType } from "../../../redux/actions/room_type";
+import { STRING } from "../../../constants";
+import { setDate } from "date-fns";
 //#region CSS
 const FilterStyle = styled(Stack)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
+  [theme.breakpoints.down(928)]: {
     flexDirection: "column",
   },
 }));
 
 const VistorChooser = styled(TextField)(({ theme }) => ({
-  [theme.breakpoints.down(1180)]: {
+  [theme.breakpoints.down(928)]: {
     marginBottom: 20,
     width: "100%",
   },
@@ -47,9 +49,8 @@ const CountButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const DateChooser = styled(Stack)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
+  [theme.breakpoints.down(928)]: {
     width: "100%",
-    marginTop: 20,
     marginBottom: 20,
   },
 }));
@@ -57,7 +58,7 @@ const DateChooser = styled(Stack)(({ theme }) => ({
 const ButtonStyle = styled(Button)(({ theme }) => ({
   height: 50,
   width: 100,
-  [theme.breakpoints.down("md")]: {
+  [theme.breakpoints.down(928)]: {
     width: "100%",
   },
 }));
@@ -70,15 +71,24 @@ const initialValues = {
   baby: 0,
 };
 
-const Filter = ({ setResult, hotel_id }) => {
+const Filter = ({
+  setResult,
+  hotel_id,
+  setStartDate,
+  setEndDate,
+  setVisitor,
+  setSelectedRooms,
+}) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
+  const handleCloseVisitorChooser = () => {
+    setOpen(false);
+  };
   return (
     <Box
       boxShadow={3}
       style={{
-        width: "100%",
         borderRadius: 4,
         padding: 20,
       }}
@@ -89,13 +99,25 @@ const Filter = ({ setResult, hotel_id }) => {
           fake: Yup.number()
             .min(1, "Chọn tỉnh / thành phố")
             .max(64, "Chọn tỉnh / thành phố"),
+          // adult: Yup.number().min(1, "Số lượng khách không hợp lệ"),
+          // kid: Yup.number().min(0, "Số lượng khách không hợp lệ"),
+          // baby: Yup.number().min(0, "Số lượng khách không hợp lệ"),
           date: Yup.array().of(Yup.date().required("Chưa nhập ngày")),
         })}
         onSubmit={(values, { setSubmitting }) => {
+          setStartDate(values.date[0]);
+          setEndDate(values.date[1]);
+          setVisitor({
+            adult: values.adult,
+            kid: values.kid,
+            baby: values.baby,
+          });
+          setSelectedRooms([]);
           setResult({ loading: true, num: -1 });
           dispatch(
             getAvailableRoomType(
               hotel_id,
+              values,
               (numResult) => {
                 setSubmitting(false);
                 setResult({ loading: false, num: numResult });
@@ -108,16 +130,7 @@ const Filter = ({ setResult, hotel_id }) => {
           );
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <FilterStyle
               flexDirection="row"
@@ -138,9 +151,7 @@ const Filter = ({ setResult, hotel_id }) => {
                   startText="Ngày nhận phòng"
                   endText="Ngày trả phòng"
                   value={values.date}
-                  onChange={(newValue) => {
-                    setFieldValue("date", [...newValue]);
-                  }}
+                  onChange={(newValue) => setFieldValue("date", [...newValue])}
                   renderInput={(startProps, endProps) => (
                     <DateChooser flexDirection="row" alignItems="center">
                       <TextField {...startProps} />
@@ -164,9 +175,7 @@ const Filter = ({ setResult, hotel_id }) => {
               />
               <MenuPopover
                 open={open}
-                onClose={() => {
-                  setOpen(false);
-                }}
+                onClose={handleCloseVisitorChooser}
                 anchorEl={anchorRef.current}
               >
                 <Box style={{ padding: 10, width: 400 }}>

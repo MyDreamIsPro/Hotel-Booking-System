@@ -2,6 +2,11 @@ export const INTEGER = {
   APP_BAR_MOBILE: 56,
   APP_BAR_DESKTOP: 64,
   DRAWER_WIDTH: 290,
+
+  //ROOM STATUS
+  ROOM_EMPTY: 1,
+  ROOM_PENDING: 2,
+  ROOM_RENTED: 3,
 };
 
 export const STRING = {

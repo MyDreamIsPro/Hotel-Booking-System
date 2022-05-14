@@ -25,6 +25,6 @@ router.put(
   updateRoomType
 );
 router.delete("/delete/:id", adminAuthMiddleware, deleteRoomType);
-router.get("/search/:hotel_id", getAvailableRoomType);
+router.post("/search/:hotel_id", getAvailableRoomType);
 
 export default router;

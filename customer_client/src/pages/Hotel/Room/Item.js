@@ -61,7 +61,20 @@ const InfoButton = styled(Typography)(({ theme }) => ({
 //#endregion
 
 //----------------------------
-const Item = ({ setOpenViewer, setDataViewer, roomType }) => {
+const Item = ({
+  setOpenViewer,
+  setDataViewer,
+  roomType,
+  selectedRooms,
+  setSelectedRooms,
+}) => {
+  const handleSelectRoom = () => {
+    setSelectedRooms([
+      ...selectedRooms,
+      { _id: roomType._id, name: roomType.name, rent_bill: roomType.rent_bill },
+    ]);
+  };
+
   const handleOpenViewer = () => {
     setDataViewer(roomType);
     setOpenViewer(true);
@@ -130,7 +143,7 @@ const Item = ({ setOpenViewer, setDataViewer, roomType }) => {
             </Typography>
             <Typography variant="body2">/ đêm</Typography>
           </Stack>
-          <Button variant="contained" component={RouterLink} to="#">
+          <Button variant="contained" onClick={handleSelectRoom}>
             ĐẶT PHÒNG
           </Button>
         </Stack>

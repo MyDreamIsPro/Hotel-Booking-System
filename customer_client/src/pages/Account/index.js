@@ -8,7 +8,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 // UI custom
 import Page from "../../components/Page";
 import Info from "./Info";
-import Billing from "./Billing";
+import BookingHistory from "./BookingHistory";
 import Payment from "./Payment";
 import Authentication from "./Authentication";
 import SecurityIcon from "@mui/icons-material/Security";
@@ -60,11 +60,11 @@ const data = [
     page: <Info />,
   },
   {
-    tab: "bookings",
+    tab: "booking",
     icon: <CreditScoreIcon />,
     label: "LỊCH SỬ ĐẶT CHỖ",
     index: 1,
-    page: <Billing />,
+    page: <BookingHistory />,
   },
   {
     tab: "payment",

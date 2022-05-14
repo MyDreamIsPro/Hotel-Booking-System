@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BOOLEAN } from "../constants/constants.js";
+import { INTEGER } from "../constants/constants.js";
 
 const RoomSchema = mongoose.Schema({
   number: { type: Number, required: true },
@@ -16,8 +16,12 @@ const RoomSchema = mongoose.Schema({
     unique: false,
   },
   status: {
-    type: Boolean,
-    default: BOOLEAN.EMPTY,
+    type: Number,
+    default: INTEGER.ROOM_EMPTY,
+  },
+  last_holding_time: {
+    type: Number,
+    default: 0,
   },
   created_date: {
     type: Date,

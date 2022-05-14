@@ -8,7 +8,12 @@ import Item from "./Item";
 //#region CSS
 //#endregion
 
-const RoomTypeList = ({ setOpenViewer, setDataViewer }) => {
+const RoomTypeList = ({
+  setOpenViewer,
+  setDataViewer,
+  selectedRooms,
+  setSelectedRooms,
+}) => {
   const roomTypeList = useSelector((state) => state.room_type);
   return (
     <>
@@ -18,6 +23,8 @@ const RoomTypeList = ({ setOpenViewer, setDataViewer }) => {
           roomType={roomType}
           setDataViewer={setDataViewer}
           setOpenViewer={setOpenViewer}
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
         />
       ))}
     </>

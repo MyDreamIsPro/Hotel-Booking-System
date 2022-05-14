@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 // UI lib
 import {
@@ -24,6 +24,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import viLocale from "date-fns/locale/vi";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 // logic custom
 import { getHotelByFilter } from "../redux/actions/hotelList";
 import CustomDateAdapter from "./CustomDateAdapter";
@@ -74,19 +75,38 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
 }));
 
 //#endregion
-
-const initialValues = {
-  fake: 0,
-  date: [new Date(), new Date(Date.now() + 86400000)], // add one day to second element
-  adult: 1,
-  kid: 0,
-  baby: 0,
-};
-
 const Filter = ({ setResult }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
+  const location_id = searchParams.get("locationId");
+
+  const isValidLocation = (location) => {
+    return location && location > 0 && location < 64;
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isValidLocation(location_id)) {
+      setResult({ loading: true, num: -1 });
+      dispatch(
+        getHotelByFilter(
+          { fake: location_id },
+          (numResult) => {
+            if (isMounted) setResult({ loading: false, num: numResult });
+          },
+          () => {
+            if (isMounted) setResult({ loading: false, num: 0 });
+          }
+        )
+      );
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch, location_id, setResult]);
   return (
     <Box
       style={{
@@ -106,14 +126,21 @@ const Filter = ({ setResult }) => {
         }}
       >
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            fake: isValidLocation(location_id) ? location_id : 0,
+            date: [new Date(), new Date(Date.now() + 86400000)], // add one day to second element
+            adult: 1,
+            kid: 0,
+            baby: 0,
+          }}
           validationSchema={Yup.object().shape({
             fake: Yup.number()
               .min(1, "Chọn tỉnh / thành phố")
-              .max(64, "Chọn tỉnh / thành phố"),
+              .max(63, "Chọn tỉnh / thành phố"),
             date: Yup.array().of(Yup.date().required("Chưa nhập ngày")),
           })}
           onSubmit={(values, { setSubmitting }) => {
+            setSearchParams({ locationId: values.fake });
             setResult({ loading: true, num: -1 });
             dispatch(
               getHotelByFilter(

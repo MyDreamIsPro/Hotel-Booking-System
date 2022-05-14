@@ -16,7 +16,6 @@ import {
   styled,
   TextField,
   Typography,
-  Divider,
 } from "@mui/material";
 // UI custom
 import Iconify from "../../components/Iconify";
@@ -129,13 +128,16 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
           validationSchema={Yup.object().shape({
             name: Yup.string().required("Chưa nhập tên khách sạn"),
             address: Yup.string().required("Chưa nhập địa chỉ"),
-            phone: Yup.string().required("Chưa nhập số điện thoại"),
+            phone: Yup.string()
+              .required("Chưa nhập số điện thoại")
+              .min(11, "Số điện thoại không hợp lệ")
+              .max(11, "Số điện thoại không hợp lệ"),
             email: Yup.string().required("Chưa nhập email"),
             size: Yup.number().required("Chưa nhập diện tích"),
             numberOfRooms: Yup.number().required("Chưa nhập số phòng"),
             fake: Yup.number()
               .min(1, "Chọn tỉnh / thành phố")
-              .max(64, "Chọn tỉnh / thành phố"),
+              .max(63, "Chọn tỉnh / thành phố"),
             description: Yup.string().required("Chưa nhập mô tả"),
             services: Yup.array().min(1, "Chưa chọn dịch vụ"),
             images: Yup.array().test(

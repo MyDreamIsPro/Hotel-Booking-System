@@ -41,6 +41,7 @@ const HotelList = () => {
   const [filterValue, setFilterValue] = useState(1);
   const [openImageViewer, setOpenImageViewer] = useState(false);
   const [images, setImages] = useState([]);
+
   return (
     <Page title="Booking | TuanVQ">
       <Filter setResult={setResult} />

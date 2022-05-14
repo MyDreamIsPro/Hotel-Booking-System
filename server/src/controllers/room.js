@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Room from "../models/room.js";
-import { STRING } from "../constants/constants.js";
+import RoomType from "../models/room_type.js";
+import { INTEGER, STRING } from "../constants/constants.js";
 
 export const getAllRoom = async (req, res) => {
   try {
@@ -69,6 +70,83 @@ export const deleteRoom = async (req, res) => {
   try {
     await Room.findOneAndRemove({ _id: id });
     res.status(202).send("Room deleted successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
+export const holdRoom = async (req, res) => {
+  const data = req.body;
+  if (!mongoose.Types.ObjectId.isValid(data.hotel)) {
+    return res.status(404).send("No hotel with that id");
+  }
+  try {
+    const selectedRooms = data.selectedRooms.reduce((result, current) => {
+      if (result[current["_id"]]) result[current["_id"]] += 1;
+      else result[current["_id"]] = 1;
+      return result;
+    }, {});
+    // Check if room quantity is enough
+    const notEnoughRooms = [];
+    for (let key in selectedRooms) {
+      const requested_count = selectedRooms[key];
+      const actual_count = await Room.countDocuments({
+        $or: [
+          { hotel: data.hotel, room_type: key, status: INTEGER.ROOM_EMPTY },
+          {
+            hotel: data.hotel,
+            room_type: key,
+            status: INTEGER.ROOM_PENDING,
+            last_holding_time: { $lt: Date.now() },
+          },
+        ],
+      });
+      if (actual_count < requested_count) {
+        //can not add key/value to a mongoose object
+        //using lean() to disconnect object from mongoose
+        const room_type = await RoomType.findOne(
+          { _id: key },
+          "name rent_bill"
+        ).lean();
+        room_type.requested_count = requested_count;
+        room_type.actual_count = actual_count;
+        notEnoughRooms.push(room_type);
+      }
+    }
+    if (notEnoughRooms.length > 0) return res.status(409).json(notEnoughRooms);
+    // Holding room
+    const holdingRooms = [];
+    for (let key in selectedRooms) {
+      //get empty room to add holding time
+      const roomList = await Room.find(
+        {
+          $or: [
+            { hotel: data.hotel, room_type: key, status: INTEGER.ROOM_EMPTY },
+            {
+              hotel: data.hotel,
+              room_type: key,
+              status: INTEGER.ROOM_PENDING,
+              last_holding_time: { $lt: Date.now() },
+            },
+          ],
+        },
+        "number"
+      ).limit(selectedRooms[key]);
+      //Add holding time
+      for (let item of roomList) {
+        await Room.findByIdAndUpdate(
+          item._id,
+          {
+            status: INTEGER.ROOM_PENDING,
+            last_holding_time: Date.now() + data.holding_time,
+          }, // Holding in 10 minutes
+          { new: true }
+        );
+        holdingRooms.push(item._id);
+      }
+    }
+    res.status(202).json(holdingRooms);
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
