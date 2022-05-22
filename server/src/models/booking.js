@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import { INTEGER } from "../constants/constants.js";
 
 const BookingSchema = mongoose.Schema({
+  number: {
+    type: Number,
+    unique: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -7,9 +7,10 @@ import ConfirmationDialog from "../../components/ConfirmationDialog";
 import Page from "../../components/Page";
 import Form from "./HotelForm";
 import List from "./HotelList";
+import NotFound from "../NotFound";
 // logic lib
-
 // logic custom
+import { INTEGER, STRING } from "../../constants";
 
 //----------------------------
 
@@ -17,18 +18,25 @@ const Hotel = () => {
   const [editedId, setEditedId] = useState();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  // CHECK ROLE
+  const role = JSON.parse(
+    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
+  ).role;
+  if (role !== INTEGER.ADMIN_ROLE) return <NotFound />;
+
   const handleOpenDialog = () => {
     setOpenEditDialog(true);
   };
   return (
-    <Page title="Thêm mới khách sạn">
+    <Page title="Khách sạn">
       <Stack
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
         mb={4}
       >
-        <Typography variant="h4">Khách sạn</Typography>
+        <Typography variant="h4">KHÁCH SẠN</Typography>
         <Button
           startIcon={<AddIcon />}
           style={{ height: 40 }}

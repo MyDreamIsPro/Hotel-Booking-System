@@ -267,6 +267,7 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
                     setFieldValue={setFieldValue}
                     fieldToSetValue="hotel"
                     getData={getAllHotelForForm}
+                    getOptionLabel={(option) => option.name}
                   />
                 </Grid>
               </Grid>
@@ -339,7 +340,7 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
                   />
                 </Grid>
               </Grid>
-              {/* ADULT - KID */}
+              {/* RENT_BILL - ADULT - KID */}
               <Grid container columnSpacing={3}>
                 <Grid item xs={12} sm={4}>
                   <TextField

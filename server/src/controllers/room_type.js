@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { existsSync, unlinkSync } from "fs";
+import Booking from "../models/booking.js";
 import RoomType from "../models/room_type.js";
 import Room from "../models/room.js";
 import { STRING, INTEGER } from "../constants/constants.js";
@@ -138,31 +139,92 @@ export const deleteRoomType = async (req, res) => {
 export const getAvailableRoomType = async (req, res) => {
   const { hotel_id } = req.params;
   const filter = req.body;
+  const begin = new Date(filter.date[0]).setHours(0, 0, 0, 0);
+  const end = new Date(filter.date[1]).setHours(0, 0, 0, 0);
   if (!mongoose.Types.ObjectId.isValid(hotel_id)) {
     return res.status(404).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
   try {
-    const available_list = await Room.distinct("room_type", {
-      $or: [
-        {
-          hotel: hotel_id,
-          status: INTEGER.ROOM_EMPTY,
-        },
-        {
-          hotel: hotel_id,
-          status: INTEGER.ROOM_PENDING,
-          last_holding_time: { $lt: Date.now() },
-        },
-      ],
-    }); // select all room_type is available to book
-    // if (available_list.length === 0) return res.status(202).json([]);
-    const room_type = await RoomType.find({
-      adult: { $gte: filter.adult },
-      kid: { $gte: filter.kid },
-    })
-      .where("_id")
-      .in(available_list)
-      .populate("services", ["icon", "name"]); // select all room_type data from available _id list
+    //ROOM LIST
+    let roomList = await Room.find(
+      {
+        $or: [
+          { hotel: hotel_id, status: INTEGER.ROOM_EMPTY },
+          {
+            hotel: hotel_id,
+            status: INTEGER.ROOM_PENDING,
+            last_holding_time: { $lt: Date.now() },
+          },
+          {
+            hotel: hotel_id,
+            status: INTEGER.ROOM_RENTED,
+          },
+        ],
+      },
+      "_id"
+    );
+    roomList = roomList.map((item) => item._id);
+    //BOOKING LIST IN DATE RANGE
+    let rentRoom = [];
+    const bookingList = await Booking.find(
+      {
+        hotel: hotel_id,
+        $or: [
+          {
+            status: {
+              $gt: INTEGER.BOOKING_CANCELED,
+              $lt: INTEGER.BOOKING_CHECK_OUT,
+            },
+            effective_from: { $gte: begin, $lte: end },
+          },
+          {
+            status: {
+              $gt: INTEGER.BOOKING_CANCELED,
+              $lt: INTEGER.BOOKING_CHECK_OUT,
+            },
+            effective_to: { $gte: begin, $lte: end },
+          },
+        ],
+      },
+      "room_list"
+    );
+    for (let booking of bookingList) {
+      rentRoom = rentRoom.concat(booking.room_list);
+    }
+    // console.log("room list", roomList);
+    // console.log("----");
+    // console.log("rent room", rentRoom);
+    // console.log("----");
+    //Merge, remove duplicates and create an index array to check duplicates with room list
+    const ids = {};
+    rentRoom.map((_id) => (ids[_id.toString()] = _id));
+    //Remove unvailable room and create available list
+    const available_room_list = [];
+    for (let room of roomList) {
+      if (ids[room.toString()] === undefined) available_room_list.push(room);
+    }
+
+    // Select available room types
+    let room_type = [];
+
+    //check if there is any room available
+    if (available_room_list.length > 0) {
+      const available_room_type = await Room.distinct("room_type")
+        .where("_id")
+        .in(available_room_list);
+      //check if there is any room type available
+      if (available_room_type.length > 0) {
+        room_type = await RoomType.find({
+          // hotel: hotel_id, not needed
+          adult: { $gte: filter.adult },
+          kid: { $gte: filter.kid },
+        })
+          .where("_id")
+          .in(available_room_type)
+          .populate("services", ["icon", "name"]);
+      }
+    }
+    //return
     setTimeout(() => {
       res.status(202).json(room_type);
     }, 1000);

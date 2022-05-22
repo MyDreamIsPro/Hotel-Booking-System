@@ -7,6 +7,12 @@
   "scripts": {
     "start": "nodemon index.js"
   },
+  "nodemonConfig": {
+    "ignore": [
+      "BACKUP",
+      "STATIC"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

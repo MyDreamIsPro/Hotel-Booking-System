@@ -12,7 +12,8 @@ import { STRING } from "../../constants/index";
 
 const CompleteDialog = ({ open, setOpen }) => {
   const handleClose = (event, reason) => {
-    setOpen(false);
+    if (reason && reason === "backdropClick") return;
+    if (open) setOpen(false);
   };
   return (
     <Dialog

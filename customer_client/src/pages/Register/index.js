@@ -20,14 +20,13 @@ import Page from "../../components/Page";
 import { PhoneFormatCustom } from "../../components/FormattedInput";
 
 // Logic lib
-import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useDispatch } from "react-redux";
 import { signup } from "../../redux/actions/user";
 
 // Logic custom
-import { STRING } from "../../constants";
 
 // -------------------------------------------
 
@@ -46,13 +45,6 @@ const Register = () => {
   const handleShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
-  const isAuthenticated = localStorage.getItem(
-    STRING.LOCAL_STORAGE_PROFILE_KEY
-  );
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
 
   return (
     <Page title="Đăng ký | TuanVQ">

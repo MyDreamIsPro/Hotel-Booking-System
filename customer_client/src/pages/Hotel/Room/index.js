@@ -17,6 +17,7 @@ import Loading from "./Loading";
 import Viewer from "./Viewer";
 import NotEnoughDialog from "./NotEnoughDialog";
 import AuthenticatedDialog from "./AuthenticatedDialog";
+import ResultButton from "./ResultButton";
 // logic lib
 // logic custom
 //#region CSS
@@ -164,6 +165,7 @@ const Room = ({ hotel }) => {
             </Box>
           )}
         </RoomListWrapper>
+        <ResultButton number={selectedRooms.length} />
         <Result
           hotelId={hotel._id}
           hotelName={hotel.name}

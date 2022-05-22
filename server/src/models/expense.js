@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const ExpenseSchema = mongoose.Schema({
-  expense_number: { type: Number, required: true, unique: true },
-  building_id: {
+  number: { type: Number, required: true, unique: true },
+  hotel: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Building",
+    ref: "Hotel",
     required: true,
     unique: false,
   },
-  amount: { type: Number, default: 0 },
+  amount: { type: Number, required: true },
   description: { type: String, required: true },
   created_date: { type: Date, default: new Date() },
   modified_date: { type: Date, default: new Date() },

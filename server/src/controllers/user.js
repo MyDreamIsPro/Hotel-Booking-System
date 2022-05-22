@@ -85,6 +85,9 @@ export const login = async (req, res) => {
     });
     if (!existedUser)
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
+
+    if (existedUser.banned) return res.status(403).send(STRING.USER_BANNED);
+
     const isPasswordCorrect = await bcrypt.compare(
       user.password,
       existedUser.password
@@ -135,6 +138,10 @@ export const signup = async (req, res) => {
     const existedUsername = await User.findOne({ username: user.username });
     if (existedUsername) {
       return res.status(409).send(STRING.USERNAME_EXIST_ERROR_MESSAGE);
+    }
+    const existedPhone = await User.findOne({ phone: user.phone });
+    if (existedPhone) {
+      return res.status(409).send(STRING.PHONE_EXIST_ERROR_MESSAGE);
     }
     const hashedPassword = await bcrypt.hash(user.password, 12);
     const newUser = new User({

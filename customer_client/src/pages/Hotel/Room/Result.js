@@ -81,8 +81,9 @@ const Result = ({
     if (selectedRooms.length > 0) {
       holdRoom({
         hotel: hotelId,
-        selectedRooms: selectedRooms,
+        selectedRoomTypes: selectedRooms,
         holding_time: HOLDING_TIME,
+        date: [startDate, endDate],
       })
         .then((res) => {
           localStorage.setItem(

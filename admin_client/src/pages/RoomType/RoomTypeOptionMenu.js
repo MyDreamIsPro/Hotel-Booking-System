@@ -49,7 +49,7 @@ const RoomTypeOptionMenu = ({
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: "center", horizontal: "left" }}
         transformOrigin={{ vertical: "center", horizontal: "right" }}
-        PaperProps={{ sx: { width: 180, maxWidth: "100%" } }}
+        PaperProps={{ sx: { width: 150, maxWidth: "100%" } }}
       >
         <MenuItem sx={{ color: "text.secondary" }} onClick={handleEdit}>
           <ListItemIcon>

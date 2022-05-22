@@ -26,7 +26,6 @@ import Page from "../components/Page";
 
 // Logic custom
 import { login } from "../redux/actions/user";
-import { STRING } from "../constants";
 
 // -------------------------------------------
 
@@ -42,13 +41,6 @@ const Login = () => {
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
-  // const isAuthenticated = localStorage.getItem(
-  //   STRING.LOCAL_STORAGE_PROFILE_KEY
-  // );
-  // if (isAuthenticated) {
-  //   return <Navigate to="/" replace />;
-  // }
 
   return (
     <Page title="Đăng nhập | TuanVQ" maxWidth="sm" style={{ paddingTop: 20 }}>

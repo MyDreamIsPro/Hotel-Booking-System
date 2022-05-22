@@ -5,7 +5,7 @@ const UserSchema = mongoose.Schema({
   username: { type: String, trim: true, required: true, unique: true },
   password: { type: String, trim: true },
   full_name: { type: String, trim: true, required: true },
-  phone: { type: String, trim: true },
+  phone: { type: String, trim: true, unique: true },
   profile_image: {
     type: String,
     default: "http://localhost:5000/default/profile_image.png",

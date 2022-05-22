@@ -13,6 +13,10 @@ import roomRoutes from "./src/routes/room.js";
 import roomTypeRoutes from "./src/routes/room_type.js";
 import roomServiceRoutes from "./src/routes/room_service.js";
 import bookingRoutes from "./src/routes/booking.js";
+import expenseRoutes from "./src/routes/expense.js";
+import backupRoutes from "./src/routes/backup.js";
+import testRoutes from "./src/routes/test.js";
+import accountRoutes from "./src/routes/account.js";
 
 // pre-config
 dotenv.config();
@@ -26,7 +30,7 @@ const app = express();
 app.use(express.json({ limit: "100mb" }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.static("static"));
+app.use(express.static("STATIC"));
 // routes
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
@@ -36,7 +40,10 @@ app.use("/room", roomRoutes);
 app.use("/room_type", roomTypeRoutes);
 app.use("/room_service", roomServiceRoutes);
 app.use("/booking", bookingRoutes);
-
+app.use("/expense", expenseRoutes);
+app.use("/test", testRoutes);
+app.use("/backup", backupRoutes);
+app.use("/account", accountRoutes);
 //Connect to DB
 const PORT = process.env.PORT;
 const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";

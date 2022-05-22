@@ -28,7 +28,7 @@ const RoomType = () => {
         alignItems="center"
         mb={4}
       >
-        <Typography variant="h4">Loại phòng</Typography>
+        <Typography variant="h4">LOẠI PHÒNG</Typography>
         <Button
           startIcon={<AddIcon />}
           style={{ height: 40 }}

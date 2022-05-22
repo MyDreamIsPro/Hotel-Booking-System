@@ -61,10 +61,10 @@ export const deleteHotel = async (req, res) => {
 
 export const updateHotel = async (req, res) => {
   const { id } = req.params;
-  const hotel = req.body;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).send("No hotel with that id");
   }
+  const hotel = req.body;
   try {
     deleteImages(hotel.deleted_images);
     let new_images = [];
@@ -112,7 +112,7 @@ export const getHotelByFilter = async (req, res) => {
       const roomType = await RoomType.find({ hotel: hotel._id }, "rent_bill")
         .sort({ rent_bill: 1 })
         .limit(1);
-      hotel.min_price = roomType[0].rent_bill;
+      hotel.min_price = roomType[0]?.rent_bill || 0;
     }
     setTimeout(() => {
       return res.status(200).json(hotelList);

@@ -13,6 +13,7 @@ export const userAuthMiddleware = async (req, res, next) => {
     const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req._id = decodedData.id;
     const user = await User.findOne({ _id: decodedData.id });
+
     if (user) next();
     else return res.status(401).send(STRING.AUTHENTICATION_FAILED);
   } catch (error) {
@@ -29,6 +30,7 @@ export const adminAuthMiddleware = async (req, res, next) => {
     const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req._id = decodedData.id;
     const user = await User.findOne({ _id: decodedData.id });
+    req.full_name = user?.full_name;
     if (
       user &&
       (user.role === INTEGER.ADMIN_ROLE || user.role === INTEGER.EMPLOYEE_ROLE)

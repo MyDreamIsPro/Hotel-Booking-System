@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import { STRING } from "../constants/constants.js";
+import { STRING, INTEGER } from "../constants/constants.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -87,6 +87,8 @@ export const login = async (req, res) => {
     if (!existedUser)
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
 
+    if (existedUser.banned) return res.status(403).send(STRING.USER_BANNED);
+
     if (existedUser.role === 1998)
       return res.status(401).send(STRING.PERMISSION_DENIED);
 
@@ -125,10 +127,14 @@ export const signup = async (req, res) => {
     if (existedUsername) {
       return res.status(409).send(STRING.USERNAME_EXIST_ERROR_MESSAGE);
     }
+    const existedPhone = await User.findOne({ phone: user.phone });
+    if (existedPhone) {
+      return res.status(409).send(STRING.PHONE_EXIST_ERROR_MESSAGE);
+    }
     const hashedPassword = await bcrypt.hash(user.password, 12);
     const newUser = new User({
       ...user,
-      role: 2412,
+      role: INTEGER.EMPLOYEE_ROLE,
       password: hashedPassword,
     });
     await newUser.save();
@@ -158,13 +164,14 @@ export const logout = async (req, res) => {
   res.status(200).clearCookie("admin").send("Logout completely");
 };
 
-export const ping = async (req, res) => {
-  console.log(
-    jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET_KEY)
-  );
+export const getAllUserForForm = async (req, res) => {
   try {
-    return res.status(202).send("OKE YOU GOT SECRET");
+    const user = await User.find();
+    setTimeout(() => {
+      res.status(200).json(user);
+    }, 1000);
   } catch (error) {
-    res.status(500).send("ERROR");
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };

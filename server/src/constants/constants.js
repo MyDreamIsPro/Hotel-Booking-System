@@ -4,9 +4,10 @@ export const INTEGER = {
   CUSTOMER_ROLE: 1998,
 
   //BOOKING STATUS
-  BOOKING_IN_PROGRESS: 1, // user paid but not check-in yet
-  BOOKING_COMPLETED: 2, // user check-out
-  BOOKING_CANCELED: 3, // user canceled booking before check-in
+  BOOKING_CANCELED: 1, // user cancelled booking before check-in
+  BOOKING_IN_PROGRESS: 2, // user paid but not check in yet
+  BOOKING_CHECK_IN: 3, // user checked in
+  BOOKING_CHECK_OUT: 4, // user check-out
 
   //ROOM STATUS
   ROOM_EMPTY: 1,
@@ -16,6 +17,8 @@ export const INTEGER = {
 
 export const STRING = {
   SECRET_KEY: "tuanvq1357*",
+  PHONE_EXIST_ERROR_MESSAGE:
+    "Số điện thoại này đã tồn tại. Quý khách vui lòng chọn số điện thoại khác",
   USERNAME_EXIST_ERROR_MESSAGE:
     "Tài khoản này đã tồn tại. Quý khách vui lòng chọn tài khoản khác",
   WRONG_USERNAME_PASSWORD_ERROR_MESSAGE:
@@ -29,4 +32,7 @@ export const STRING = {
 
   ROOM_ALREADY_EXIST: "Số phòng này đã tồn tại trong khách sạn",
   ROOM_TYPE_ALREADY_EXIST: "Loại phòng này đã tồn tại trong khách sạn",
+  BOOKING_NOT_FOUND: "Đơn đặt chỗ không tồn tại",
+  USER_BANNED:
+    "Tài khoản này đã bị khóa. Quý khách vui lòng liên hệ quản trị viên để biết thêm chi tiết",
 };

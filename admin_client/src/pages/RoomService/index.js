@@ -28,7 +28,7 @@ const RoomService = () => {
         alignItems="center"
         mb={4}
       >
-        <Typography variant="h4">Dịch vụ khách sạn</Typography>
+        <Typography variant="h4">DỊCH VỤ PHÒNG</Typography>
         <Button
           startIcon={<AddIcon />}
           style={{ height: 40 }}

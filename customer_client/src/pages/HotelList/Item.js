@@ -174,10 +174,11 @@ const BookingItem = ({ setOpenImageViewer, setImages, hotel }) => {
           {hotel.name}
         </TitleSection>
         {/* Address */}
-        <Typography variant="body2">
-          <Iconify icon="carbon:location-star-filled" color="#252525" /> 44 – 46
-          {hotel.address}
-        </Typography>
+        <Stack flexDirection="row" alignItems="center">
+          <Iconify icon="carbon:location-star-filled" color="#252525" />
+          <Typography variant="body2">{hotel.address}</Typography>
+        </Stack>
+
         {/* Services */}
         <Stack flexDirection="row" sx={{ my: 1 }}>
           {hotel.services.map((service, index) => (

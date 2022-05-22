@@ -2,6 +2,8 @@
 
 #custom
 /*.txt
+/server/BACKUP
+/server/STATIC
 
 # dependencies
 **/node_modules

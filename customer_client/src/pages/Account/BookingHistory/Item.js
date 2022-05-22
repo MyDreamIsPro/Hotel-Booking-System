@@ -1,4 +1,5 @@
-import { Box, Typography, styled, Stack, Link } from "@mui/material";
+// UI lib
+import { Box, Typography, styled, Stack, Link, Button } from "@mui/material";
 import {
   Timeline,
   TimelineItem,
@@ -8,9 +9,14 @@ import {
   TimelineDot,
   TimelineOppositeContent,
 } from "@mui/lab";
+import ChatIcon from "@mui/icons-material/Chat";
+import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
+// UI custom
 import Iconify from "../../../components/Iconify";
-
+// logic lib
 import { Link as RouterLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+// logic custom
 import { formatNumber } from "../../../utils/Number";
 import { formatDate } from "../../../utils/Date";
 
@@ -21,7 +27,6 @@ const RootStyle = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   overflow: "hidden",
-  height: 210,
   [theme.breakpoints.down(922)]: {
     flexDirection: "column",
     height: "fit-content",
@@ -29,7 +34,6 @@ const RootStyle = styled(Box)(({ theme }) => ({
 }));
 const ImageSection = styled("div")(({ theme }) => ({
   width: "30%",
-  height: "100%",
   backgroundColor: "red",
   marginRight: 20,
   [theme.breakpoints.down(922)]: {
@@ -75,20 +79,20 @@ const HotelName = styled(Link)(({ theme }) => ({
 }));
 
 //#endregion
-const DATE_LINE = [
-  { text: "Đặt phòng", date: "12/02/2022" },
-  { text: "Nhận phòng", date: "12/02/2022" },
-  { text: "Trả phòng", date: "12/02/2022" },
-];
+//----------------------------
 
 const STATUS = [
   {},
-  { text: "Sắp tới", icon: "bytesize:clock", color: "#B78103" },
-  { text: "Hoàn tất", icon: "eva:checkmark-circle-fill", color: "#00AB55" },
   { text: "Đã hủy", icon: "ic:outline-cancel", color: "#FF4842" },
+  { text: "Sắp tới", icon: "bytesize:clock", color: "#B78103" },
+  { text: "Đã nhận phòng", icon: "bytesize:clock", color: "#00AB55" },
+  { text: "Hoàn tất", icon: "eva:checkmark-circle-fill", color: "#00AB55" },
 ];
-const Item = ({ data }) => {
-  const booking_status = 2;
+const Item = ({ data, setId, setOpenCancelDialog }) => {
+  const handleCancelBooking = () => {
+    setId(data._id);
+    setOpenCancelDialog(true);
+  };
   return (
     <RootStyle boxShadow={3}>
       <ImageSection>
@@ -111,7 +115,7 @@ const Item = ({ data }) => {
           </HotelName>
           <Typography variant="body1">
             Mã số đặt phòng:{" "}
-            <span style={{ fontWeight: "bold" }}>688939900</span>
+            <span style={{ fontWeight: "bold" }}>{data.number}</span>
           </Typography>
           <Stack flexDirection="row" alignItems="center">
             <Typography variant="body1" mr={0.5}>
@@ -126,14 +130,15 @@ const Item = ({ data }) => {
             Thanh toán: <span style={{ fontWeight: "bold" }}>VISA</span>
           </Typography>
           <Typography>
-            Số phòng: <span style={{ fontWeight: "bold" }}>4</span>
+            Số phòng:{" "}
+            <span style={{ fontWeight: "bold" }}>{data.room_list.length}</span>
           </Typography>
           <Typography>
             <span style={{ fontWeight: "bold" }}>{data.adult}</span> Người lớn -{" "}
             <span style={{ fontWeight: "bold" }}>{data.kid}</span> Trẻ em -{" "}
             <span style={{ fontWeight: "bold" }}>{data.baby}</span> Em bé
           </Typography>
-          <Stack flexDirection="row" alignItems="center">
+          <Stack flexDirection="row" alignItems="center" mb={1}>
             <Iconify
               icon={STATUS[data.status].icon}
               style={{
@@ -150,6 +155,29 @@ const Item = ({ data }) => {
             >
               {STATUS[data.status].text}
             </Typography>
+          </Stack>
+          <Stack flexDirection="row">
+            {data.status === 4 && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<ChatIcon />}
+                style={{ marginRight: 15 }}
+              >
+                ĐÁNH GIÁ
+              </Button>
+            )}
+            {data.status === 2 && (
+              <Button
+                variant="outlined"
+                size="small"
+                color="error"
+                startIcon={<CancelPresentationIcon />}
+                onClick={handleCancelBooking}
+              >
+                HỦY ĐƠN
+              </Button>
+            )}
           </Stack>
         </InfoSide>
         {/* DATE SIDE */}

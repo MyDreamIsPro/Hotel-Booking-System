@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 // UI lib
 import {
   Button,
@@ -16,6 +16,7 @@ import {
 import Iconify from "../components/Iconify";
 
 // UI custom
+import NotificationContext from "../context/Context";
 import Page from "../components/Page";
 import { PhoneFormatCustom } from "../components/FormattedInput";
 
@@ -27,11 +28,11 @@ import { useDispatch } from "react-redux";
 
 // Logic custom
 import { signup } from "../redux/actions/user";
-import { STRING } from "../constants";
 
 // -------------------------------------------
 
 const Register = () => {
+  const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,10 +40,10 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
   const handleShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
@@ -100,7 +101,13 @@ const Register = () => {
                 signup(
                   { ...values },
                   () => {
-                    navigate("/");
+                    context.setNotification({
+                      type: "success",
+                      content: "Đăng ký thành công",
+                    });
+                    context.setOpen(true);
+                    setSubmitting(false);
+                    navigate("/dashboard");
                   },
                   (errorMessage) => {
                     setErrorMessage(errorMessage);

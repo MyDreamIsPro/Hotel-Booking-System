@@ -38,6 +38,7 @@ const ImageSection = styled(Box)(({ theme }) => ({
   position: "relative",
   [theme.breakpoints.down(759)]: {
     width: "100%",
+    height: 250,
   },
 }));
 
@@ -84,7 +85,12 @@ const Item = ({
       <ImageSection>
         <img
           src={roomType.images[0]}
-          style={{ objectFit: "cover", borderRadius: 4, height: "100%" }}
+          style={{
+            objectFit: "cover",
+            borderRadius: 4,
+            height: "100%",
+            width: "100%",
+          }}
           alt="banner"
         />
       </ImageSection>

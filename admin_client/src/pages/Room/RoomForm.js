@@ -167,6 +167,7 @@ const RoomForm = ({ open, setOpen, editedId, setEditedId }) => {
                 setFieldValue={setFieldValue}
                 fieldToSetValue="hotel"
                 getData={getAllHotelForForm}
+                getOptionLabel={(option) => option.name}
               />
               {/* ROOM_TYPE */}
               {values.hotel?.name && (
@@ -180,6 +181,7 @@ const RoomForm = ({ open, setOpen, editedId, setEditedId }) => {
                   fieldToSetValue="room_type"
                   getData={getRoomTypeByHotel}
                   parentId={values.hotel._id}
+                  getOptionLabel={(option) => option.name}
                 />
               )}
 

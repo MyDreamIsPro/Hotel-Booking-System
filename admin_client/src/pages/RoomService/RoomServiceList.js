@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 // UI custom
 import OptionMenu from "./RoomServiceOptionMenu";
+import Filter from "./RoomServiceFilter";
+import NoRecord from "../../components/NoRecord";
 // logic lib
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +32,6 @@ import { Icon } from "@iconify/react";
 const columns = [
   { id: "icon", label: "Biểu tượng", minWidth: 50 },
   { id: "name", label: "Tên dịch vụ", minWidth: 150 },
-  { id: "action", label: "", minWidth: 150 },
 ];
 
 function createData(id, name, icon) {
@@ -44,11 +45,25 @@ const RoomServiceList = ({
 }) => {
   const navigate = useNavigate();
   const context = useContext(NotificationContext);
-  const roomServiceList = useSelector((state) => state.room_service);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // FILTER STATES
+  const [filterName, setFilterName] = useState("");
+  // END FILTER STATES
+
+  const roomServiceList = useSelector((state) => {
+    if (filterName === "") return state.room_service;
+    let itemLowerCase = "",
+      searchingItemLowerCase = "";
+    return state.room_service.filter((item) => {
+      itemLowerCase = item.name.toLowerCase();
+      searchingItemLowerCase = filterName.toLowerCase();
+      return itemLowerCase.indexOf(searchingItemLowerCase) > -1;
+    });
+  });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -91,83 +106,105 @@ const RoomServiceList = ({
       : [];
 
   return (
-    <Box boxShadow={3} style={{ borderRadius: 8 }}>
-      <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
-        <Table stickyHeader aria-label="sticky table" style={{ minWidth: 800 }}>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
+    <>
+      <Filter filterName={filterName} setFilterName={setFilterName} />
+      <Box boxShadow={3} style={{ borderRadius: 8, overflow: "hidden" }}>
+        <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
+          <Table
+            stickyHeader
+            aria-label="sticky table"
+            style={{ minWidth: 800 }}
+          >
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{
+                      minWidth: column.minWidth,
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
                 <TableCell
-                  key={column.id}
-                  align={column.align}
+                  key="action"
                   style={{
-                    minWidth: column.minWidth,
-                    backgroundColor: "#F4F6F8",
+                    minWidth: 100,
+                    backgroundColor: "#D9D9D9",
                   }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          {loading ? (
-            <TableBody>
-              <TableRow hover role="checkbox" tabIndex={-1}>
-                {columns.map((column, index) => {
-                  return (
-                    <TableCell key={index}>
-                      <Skeleton variant="text" />
-                    </TableCell>
-                  );
-                })}
+                ></TableCell>
               </TableRow>
-              <TableRow hover role="checkbox" tabIndex={-1}>
-                {columns.map((column, index) => {
-                  return (
-                    <TableCell key={index}>
-                      <Skeleton variant="text" />
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            </TableBody>
-          ) : (
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      <TableCell>
-                        <Icon fontSize={25} icon={row["icon"]} />
+            </TableHead>
+            {loading ? (
+              <TableBody>
+                <TableRow hover role="checkbox" tabIndex={-1}>
+                  {columns.map((column, index) => {
+                    return (
+                      <TableCell key={index}>
+                        <Skeleton variant="text" />
                       </TableCell>
-                      <TableCell>{row["name"]}</TableCell>
-                      <TableCell align="right">
-                        <OptionMenu
-                          setOpenEditDialog={setOpenEditDialog}
-                          setOpenDeleteDialog={setOpenDeleteDialog}
-                          setEditedId={setEditedId}
-                          id={row.id}
-                        />
+                    );
+                  })}
+                  <TableCell>
+                    <Skeleton variant="text" />
+                  </TableCell>
+                </TableRow>
+                <TableRow hover role="checkbox" tabIndex={-1}>
+                  {columns.map((column, index) => {
+                    return (
+                      <TableCell key={index}>
+                        <Skeleton variant="text" />
                       </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          )}
-        </Table>
-      </TableContainer>
-      <TablePagination
-        labelRowsPerPage="Số hàng"
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Box>
+                    );
+                  })}
+                  <TableCell>
+                    <Skeleton variant="text" />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            ) : roomServiceList.length > 0 ? (
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        <TableCell>
+                          <Icon fontSize={25} icon={row["icon"]} />
+                        </TableCell>
+                        <TableCell>{row["name"]}</TableCell>
+                        <TableCell align="right">
+                          <OptionMenu
+                            setOpenEditDialog={setOpenEditDialog}
+                            setOpenDeleteDialog={setOpenDeleteDialog}
+                            setEditedId={setEditedId}
+                            id={row.id}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            ) : (
+              <NoRecord col={3} />
+            )}
+          </Table>
+        </TableContainer>
+        <TablePagination
+          labelRowsPerPage="Số hàng"
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
+    </>
   );
 };
 

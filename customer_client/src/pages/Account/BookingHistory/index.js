@@ -1,47 +1,62 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 // UI lib
 import { Box, Button, Typography } from "@mui/material";
 // UI custom
 import Filter from "./Filter";
 import Item from "./Item";
 import LoadingItem from "./LoadingItem";
+import CancelDialog from "./CancelBookingDialog";
 // logic lib
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import NotificationContext from "../../../context/Context";
 // logic custom
-import { getAllBookingByUser } from "../../../api/booking";
+import { getAllBookingByUser } from "../../../redux/actions/booking";
 import { STRING } from "../../../constants";
 //#region CSS
 //#endregion
 
 //----------------------------
 const BookingHistory = () => {
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const context = useContext(NotificationContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [bookingList, setBookingList] = useState([]);
+  const [id, setId] = useState();
+
+  const bookingList = useSelector((state) => state.booking);
   const userId = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   )._id;
 
   useEffect(() => {
     let isMounted = true;
-    getAllBookingByUser(userId)
-      .then((res) => {
-        if (isMounted) {
-          console.log(res.data);
-          setBookingList(res.data);
-          setIsLoading(false);
+    dispatch(
+      getAllBookingByUser(
+        userId,
+        () => {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        },
+        (needLogin, message) => {
+          if (isMounted) {
+            context.setNotification({
+              type: "error",
+              content: message,
+            });
+            context.setOpen(true);
+            setIsLoading(false);
+            if (needLogin) navigate("/login", { replace: true });
+          }
         }
-      })
-      .catch((error) => {
-        console.log(error);
-        // if (!error.response || error.response.status !== 401)
-        //   performFailure(
-        //     false,
-        //     "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
-        //   );
-        // else performFailure(true, "Phiên đăng nhập hết hạn");
-      });
+      )
+    );
+
     return () => (isMounted = false);
-  }, []);
+  }, [dispatch, context]);
+
   return (
     <Box
       style={{
@@ -58,8 +73,19 @@ const BookingHistory = () => {
         <>
           <Filter data={bookingList} />
           {bookingList.map((item) => (
-            <Item data={item} key={item._id} />
+            <Item
+              data={item}
+              key={item._id}
+              setId={setId}
+              setOpenCancelDialog={setOpenCancelDialog}
+            />
           ))}
+          <CancelDialog
+            open={openCancelDialog}
+            setOpen={setOpenCancelDialog}
+            id={id}
+            setId={setId}
+          />
         </>
       ) : (
         <Box

@@ -2,6 +2,12 @@ export const INTEGER = {
   APP_BAR_MOBILE: 56,
   APP_BAR_DESKTOP: 64,
   DRAWER_WIDTH: 260,
+
+  //BOOKING STATUS
+  BOOKING_CANCELED: 1, // user cancelled booking before check-in
+  BOOKING_IN_PROGRESS: 2, // user paid but not check in yet
+  BOOKING_CHECK_IN: 3, // user checked in
+  BOOKING_CHECK_OUT: 4, // user check-out
 };
 
 export const STRING = {
@@ -16,6 +22,10 @@ export const STRING = {
 
   // Room type
   GET_AVAILABLE_ROOM_TYPE: "GET_AVAILABLE_ROOM_TYPE",
+
+  // Booking
+  GET_ALL_BOOKING_BY_USER: "GET_ALL_BOOKING_BY_USER",
+  CANCEL_BOOKING: "CANCEL_BOOKING",
 
   // LOCAL STORAGE
   LOCAL_STORAGE_PROFILE_KEY:

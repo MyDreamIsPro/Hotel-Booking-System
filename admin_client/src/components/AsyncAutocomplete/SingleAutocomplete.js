@@ -15,6 +15,7 @@ export default function SingleAutocomplete({
   fieldToSetValue,
   getData,
   parentId,
+  getOptionLabel,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -61,7 +62,7 @@ export default function SingleAutocomplete({
       isOptionEqualToValue={(option, value) =>
         value._id === "" || option._id === value._id
       }
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) => getOptionLabel(option)}
       onOpen={() => {
         setOpen(true);
       }}

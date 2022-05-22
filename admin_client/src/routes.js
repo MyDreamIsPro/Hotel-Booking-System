@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
 // layouts
+import ProtectedRoute from "./components/ProtectedRoute";
 // pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -8,9 +8,12 @@ import Dashboard from "./pages/Dashboard";
 import User from "./pages/User";
 import Hotel from "./pages/Hotel";
 import Room from "./pages/Room";
+import Booking from "./pages/Booking";
+import Expense from "./pages/Expense";
 import RoomService from "./pages/RoomService";
 import RoomType from "./pages/RoomType";
 import Test from "./pages/Test";
+import BackupRestore from "./pages/BackupRestore";
 import NotFound from "./pages/NotFound";
 // ----------------------------------------------------------------------
 
@@ -32,6 +35,9 @@ export default function AppRoutes() {
           <Route path="service" element={<RoomService />} />
           <Route path="type" element={<RoomType />} />
         </Route>
+        <Route path="booking" element={<Booking />} />
+        <Route path="expense" element={<Expense />} />
+        <Route path="backup-restore" element={<BackupRestore />} />
         <Route path="test" element={<Test />} />
       </Route>
       <Route path="*" element={<NotFound />} />
