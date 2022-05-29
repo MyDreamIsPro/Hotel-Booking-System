@@ -1,4 +1,6 @@
 import { Grid, MenuItem, TextField } from "@mui/material";
+import FilterAutocomplete from "../../components/AsyncAutocomplete/FilterAutocomplete";
+import { getAllHotelForForm } from "../../api/hotel";
 
 const BOOKING_STATUS = [
   { value: 0, text: "Tất cả" },
@@ -13,6 +15,8 @@ const BookingFilter = ({
   setFilterBookingCode,
   filterBookingStatus,
   setFilterBookingStatus,
+  filterHotel,
+  setFilterHotel,
 }) => {
   return (
     <div style={{ width: "100%", marginBottom: 20 }}>
@@ -28,6 +32,17 @@ const BookingFilter = ({
             value={filterBookingCode}
             variant="outlined"
             autoComplete="new-password"
+          />
+        </Grid>
+        <Grid item xs={12} sm={5} md={3}>
+          <FilterAutocomplete
+            value={filterHotel}
+            setValue={setFilterHotel}
+            name="hotel"
+            text="Khách sạn"
+            getData={getAllHotelForForm}
+            getOptionLabel={(option) => option.name}
+            noOptionsText="Không tìm thấy khách sạn"
           />
         </Grid>
         <Grid item xs={12} sm={5} md={3}>

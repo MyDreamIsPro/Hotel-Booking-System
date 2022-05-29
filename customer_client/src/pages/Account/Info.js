@@ -80,7 +80,9 @@ const Info = () => {
           });
           context.setOpen(true);
           if (err.response.status === 401)
-            navigate("/login", { state: { returnUrl: "/account?tab=info" } });
+            navigate("/login", {
+              state: { returnUrl: "/account?tab=info" },
+            });
         });
     };
 

@@ -8,6 +8,8 @@ import booking from "./booking";
 import backup from "./backup";
 import expense from "./expense";
 import account from "./account";
+import log from "./log";
+import review from "./review";
 
 export default combineReducers({
   user,
@@ -19,4 +21,6 @@ export default combineReducers({
   expense,
   backup,
   account,
+  log,
+  review,
 });

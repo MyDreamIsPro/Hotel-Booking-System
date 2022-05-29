@@ -268,6 +268,7 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
                     fieldToSetValue="hotel"
                     getData={getAllHotelForForm}
                     getOptionLabel={(option) => option.name}
+                    noOptionsText="Không tìm thấy khách sạn"
                   />
                 </Grid>
               </Grid>
@@ -414,6 +415,7 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
                 text="Dịch vụ phòng"
                 setFieldValue={setFieldValue}
                 fieldToSetValue="services"
+                noOptionsText="Không tìm thấy dịch vụ phòng"
               />
               {/* IMAGES */}
               <Typography color="#637381" marginTop={3} fontWeight="bold">

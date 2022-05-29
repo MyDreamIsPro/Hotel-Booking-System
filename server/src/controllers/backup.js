@@ -1,10 +1,21 @@
 import mongoose from "mongoose";
-import path from "path";
-import { existsSync, mkdirSync, cpSync, rmSync, readdirSync } from "fs";
-import { exec } from "child_process";
-
 import Backup from "../models/backup.js";
-import { STRING } from "../constants/constants.js";
+import Log from "../models/log.js";
+import path from "path";
+import { existsSync, mkdirSync, cpSync, rmSync } from "fs";
+import { exec } from "child_process";
+import { INTEGER, STRING } from "../constants/constants.js";
+import { msToTime } from "../utils/date.js";
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Sao lưu",
+    time_stamp: time,
+  });
+  await newLog.save();
+};
 
 export const getAllBackup = async (req, res) => {
   try {
@@ -22,6 +33,7 @@ export const createBackup = async (req, res) => {
   const full_name = req.full_name;
   const data = req.body;
   try {
+    const T1 = performance.now();
     const backupFolderName = Date.now().toString();
     const databasePath = path.join("BACKUP", backupFolderName, "database");
     const imagePath = path.join("BACKUP", backupFolderName, "images");
@@ -41,13 +53,17 @@ export const createBackup = async (req, res) => {
         }
         const originalImagePath = "STATIC";
         cpSync(originalImagePath, imagePath, { recursive: true });
+        const T2 = performance.now();
+        const TIME_STAMP = new Date();
         const backup = new Backup({
           name: backupFolderName,
           user: full_name,
           detail: data.detail,
-          last_using: new Date(),
-          created_date: new Date(),
+          duration: msToTime(T2 - T1),
+          last_using: TIME_STAMP,
+          created_date: TIME_STAMP,
         });
+        logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
         backup.save().then(() => {
           res.status(200).json(backup);
         });
@@ -66,13 +82,16 @@ export const updateBackup = async (req, res) => {
   }
   const backup = req.body;
   try {
+    const TIME_STAMP = new Date();
     const updatedBackup = await Backup.findByIdAndUpdate(
       id,
       {
         detail: backup.detail,
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedBackup);
   } catch (error) {
     console.log(error);
@@ -114,16 +133,17 @@ export const restore = async (req, res) => {
           mkdirSync(originalImagePath, { recursive: true });
         }
         cpSync(imagePath, originalImagePath, { recursive: true });
+        const TIME_STAMP = new Date();
         Backup.findByIdAndUpdate(
           id,
           {
-            last_using: new Date(),
+            last_using: TIME_STAMP,
           },
           { new: true },
           (err, docs) => {
             if (err)
               return res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
-
+            logAction(req._id, INTEGER.LOG_RESTORE, TIME_STAMP);
             res.status(202).json(docs);
           }
         );
@@ -138,12 +158,12 @@ export const restore = async (req, res) => {
 export const deleteBackup = async (req, res) => {
   const { id } = req.params;
   try {
+    const TIME_STAMP = new Date();
     const deletedBackup = await Backup.findOneAndRemove({ _id: id });
     const backupPath = path.join("BACKUP", deletedBackup.name);
     if (existsSync(backupPath)) rmSync(backupPath, { recursive: true });
-    setTimeout(() => {
-      res.status(200).send("Backup has been deleted");
-    }, 1000);
+    await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);
+    res.status(200).send("Backup has been deleted");
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);

@@ -51,22 +51,34 @@ const RoomServiceOptionMenu = ({
         transformOrigin={{ vertical: "center", horizontal: "right" }}
         PaperProps={{ sx: { width: 150, maxWidth: "100%" } }}
       >
-        <MenuItem sx={{ color: "text.secondary" }} onClick={handleEdit}>
+        <MenuItem onClick={handleEdit}>
           <ListItemIcon>
-            <Iconify icon="eva:edit-fill" width={24} height={24} />
+            <Iconify
+              icon="eva:edit-fill"
+              width={24}
+              height={24}
+              sx={{ color: "primary.main" }}
+            />
           </ListItemIcon>
           <ListItemText
             primary="Sửa"
             primaryTypographyProps={{ variant: "body2" }}
+            sx={{ color: "primary.main" }}
           />
         </MenuItem>
-        <MenuItem sx={{ color: "text.secondary" }} onClick={handleDelete}>
+        <MenuItem onClick={handleDelete}>
           <ListItemIcon>
-            <Iconify icon="eva:trash-2-outline" width={24} height={24} />
+            <Iconify
+              icon="eva:trash-2-outline"
+              width={24}
+              height={24}
+              sx={{ color: "error.main" }}
+            />
           </ListItemIcon>
           <ListItemText
             primary="Xóa"
             primaryTypographyProps={{ variant: "body2" }}
+            sx={{ color: "error.main" }}
           />
         </MenuItem>
       </Menu>

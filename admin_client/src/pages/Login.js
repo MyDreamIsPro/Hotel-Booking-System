@@ -15,7 +15,7 @@ import {
 import Iconify from "../components/Iconify";
 
 // Logic lib
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -33,6 +33,7 @@ const Login = () => {
   const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const state = useLocation().state;
 
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -90,7 +91,7 @@ const Login = () => {
                   });
                   context.setOpen(true);
                   setSubmitting(false);
-                  navigate("/dashboard");
+                  navigate(state ? state.returnUrl : "/dashboard");
                 },
                 (errorMessage) => {
                   setErrorMessage(errorMessage);

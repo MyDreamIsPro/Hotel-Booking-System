@@ -37,7 +37,6 @@ import { checkAuth } from "../../api/user";
 export default function AccountPopover({ iconColor }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const context = useContext(NotificationContext);
   const user = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   );
@@ -48,19 +47,7 @@ export default function AccountPopover({ iconColor }) {
     setOpen(true);
   };
   const handleMoveToAccountPage = async () => {
-    // await checkAuth()
-    //   .then((res) => {
-    //     setOpen(false);
-    //     navigate("/account");
-    //   })
-    //   .catch((err) => {
-    //     context.setNotification({ type: "error", content: err.response.data });
-    //     context.setOpen(true);
-    //     setOpen(false);
-    //     if (err.response.status === 401)
-    //       navigate("/login", { state: { returnUrl: "/account" } });
-    //   });
-    navigate("/user");
+    navigate("/settings?tab=info");
     setOpen(false);
   };
 

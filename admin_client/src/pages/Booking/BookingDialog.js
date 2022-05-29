@@ -49,7 +49,10 @@ const BookingDialog = ({ dialogContent, open, setOpen, id, setId }) => {
     });
     context.setOpen(true);
     setDoing(false);
-    if (needLogin) navigate("/login", { replace: true });
+    if (needLogin)
+      navigate("/login", {
+        state: { returnUrl: "/booking" },
+      });
     handleClose();
   };
 

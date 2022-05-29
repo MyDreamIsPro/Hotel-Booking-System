@@ -12,8 +12,11 @@ import Booking from "./pages/Booking";
 import Expense from "./pages/Expense";
 import RoomService from "./pages/RoomService";
 import RoomType from "./pages/RoomType";
+import Log from "./pages/Log";
+import Review from "./pages/Review";
 import Test from "./pages/Test";
 import BackupRestore from "./pages/BackupRestore";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 // ----------------------------------------------------------------------
 
@@ -38,6 +41,9 @@ export default function AppRoutes() {
         <Route path="booking" element={<Booking />} />
         <Route path="expense" element={<Expense />} />
         <Route path="backup-restore" element={<BackupRestore />} />
+        <Route path="log" element={<Log />} />
+        <Route path="review" element={<Review />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="test" element={<Test />} />
       </Route>
       <Route path="*" element={<NotFound />} />

@@ -3,6 +3,22 @@ export const INTEGER = {
   EMPLOYEE_ROLE: 1108,
   CUSTOMER_ROLE: 1998,
 
+  // LOG ACTION TYPES
+  LOG_ADD: 1, // add record
+  LOG_UPDATE: 2, // update record
+  LOG_DELETE: 3, // delete record
+  LOG_CHECK_IN_BOOKING: 4, // check in booking
+  LOG_CHECK_OUT_BOOKING: 5, // check out booking
+  LOG_BOOK_BOOKING: 6, // user book place
+  LOG_CANCEL_BOOKING: 7, // user cancel booking
+  LOG_BAN_ACCOUNT: 8, // admin ban an account
+  LOG_ACTIVE_ACCOUNT: 9, // admin active an account
+  LOG_SEND_REVIEW: 10, // user send a review
+  LOG_APPROVE_REVIEW: 11, // admin approve a review
+  LOG_REJECT_REVIEW: 12, // admin reject a review
+  LOG_RESET_REVIEW: 13, // admin reset a review
+  LOG_RESTORE: 14, // admin use restoring feature
+
   //BOOKING STATUS
   BOOKING_CANCELED: 1, // user cancelled booking before check-in
   BOOKING_IN_PROGRESS: 2, // user paid but not check in yet
@@ -13,6 +29,11 @@ export const INTEGER = {
   ROOM_EMPTY: 1,
   ROOM_PENDING: 2,
   ROOM_RENTED: 3,
+
+  // REVIEW STATUS
+  REVIEW_WAITING: 1,
+  REVIEW_ACCEPTED: 2,
+  REVIEW_IGNORED: 3,
 };
 
 export const STRING = {

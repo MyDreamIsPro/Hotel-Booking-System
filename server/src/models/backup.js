@@ -9,7 +9,7 @@ const BackupSchema = mongoose.Schema({
   user: { type: String, required: true },
   duration: {
     type: String,
-    default: "ADU",
+    required: true,
   },
   detail: { type: String, required: true },
   last_using: { type: Date, default: new Date() },

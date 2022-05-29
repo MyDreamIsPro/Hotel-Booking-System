@@ -9,6 +9,9 @@ import {
   Button,
   Typography,
   styled,
+  Backdrop,
+  CircularProgress,
+  Stack,
 } from "@mui/material";
 // UI custom
 import UserInfo from "./UserInfo";
@@ -32,6 +35,7 @@ const RootStyle = styled(Box)(({ theme }) => ({
 const StepLayout = ({ setOpenCompleteDialog }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedBank, setSelectedBank] = useState("");
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -43,6 +47,20 @@ const StepLayout = ({ setOpenCompleteDialog }) => {
 
   return (
     <RootStyle>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={paymentProcessing}
+      >
+        <Stack flexDirection="column" alignItems="center">
+          <CircularProgress style={{ color: "#FFF" }} />
+          <Typography textAlign="center" variant="h6">
+            Quý khách vui lòng chờ trong giây lát
+          </Typography>
+          <Typography textAlign="center" variant="h6">
+            Thanh toán đang được thực hiện...
+          </Typography>
+        </Stack>
+      </Backdrop>
       <Stepper activeStep={activeStep} orientation="vertical">
         {/* USER INFO */}
         <Step>
@@ -84,6 +102,8 @@ const StepLayout = ({ setOpenCompleteDialog }) => {
               selectedBank={selectedBank}
               setSelectedBank={setSelectedBank}
               setOpenCompleteDialog={setOpenCompleteDialog}
+              paymentProcessing={paymentProcessing}
+              setPaymentProcessing={setPaymentProcessing}
             />
             <Box sx={{ mb: 2 }}>
               <Button

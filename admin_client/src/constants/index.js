@@ -18,6 +18,11 @@ export const INTEGER = {
   BOOKING_IN_PROGRESS: 2, // user paid but not check in yet
   BOOKING_CHECK_IN: 3, // user checked in
   BOOKING_CHECK_OUT: 4, // user check-out
+
+  //REVIEW STATUS
+  REVIEW_WAITING: 1,
+  REVIEW_ACCEPTED: 2,
+  REVIEW_REJECTED: 3,
 };
 
 export const STRING = {
@@ -78,6 +83,13 @@ export const STRING = {
   UPDATE_ACCOUNT: "UPDATE_ACCOUNT",
   DELETE_ACCOUNT: "DELETE_ACCOUNT",
   GET_ALL_ACCOUNT: "GET_ALL_ACCOUNT",
+
+  // Log action types
+  GET_ALL_LOG: "GET_ALL_LOG",
+
+  // Review action types
+  UPDATE_REVIEW: "UPDATE_REVIEW",
+  GET_ALL_REVIEW: "GET_ALL_REVIEW",
 
   LOCAL_STORAGE_PROFILE_KEY:
     "065211f7a119d769f567ae067eb75951714d6a1df57bc30ff695befaed27059a613c76bdebf98e6d9700d4db50a99f7c",

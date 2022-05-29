@@ -13,10 +13,11 @@ export default function FilterAutocomplete({
   getData,
   parentId,
   getOptionLabel,
+  noOptionsText,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-  const loading = open && options.length === 0;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -28,23 +29,26 @@ export default function FilterAutocomplete({
       .then((res) => {
         if (active) {
           setOptions([...res.data]);
+          setLoading(false);
         }
       })
       .catch((err) => {
         if (active) {
           console.log(err);
+          setLoading(false);
         }
       });
 
     return () => {
       active = false;
     };
-  }, [loading]);
+  }, [loading, getData, parentId]);
 
   useEffect(() => {
     if (!open) {
       setOptions([]);
-    }
+      setLoading(false);
+    } else setLoading(true);
   }, [open]);
 
   return (
@@ -52,6 +56,8 @@ export default function FilterAutocomplete({
       id="asynchronous-demo"
       name={name}
       fullWidth
+      noOptionsText={noOptionsText}
+      loadingText="Đang tải..."
       options={options}
       loading={loading}
       open={open}

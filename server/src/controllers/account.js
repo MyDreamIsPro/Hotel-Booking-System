@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
-import { STRING } from "../constants/constants.js";
+import Log from "../models/log.js";
+import { INTEGER, STRING } from "../constants/constants.js";
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Tài khoản",
+    time_stamp: time,
+  });
+  await newLog.save();
+};
 
 export const getAllAccount = async (req, res) => {
   try {
@@ -20,14 +31,16 @@ export const banAccount = async (req, res) => {
     return res.status(404).send("No account with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     const updatedAccount = await User.findByIdAndUpdate(
       id,
       {
         banned: true,
-        modified_date: new Date(),
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_BAN_ACCOUNT, TIME_STAMP);
     res.status(202).json(updatedAccount);
   } catch (error) {
     console.log(error);
@@ -40,14 +53,16 @@ export const activeAccount = async (req, res) => {
     return res.status(404).send("No account with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     const updatedAccount = await User.findByIdAndUpdate(
       id,
       {
         banned: false,
-        modified_date: new Date(),
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_ACTIVE_ACCOUNT, TIME_STAMP);
     res.status(202).json(updatedAccount);
   } catch (error) {
     console.log(error);

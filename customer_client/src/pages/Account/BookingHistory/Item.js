@@ -88,10 +88,14 @@ const STATUS = [
   { text: "Đã nhận phòng", icon: "bytesize:clock", color: "#00AB55" },
   { text: "Hoàn tất", icon: "eva:checkmark-circle-fill", color: "#00AB55" },
 ];
-const Item = ({ data, setId, setOpenCancelDialog }) => {
+const Item = ({ data, setId, setOpenCancelDialog, setOpenRatingDialog }) => {
   const handleCancelBooking = () => {
     setId(data._id);
     setOpenCancelDialog(true);
+  };
+  const handleOpenRatingDialog = () => {
+    setId(data._id);
+    setOpenRatingDialog(true);
   };
   return (
     <RootStyle boxShadow={3}>
@@ -127,7 +131,8 @@ const Item = ({ data, setId, setOpenCancelDialog }) => {
             <Typography variant="body1">VNĐ</Typography>
           </Stack>
           <Typography>
-            Thanh toán: <span style={{ fontWeight: "bold" }}>VISA</span>
+            Thanh toán:{" "}
+            <span style={{ fontWeight: "bold" }}>{data.payment_method}</span>
           </Typography>
           <Typography>
             Số phòng:{" "}
@@ -157,16 +162,27 @@ const Item = ({ data, setId, setOpenCancelDialog }) => {
             </Typography>
           </Stack>
           <Stack flexDirection="row">
-            {data.status === 4 && (
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<ChatIcon />}
-                style={{ marginRight: 15 }}
-              >
-                ĐÁNH GIÁ
-              </Button>
-            )}
+            {data.status === 4 &&
+              (data.reviewed ? (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<ChatIcon />}
+                  disabled={true}
+                >
+                  ĐÃ ĐÁNH GIÁ
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<ChatIcon />}
+                  style={{ marginRight: 15 }}
+                  onClick={handleOpenRatingDialog}
+                >
+                  ĐÁNH GIÁ
+                </Button>
+              ))}
             {data.status === 2 && (
               <Button
                 variant="outlined"

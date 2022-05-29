@@ -33,10 +33,10 @@ import { formatNumber } from "../../utils/number";
 //----------------------------
 
 const columns = [
-  { id: "number", label: "Mã đặt phòng", minWidth: 100 },
+  { id: "number", label: "Mã đặt phòng", minWidth: 150 },
   { id: "user", label: "Khách hàng", minWidth: 150 },
   { id: "phone", label: "Số điện thoại", minWidth: 150 },
-  { id: "hotel", label: "Khách sạn", minWidth: 100 },
+  { id: "hotel", label: "Khách sạn", minWidth: 150 },
   { id: "amount", label: "Tổng tiền (VNĐ)", minWidth: 150 },
   { id: "effective_from", label: "Nhận phòng", minWidth: 130 },
   { id: "effective_to", label: "Trả phòng", minWidth: 120 },
@@ -104,16 +104,24 @@ const BookingList = ({
   // FILTER STATES
   const [filterBookingCode, setFilterBookingCode] = useState("");
   const [filterBookingStatus, setFilterBookingStatus] = useState(0);
+  const [filterHotel, setFilterHotel] = useState({ name: "", _id: "" });
   // END FILTER STATES
 
   const bookingList = useSelector((state) => {
-    if (filterBookingCode === "" && filterBookingStatus === 0)
+    if (
+      filterBookingCode === "" &&
+      filterBookingStatus === 0 &&
+      (filterHotel === null || filterHotel.name === "")
+    )
       return state.booking;
 
     return state.booking.filter(
       (item) =>
         (filterBookingCode === "" ||
           item.number === Number(filterBookingCode)) &&
+        (filterHotel === null ||
+          filterHotel.name === "" ||
+          filterHotel._id === item.hotel._id) &&
         (filterBookingStatus === 0 || item.status === filterBookingStatus)
     );
   });
@@ -139,7 +147,10 @@ const BookingList = ({
             context.setNotification({ type: "error", content: message });
             context.setOpen(true);
             setLoading(false);
-            if (needLogin) navigate("/login", { replace: true });
+            if (needLogin)
+              navigate("/login", {
+                state: { returnUrl: "/booking" },
+              });
           }
         }
       )
@@ -173,6 +184,8 @@ const BookingList = ({
         setFilterBookingCode={setFilterBookingCode}
         filterBookingStatus={filterBookingStatus}
         setFilterBookingStatus={setFilterBookingStatus}
+        filterHotel={filterHotel}
+        setFilterHotel={setFilterHotel}
       />
       <Box boxShadow={3} style={{ borderRadius: 8, overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>

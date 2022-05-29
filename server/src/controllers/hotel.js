@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import Hotel from "../models/Hotel.js";
+import Hotel from "../models/hotel.js";
+import Log from "../models/log.js";
 import RoomType from "../models/room_type.js";
 import { existsSync, unlinkSync } from "fs";
-import { STRING } from "../constants/constants.js";
+import { STRING, INTEGER } from "../constants/constants.js";
 
 const deleteImages = (images) => {
   if (images) {
@@ -14,6 +15,16 @@ const deleteImages = (images) => {
       if (existsSync(linkToDelete)) unlinkSync(linkToDelete);
     }
   }
+};
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Khách sạn",
+    time_stamp: time,
+  });
+  await newLog.save();
 };
 
 export const getAllHotel = async (req, res) => {
@@ -31,13 +42,16 @@ export const getAllHotel = async (req, res) => {
 export const createHotel = async (req, res) => {
   const hotel = req.body;
   try {
+    const TIME_STAMP = new Date();
     const newHotel = new Hotel({
       ...hotel,
       city: Number(hotel.fake),
       size: Number(hotel.size),
       numberOfRooms: Number(hotel.numberOfRooms),
+      created_date: TIME_STAMP,
     });
     await newHotel.save();
+    await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
     return res.status(200).json(newHotel);
   } catch (error) {
     console.log(error);
@@ -50,8 +64,10 @@ export const deleteHotel = async (req, res) => {
     return res.status(404).send("No hotel with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     const deletedHotel = await Hotel.findOneAndRemove({ _id: id });
     deleteImages(deletedHotel.images);
+    await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);
     res.status(202).send("Hotel deleted successfully");
   } catch (error) {
     console.log(error);
@@ -66,6 +82,7 @@ export const updateHotel = async (req, res) => {
   }
   const hotel = req.body;
   try {
+    const TIME_STAMP = new Date();
     deleteImages(hotel.deleted_images);
     let new_images = [];
     if (hotel.current_images) {
@@ -92,9 +109,11 @@ export const updateHotel = async (req, res) => {
         city: Number(hotel.fake),
         size: Number(hotel.size),
         numberOfRooms: Number(hotel.numberOfRooms),
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedHotel);
   } catch (error) {
     console.log(error);

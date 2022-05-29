@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 import Expense from "../models/expense.js";
-import { STRING } from "../constants/constants.js";
+import Log from "../models/log.js";
+import { STRING, INTEGER } from "../constants/constants.js";
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Hóa đơn chi",
+    time_stamp: time,
+  });
+  await newLog.save();
+};
 
 export const getAllExpense = async (req, res) => {
   try {
@@ -17,6 +28,7 @@ export const getAllExpense = async (req, res) => {
 export const createExpense = async (req, res) => {
   const expense = req.body;
   try {
+    const TIME_STAMP = new Date();
     const maxExpenseNumber = await Expense.find()
       .sort({ number: -1 })
       .limit(1)
@@ -26,9 +38,10 @@ export const createExpense = async (req, res) => {
       hotel: expense.hotel,
       amount: Number(expense.amount),
       description: expense.description,
-      created_date: new Date(),
+      created_date: TIME_STAMP,
     });
     await newExpense.save();
+    await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
     return res.status(200).json(newExpense);
   } catch (error) {
     console.log(error);
@@ -42,7 +55,9 @@ export const deleteExpense = async (req, res) => {
     return res.status(404).send("No expense with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     await Expense.findOneAndRemove({ _id: id });
+    await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);
     res.status(202).send("Expense deleted successfully");
   } catch (error) {
     console.log(error);
@@ -57,16 +72,18 @@ export const updateExpense = async (req, res) => {
   }
   const expense = req.body;
   try {
+    const TIME_STAMP = new Date();
     const updatedExpense = await Expense.findByIdAndUpdate(
       id,
       {
         hotel: expense.hotel,
         amount: Number(expense.amount),
         description: expense.description,
-        modified_date: new Date(),
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedExpense);
   } catch (error) {
     console.log(error);

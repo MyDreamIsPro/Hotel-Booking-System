@@ -82,7 +82,7 @@ const UserOptionMenu = ({
               />
             </ListItemIcon>
             <ListItemText
-              primary="Cấm tài khoản"
+              primary="Khóa tài khoản"
               sx={{ color: "error.main" }}
               primaryTypographyProps={{ variant: "body2" }}
             />

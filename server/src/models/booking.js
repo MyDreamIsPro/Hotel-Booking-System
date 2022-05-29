@@ -31,6 +31,7 @@ const BookingSchema = mongoose.Schema({
   effective_from: { type: Date, required: true },
   effective_to: { type: Date, required: true },
   payment_date: { type: Date, required: true },
+  reviewed: { type: Boolean, default: false },
   created_date: { type: Date, default: new Date() },
   modified_date: { type: Date, default: new Date() },
 });

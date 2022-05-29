@@ -111,7 +111,10 @@ const UserList = ({ setEditedId, setOpenDialog, setTypeDialog }) => {
             context.setNotification({ type: "error", content: message });
             context.setOpen(true);
             setLoading(false);
-            if (needLogin) navigate("/login", { replace: true });
+            if (needLogin)
+              navigate("/login", {
+                state: { returnUrl: "/user" },
+              });
           }
         }
       )

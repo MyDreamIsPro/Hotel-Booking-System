@@ -45,8 +45,11 @@ const CancelBookingDialog = ({ open, setOpen, id, setId }) => {
     });
     context.setOpen(true);
     setDoing(false);
-    if (needLogin) navigate("/login", { replace: true });
     handleClose();
+    if (needLogin)
+      navigate("/login", {
+        state: { returnUrl: "/account?tab=booking" },
+      });
   };
 
   const handleRestore = () => {

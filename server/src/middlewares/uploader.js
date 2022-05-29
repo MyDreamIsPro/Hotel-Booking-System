@@ -36,6 +36,6 @@ const roomTypeStorage = multer.diskStorage({
   },
 });
 
-export const uploader = multer({ storage: storage });
+export const userUploader = multer({ storage: storage });
 export const hotelUploader = multer({ storage: hotelStorage });
 export const roomTypeUploader = multer({ storage: roomTypeStorage });

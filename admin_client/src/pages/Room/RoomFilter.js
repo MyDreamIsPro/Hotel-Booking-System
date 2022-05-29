@@ -19,6 +19,7 @@ const RoomFilter = ({
             text="Khách sạn"
             getData={getAllHotelForForm}
             getOptionLabel={(option) => option.name}
+            noOptionsText="Không tìm thấy khách sạn"
           />
         </Grid>
         <Grid item xs={12} sm={5} md={3}>

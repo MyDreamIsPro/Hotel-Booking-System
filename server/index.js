@@ -17,6 +17,9 @@ import expenseRoutes from "./src/routes/expense.js";
 import backupRoutes from "./src/routes/backup.js";
 import testRoutes from "./src/routes/test.js";
 import accountRoutes from "./src/routes/account.js";
+import dashboardRoutes from "./src/routes/dashboard.js";
+import logRoutes from "./src/routes/log.js";
+import reviewRoutes from "./src/routes/review.js";
 
 // pre-config
 dotenv.config();
@@ -32,6 +35,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static("STATIC"));
 // routes
+app.use("/dashboard", dashboardRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/city", cityRoutes);
@@ -44,6 +48,9 @@ app.use("/expense", expenseRoutes);
 app.use("/test", testRoutes);
 app.use("/backup", backupRoutes);
 app.use("/account", accountRoutes);
+app.use("/log", logRoutes);
+app.use("/review", reviewRoutes);
+
 //Connect to DB
 const PORT = process.env.PORT;
 const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";

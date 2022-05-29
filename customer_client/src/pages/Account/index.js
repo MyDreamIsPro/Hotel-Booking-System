@@ -2,14 +2,14 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 // UI lib
 import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
+import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 // UI custom
 import Page from "../../components/Page";
 import Info from "./Info";
 import BookingHistory from "./BookingHistory";
-import Payment from "./Payment";
+import Review from "./Review";
 import Authentication from "./Authentication";
 import SecurityIcon from "@mui/icons-material/Security";
 
@@ -67,11 +67,11 @@ const data = [
     page: <BookingHistory />,
   },
   {
-    tab: "payment",
-    icon: <AccountBalanceWalletIcon />,
-    label: "PHƯƠNG THỨC THANH TOÁN",
+    tab: "review",
+    icon: <ThumbsUpDownIcon />,
+    label: "BÀI NHẬN XÉT",
     index: 2,
-    page: <Payment />,
+    page: <Review />,
   },
   {
     tab: "security",

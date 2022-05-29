@@ -151,6 +151,7 @@ const ExpenseForm = ({ open, setOpen, editedId, setEditedId }) => {
                 fieldToSetValue="hotel"
                 getData={getAllHotelForForm}
                 getOptionLabel={(option) => option.name}
+                noOptionsText="Không tìm thấy khách sạn"
               />
               {/* AMOUNT */}
               <TextField

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const LogSchema = mongoose.Schema({
-  user_id: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -11,8 +11,8 @@ const LogSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  object_id: {
-    type: Number,
+  target: {
+    type: String,
     required: true,
   },
   time_stamp: {

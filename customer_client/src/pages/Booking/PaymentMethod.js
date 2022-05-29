@@ -8,13 +8,14 @@ import {
   Grid,
   Box,
   Radio,
+  Button,
 } from "@mui/material";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // UI custom
 // logic lib
 // logic custom
-import { createBooking } from "../../api/booking";
+import { createBooking, createPaymentUrl } from "../../api/booking";
 import { INTERNAL_BANKS, EXTERNAL_BANKS } from "../../__MOCK__/index";
 import { STRING } from "../../constants/index";
 //#region CSS
@@ -28,12 +29,12 @@ const PAYMENT_METHOD = [
     id: "panel1a-header",
     banks: INTERNAL_BANKS,
   },
-  {
-    text: "Thẻ tín dụng/ghi nợ quốc tế",
-    ariaControls: "panel2a-content",
-    id: "panel2a-header",
-    banks: EXTERNAL_BANKS,
-  },
+  // {
+  //   text: "Thẻ tín dụng/ghi nợ quốc tế",
+  //   ariaControls: "panel2a-content",
+  //   id: "panel2a-header",
+  //   banks: EXTERNAL_BANKS,
+  // },
 ];
 
 const VND_TO_DOLLAR = (vnd) => (vnd / 23000).toFixed(2);
@@ -43,14 +44,28 @@ const PaymentMethod = ({
   selectedBank,
   setSelectedBank,
   setOpenCompleteDialog,
+  setPaymentProcessing,
 }) => {
   const booking = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_BOOKING_INFO)
   );
-  console.log(VND_TO_DOLLAR(booking.amount));
   const user = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   )._id;
+
+  const handleInternalCheckout = () => {
+    if (!selectedBank) alert("Quý khách vui lòng chọn ngân  hàng");
+    else {
+      setPaymentProcessing(true);
+      createPaymentUrl({ bank: selectedBank, amount: booking.amount })
+        .then((res) => (window.location.href = res.data))
+        .catch((err) => {
+          setPaymentProcessing(false);
+          console.log("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
+        });
+    }
+  };
+
   return (
     <div>
       {PAYMENT_METHOD.map((method) => (
@@ -102,6 +117,13 @@ const PaymentMethod = ({
                 </Grid>
               ))}
             </Grid>
+            <Button
+              variant="contained"
+              style={{ marginTop: 20, padding: 15 }}
+              onClick={handleInternalCheckout}
+            >
+              THANH TOÁN NỘI ĐỊA
+            </Button>
           </AccordionDetails>
         </Accordion>
       ))}
@@ -151,7 +173,7 @@ const PaymentMethod = ({
                     hotel: booking.hotel,
                     room_list: booking.roomIds,
                     amount: booking.amount,
-                    payment_method: "VISA",
+                    payment_method: "PAYPAL",
                     adult: booking.visitor.adult,
                     kid: booking.visitor.kid,
                     baby: booking.visitor.baby,

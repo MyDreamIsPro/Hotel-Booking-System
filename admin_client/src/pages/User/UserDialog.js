@@ -48,7 +48,10 @@ const UserDialog = ({ typeDialog, open, setOpen, id, setId }) => {
     });
     context.setOpen(true);
     setDoing(false);
-    if (needLogin) navigate("/login", { replace: true });
+    if (needLogin)
+      navigate("/login", {
+        state: { returnUrl: "/user" },
+      });
     handleClose();
   };
 
@@ -94,13 +97,18 @@ const UserDialog = ({ typeDialog, open, setOpen, id, setId }) => {
         </Button>
         <Button
           onClick={handleDelete}
-          color="error"
+          color={typeDialog === "BAN" ? "error" : "success"}
           variant="contained"
-          style={{ marginLeft: 10, height: 50, minWidth: 80 }}
+          style={{
+            marginLeft: 10,
+            height: 50,
+            minWidth: 80,
+            color: "#FFF",
+          }}
           disabled={doing}
         >
           {doing ? (
-            <CircularProgress color="inherit" />
+            <CircularProgress style={{ color: "#FFF" }} />
           ) : typeDialog === "BAN" ? (
             "KHÓA"
           ) : (

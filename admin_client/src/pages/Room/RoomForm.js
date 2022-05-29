@@ -168,6 +168,7 @@ const RoomForm = ({ open, setOpen, editedId, setEditedId }) => {
                 fieldToSetValue="hotel"
                 getData={getAllHotelForForm}
                 getOptionLabel={(option) => option.name}
+                noOptionsText="Không tìm thấy khách sạn"
               />
               {/* ROOM_TYPE */}
               {values.hotel?.name && (
@@ -182,6 +183,7 @@ const RoomForm = ({ open, setOpen, editedId, setEditedId }) => {
                   getData={getRoomTypeByHotel}
                   parentId={values.hotel._id}
                   getOptionLabel={(option) => option.name}
+                  noOptionsText="Không tìm thấy loại phòng"
                 />
               )}
 

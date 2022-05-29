@@ -16,10 +16,11 @@ export default function MultipleAutocomplete({
   value,
   setFieldValue,
   fieldToSetValue,
+  noOptionsText,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-  const loading = open && options.length === 0;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -31,11 +32,13 @@ export default function MultipleAutocomplete({
       .then((res) => {
         if (active) {
           setOptions([...res.data]);
+          setLoading(false);
         }
       })
       .catch((err) => {
         if (active) {
           console.log(err);
+          setLoading(false);
         }
       });
 
@@ -47,7 +50,8 @@ export default function MultipleAutocomplete({
   useEffect(() => {
     if (!open) {
       setOptions([]);
-    }
+      setLoading(false);
+    } else setLoading(true);
   }, [open]);
 
   return (
@@ -55,6 +59,8 @@ export default function MultipleAutocomplete({
       id="asynchronous-demo"
       name={name}
       multiple
+      noOptionsText={noOptionsText}
+      loadingText="Đang tải..."
       fullWidth
       disableCloseOnSelect
       options={options}

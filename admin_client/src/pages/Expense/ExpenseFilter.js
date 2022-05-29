@@ -32,6 +32,7 @@ const ExpenseFilter = ({
             text="Khách sạn"
             getData={getAllHotelForForm}
             getOptionLabel={(option) => option.name}
+            noOptionsText="Không tìm thấy khách sạn"
           />
         </Grid>
       </Grid>

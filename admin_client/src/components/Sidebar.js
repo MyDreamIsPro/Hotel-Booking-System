@@ -81,10 +81,28 @@ const links = [
     isAdminRequired: true,
   },
   {
+    text: "Phản hồi khách hàng",
+    icon: "carbon:task-star",
+    path: "/review",
+    isAdminRequired: false,
+  },
+  {
+    text: "Lịch sử thao tác",
+    icon: "codicon:github-action",
+    path: "/log",
+    isAdminRequired: true,
+  },
+  {
     text: "Sao lưu - Khôi phục",
     icon: "ic:baseline-restore",
     path: "/backup-restore",
     isAdminRequired: true,
+  },
+  {
+    text: "Cài đặt",
+    icon: "ci:settings-filled",
+    path: "/settings",
+    isAdminRequired: false,
   },
   {
     text: "TEST",
@@ -103,7 +121,7 @@ const Sidebar = ({ setOpenSidebar, openSidebar }) => {
 
   const ROLE = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
-  ).role;
+  )?.role;
 
   const handleClick = (index) => {
     if (collapseIndex === index) setCollapseIndex(-1);

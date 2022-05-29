@@ -7,3 +7,7 @@ export const getAllBookingByUser = (userId) =>
   API.get(`/booking/list/${userId}`);
 export const cancelBooking = (bookingId) =>
   API.get(`/booking/cancel/${bookingId}`);
+export const createPaymentUrl = (data) =>
+  API.post("/booking/create-payment-url", data);
+export const checkPaymentReturn = (data) =>
+  API.post("/booking/check-payment-return", data);

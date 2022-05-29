@@ -9,6 +9,7 @@ import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import HotelList from "./pages/HotelList";
 import Booking from "./pages/Booking";
+import PaymentReturn from "./pages/PaymentReturn";
 import PrivateRoute from "./components/PrivateRoute";
 import Test from "./pages/Test";
 import Hotel from "./pages/Hotel";
@@ -28,6 +29,8 @@ export default function Router() {
         { path: "login", element: <Login /> },
         { path: "test", element: <Test /> },
         { path: "register", element: <Register /> },
+        { path: "register", element: <Register /> },
+        { path: "payment-return", element: <PaymentReturn /> },
         // Protected routes
         {
           path: "account",

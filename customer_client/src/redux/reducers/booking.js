@@ -8,6 +8,10 @@ export default (state = [], action) => {
       return state.map((booking) =>
         booking._id !== action.payload._id ? booking : action.payload
       );
+    case STRING.UPDATE_BOOKING:
+      return state.map((booking) =>
+        booking._id !== action.payload._id ? booking : action.payload
+      );
     default:
       return state;
   }

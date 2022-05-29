@@ -142,17 +142,17 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
             services: Yup.array().min(1, "Chưa chọn dịch vụ"),
             images: Yup.array().test(
               "images_required", // test name
-              "Chưa nhập ảnh", // error message
+              "Nhập đủ ít nhất 4 ảnh", // error message
               function (item) {
                 //item is the current field (images in this case)
-                return item.length > 0 || this.parent.current_images.length > 0;
+                return item.length + this.parent.current_images.length >= 4;
               }
             ),
             current_images: Yup.array().test(
               "current_images_required",
-              "Chưa nhập ảnh",
+              "Nhập đủ ít nhất 4 ảnh",
               function (item) {
-                return item.length > 0 || this.parent.images.length;
+                return item.length + this.parent.images.length >= 4;
               }
             ),
           })}

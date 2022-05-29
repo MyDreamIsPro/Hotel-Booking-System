@@ -42,11 +42,14 @@ const RestoreDialog = ({ open, setOpen, id, setId }) => {
   const handleFailure = (needLogin, message) => {
     context.setNotification({
       type: "error",
-      content: "Đã có lỗi xảy ra",
+      content: message,
     });
     context.setOpen(true);
     setDoing(false);
-    if (needLogin) navigate("/login", { replace: true });
+    if (needLogin)
+      navigate("/login", {
+        state: { returnUrl: "/backup-restore" },
+      });
     handleClose();
   };
 

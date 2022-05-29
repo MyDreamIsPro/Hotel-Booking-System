@@ -56,16 +56,23 @@ const RoomTypeList = ({
 
   // FILTER STATES
   const [filterName, setFilterName] = useState("");
+  const [filterHotel, setFilterHotel] = useState({ name: "", _id: "" });
   // END FILTER STATES
 
   const roomTypeList = useSelector((state) => {
-    if (filterName === "") return state.room_type;
+    if (filterName === "" && (filterHotel === null || filterHotel.name === ""))
+      return state.room_type;
     let itemLowerCase = "",
       searchingItemLowerCase = "";
     return state.room_type.filter((item) => {
       itemLowerCase = item.name.toLowerCase();
       searchingItemLowerCase = filterName.toLowerCase();
-      return itemLowerCase.indexOf(searchingItemLowerCase) > -1;
+      return (
+        itemLowerCase.indexOf(searchingItemLowerCase) > -1 &&
+        (filterHotel === null ||
+          filterHotel.name === "" ||
+          filterHotel._id === item.hotel._id)
+      );
     });
   });
 
@@ -91,7 +98,10 @@ const RoomTypeList = ({
             context.setNotification({ type: "error", content: message });
             context.setOpen(true);
             setLoading(false);
-            if (needLogin) navigate("/login", { replace: true });
+            if (needLogin)
+              navigate("/login", {
+                state: { returnUrl: "/room/type" },
+              });
           }
         }
       )
@@ -119,7 +129,12 @@ const RoomTypeList = ({
 
   return (
     <>
-      <Filter filterName={filterName} setFilterName={setFilterName} />
+      <Filter
+        filterName={filterName}
+        setFilterName={setFilterName}
+        filterHotel={filterHotel}
+        setFilterHotel={setFilterHotel}
+      />
       <Box boxShadow={3} style={{ borderRadius: 8, overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
           <Table

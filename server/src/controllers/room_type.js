@@ -1,9 +1,20 @@
 import mongoose from "mongoose";
-import { existsSync, unlinkSync } from "fs";
 import Booking from "../models/booking.js";
 import RoomType from "../models/room_type.js";
 import Room from "../models/room.js";
+import Log from "../models/log.js";
+import { existsSync, unlinkSync } from "fs";
 import { STRING, INTEGER } from "../constants/constants.js";
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Loại phòng",
+    time_stamp: time,
+  });
+  await newLog.save();
+};
 
 const deleteImages = (images) => {
   if (images) {
@@ -50,6 +61,7 @@ export const getRoomTypeByHotel = async (req, res) => {
 export const createRoomType = async (req, res) => {
   const roomType = req.body;
   try {
+    const TIME_STAMP = new Date();
     const newRoomType = new RoomType({
       ...roomType,
       rent_bill: Number(roomType.rent_bill),
@@ -58,8 +70,10 @@ export const createRoomType = async (req, res) => {
       big_bed_number: Number(roomType.big_bed_number),
       adult: Number(roomType.adult),
       kid: Number(roomType.kid),
+      created_date: TIME_STAMP,
     });
     await newRoomType.save();
+    await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
     return res.status(200).json(newRoomType);
   } catch (error) {
     console.log(error);
@@ -77,6 +91,7 @@ export const updateRoomType = async (req, res) => {
     return res.status(404).send("No room_type with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     let new_images = [];
     if (roomType.current_images) {
       if (roomType.current_images instanceof Array) {
@@ -105,11 +120,14 @@ export const updateRoomType = async (req, res) => {
         big_bed_number: Number(roomType.big_bed_number),
         adult: Number(roomType.adult),
         kid: Number(roomType.kid),
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
 
     deleteImages(roomType.deleted_images);
+
+    await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
 
     res.status(202).json(updatedRoomType);
   } catch (error) {
@@ -127,8 +145,10 @@ export const deleteRoomType = async (req, res) => {
     return res.status(404).send("No room_service with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     const deletedRoomType = await RoomType.findOneAndRemove({ _id: id });
     deleteImages(deletedRoomType.images);
+    await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);
     res.status(202).send("Room Service deleted successfully");
   } catch (error) {
     console.log(error);

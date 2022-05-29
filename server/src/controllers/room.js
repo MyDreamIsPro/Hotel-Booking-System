@@ -2,7 +2,18 @@ import mongoose from "mongoose";
 import Room from "../models/room.js";
 import Booking from "../models/booking.js";
 import RoomType from "../models/room_type.js";
+import Log from "../models/log.js";
 import { INTEGER, STRING } from "../constants/constants.js";
+
+const logAction = async (user, type, time) => {
+  const newLog = new Log({
+    user: user,
+    type: type,
+    target: "Phòng",
+    time_stamp: time,
+  });
+  await newLog.save();
+};
 
 export const getAllRoom = async (req, res) => {
   try {
@@ -21,12 +32,15 @@ export const getAllRoom = async (req, res) => {
 export const createRoom = async (req, res) => {
   const room = req.body;
   try {
+    const TIME_STAMP = new Date();
     const newRoom = new Room({
       number: Number(room.number),
       hotel: room.hotel._id,
       room_type: room.room_type._id,
+      created_date: TIME_STAMP,
     });
     await newRoom.save();
+    await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
     return res.status(200).json(newRoom);
   } catch (error) {
     console.log(error);
@@ -44,15 +58,18 @@ export const updateRoom = async (req, res) => {
     return res.status(404).send("No room with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     const updatedRoom = await Room.findByIdAndUpdate(
       id,
       {
         number: Number(room.number),
         hotel: room.hotel._id,
         room_type: room.room_type._id,
+        modified_date: TIME_STAMP,
       },
       { new: true }
     );
+    await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedRoom);
   } catch (error) {
     console.log(error);
@@ -69,7 +86,9 @@ export const deleteRoom = async (req, res) => {
     return res.status(404).send("No room with that id");
   }
   try {
+    const TIME_STAMP = new Date();
     await Room.findOneAndRemove({ _id: id });
+    await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);
     res.status(202).send("Room deleted successfully");
   } catch (error) {
     console.log(error);

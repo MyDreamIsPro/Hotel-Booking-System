@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import Filter from "./Filter";
 import Item from "./Item";
 import LoadingItem from "./LoadingItem";
+import RatingDialog from "./RatingDialog";
 import CancelDialog from "./CancelBookingDialog";
 // logic lib
 import { Link, useNavigate } from "react-router-dom";
@@ -19,13 +20,21 @@ import { STRING } from "../../../constants";
 //----------------------------
 const BookingHistory = () => {
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [openRatingDialog, setOpenRatingDialog] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const context = useContext(NotificationContext);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState();
 
-  const bookingList = useSelector((state) => state.booking);
+  // FILTER STATES
+  const [filterStatus, setFilterStatus] = useState(0);
+  // FILTER STATES
+
+  const bookingList = useSelector((state) => {
+    if (filterStatus === 0) return state.booking;
+    return state.booking.filter((item) => item.status === filterStatus);
+  });
   const userId = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
   )._id;
@@ -48,14 +57,17 @@ const BookingHistory = () => {
             });
             context.setOpen(true);
             setIsLoading(false);
-            if (needLogin) navigate("/login", { replace: true });
+            if (needLogin)
+              navigate("/login", {
+                state: { returnUrl: "/account?tab=booking" },
+              });
           }
         }
       )
     );
 
     return () => (isMounted = false);
-  }, [dispatch, context]);
+  }, [dispatch, context, navigate, userId]);
 
   return (
     <Box
@@ -69,20 +81,31 @@ const BookingHistory = () => {
           <LoadingItem />
           <LoadingItem />
         </>
-      ) : bookingList.length > 0 ? (
+      ) : bookingList.length || filterStatus !== 0 > 0 ? (
         <>
-          <Filter data={bookingList} />
+          <Filter
+            number={bookingList.length}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
+          />
           {bookingList.map((item) => (
             <Item
               data={item}
               key={item._id}
               setId={setId}
               setOpenCancelDialog={setOpenCancelDialog}
+              setOpenRatingDialog={setOpenRatingDialog}
             />
           ))}
           <CancelDialog
             open={openCancelDialog}
             setOpen={setOpenCancelDialog}
+            id={id}
+            setId={setId}
+          />
+          <RatingDialog
+            open={openRatingDialog}
+            setOpen={setOpenRatingDialog}
             id={id}
             setId={setId}
           />
