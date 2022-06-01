@@ -27,7 +27,8 @@ import { formatDateWithHour } from "../../utils/date";
 //----------------------------
 const columns = [
   { id: "user_id", label: "Mã nhân viên", minWidth: 150 },
-  { id: "full_name", label: "Tên", minWidth: 150 },
+  { id: "full_name", label: "Họ và tên", minWidth: 120 },
+  { id: "role", label: "Vai trò", minWidth: 120 },
   { id: "type", label: "Hành động", minWidth: 150 },
   { id: "target", label: "Đối tượng", minWidth: 150 },
   { id: "time_stamp", label: "Thời gian", minWidth: 150 },
@@ -51,10 +52,24 @@ const ACTIONS = [
   "Khôi phục",
 ];
 
-function createData(id, user_id, full_name, pre_type, target, pre_time_stamp) {
+function createData(
+  id,
+  user_id,
+  full_name,
+  pre_role,
+  pre_type,
+  target,
+  pre_time_stamp
+) {
   const time_stamp = formatDateWithHour(pre_time_stamp);
   const type = ACTIONS[pre_type];
-  return { id, user_id, full_name, type, target, time_stamp };
+  const role =
+    pre_role === 1998
+      ? "Khách hàng"
+      : pre_role === 1108
+      ? "Nhân viên"
+      : "Quản trị viên";
+  return { id, user_id, full_name, role, type, target, time_stamp };
 }
 
 const LogList = () => {
@@ -126,6 +141,7 @@ const LogList = () => {
             log._id,
             log.user._id,
             log.user.full_name,
+            log.user.role,
             log.type,
             log.target,
             log.time_stamp
@@ -207,7 +223,7 @@ const LogList = () => {
                   })}
               </TableBody>
             ) : (
-              <NoRecord col={5} />
+              <NoRecord col={6} />
             )}
           </Table>
         </TableContainer>
