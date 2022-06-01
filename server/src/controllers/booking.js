@@ -118,7 +118,7 @@ export const createPaymentUrl = async (req, res) => {
     vnp_Params["vnp_ReturnUrl"] = returnUrl;
     vnp_Params["vnp_IpAddr"] = ipAddr;
     vnp_Params["vnp_CreateDate"] = createDate;
-    vnp_Params["vnp_BankCode"] = "NCB";
+    vnp_Params["vnp_BankCode"] = transaction.bank;
 
     vnp_Params = sortObject(vnp_Params);
 
@@ -142,6 +142,8 @@ export const checkPaymentReturn = async (req, res) => {
     const booking = data.booking;
     // DOING
     var vnp_Params = data.vnp_params;
+    booking["payment_method"] = `VNPAY - ${vnp_Params["vnp_BankCode"]}`;
+
     var secureHash = vnp_Params["vnp_SecureHash"];
 
     delete vnp_Params["vnp_SecureHash"];
@@ -159,6 +161,7 @@ export const checkPaymentReturn = async (req, res) => {
         : "FAIL";
 
     if (PAYMENT_RESULT === "SUCCESS") {
+      // PAYMENT SUCCESSFUL
       const TIME_STAMP = new Date();
       const maxBookingNumber = await Booking.find()
         .sort({ number: -1 })
@@ -185,6 +188,12 @@ export const checkPaymentReturn = async (req, res) => {
       // Save booking
       await newBooking.save();
       await logAction(booking.user, INTEGER.LOG_BOOK_BOOKING, TIME_STAMP);
+    } else {
+      // PAYMENT FAILURE
+      await Room.updateMany(
+        { _id: { $in: booking.room_list } },
+        { $set: { status: INTEGER.ROOM_EMPTY } }
+      );
     }
 
     setTimeout(() => {
@@ -201,7 +210,17 @@ export const getAllBookingForAdmin = async (req, res) => {
   try {
     const booking = await Booking.find()
       .populate("hotel", ["_id", "name"])
-      .populate("user", ["_id", "full_name", "phone"]);
+      .populate("user", ["_id", "full_name", "phone"])
+      // NESTED POPULATION IN MONGOOSE
+      .populate({
+        path: "room_list",
+        select: "number",
+        populate: {
+          path: "room_type",
+          model: "RoomType",
+          select: "name rent_bill",
+        },
+      });
     setTimeout(() => {
       res.status(200).json(booking);
     }, 1000);
@@ -221,8 +240,17 @@ export const cancelBooking = async (req, res) => {
       status: INTEGER.BOOKING_CANCELED,
       modified_date: TIME_STAMP,
     })
-      .populate("hotel", ["name", "images"])
-      .populate("user", ["_id", "full_name", "phone"]);
+      .populate("hotel", ["_id", "name"])
+      .populate("user", ["_id", "full_name", "phone"])
+      .populate({
+        path: "room_list",
+        select: "number",
+        populate: {
+          path: "room_type",
+          model: "RoomType",
+          select: "name rent_bill",
+        },
+      });
     await Room.updateMany(
       { _id: { $in: cancelledBooking.room_list } },
       { status: INTEGER.ROOM_EMPTY }
@@ -246,7 +274,16 @@ export const checkInBooking = async (req, res) => {
       modified_date: TIME_STAMP,
     })
       .populate("hotel", ["_id", "name"])
-      .populate("user", ["_id", "full_name", "phone"]);
+      .populate("user", ["_id", "full_name", "phone"])
+      .populate({
+        path: "room_list",
+        select: "number",
+        populate: {
+          path: "room_type",
+          model: "RoomType",
+          select: "name rent_bill",
+        },
+      });
     await logAction(req._id, INTEGER.LOG_CHECK_IN_BOOKING, TIME_STAMP);
     res.status(200).json(checkedInBooking);
   } catch (error) {
@@ -266,7 +303,16 @@ export const checkOutBooking = async (req, res) => {
       modified_date: TIME_STAMP,
     })
       .populate("hotel", ["_id", "name"])
-      .populate("user", ["_id", "full_name", "phone"]);
+      .populate("user", ["_id", "full_name", "phone"])
+      .populate({
+        path: "room_list",
+        select: "number",
+        populate: {
+          path: "room_type",
+          model: "RoomType",
+          select: "name rent_bill",
+        },
+      });
 
     await Room.updateMany(
       { _id: { $in: checkedOutBooking.room_list } },

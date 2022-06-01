@@ -11,6 +11,7 @@ import {
   TablePagination,
   TableRow,
   Chip,
+  Rating,
 } from "@mui/material";
 // UI custom
 import NoRecord from "../../components/NoRecord";
@@ -23,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllReview } from "../../redux/actions/review";
 import NotificationContext from "../../context/Context";
 import { formatDateWithHour } from "../../utils/date";
+import DetailDialog from "./DetailDialog";
 //#region CSS
 //#endregion
 
@@ -32,7 +34,7 @@ const columns = [
   { id: "phone", label: "Số điện thoại", minWidth: 150 },
   { id: "booking", label: "Mã đặt phòng", minWidth: 150 },
   { id: "title", label: "Tiêu đề", minWidth: 150 },
-  { id: "content", label: "Nội dung", minWidth: 150 },
+  { id: "overall_score", label: "Tổng quan", minWidth: 150 },
   { id: "status", label: "Trạng thái", minWidth: 150 },
   { id: "date", label: "Thời gian", minWidth: 150 },
 ];
@@ -50,23 +52,37 @@ function createData(
   phone,
   booking,
   title,
-  content,
+  pre_overall_score,
   pre_status,
   pre_date
 ) {
   const status = STATUS[pre_status];
   const date = formatDateWithHour(pre_date);
-
-  return { id, user, phone, booking, title, content, status, date, pre_status };
+  const overall_score = (
+    <Rating readOnly value={pre_overall_score} name="read-only" />
+  );
+  return {
+    id,
+    user,
+    phone,
+    booking,
+    title,
+    overall_score,
+    status,
+    date,
+    pre_status,
+  };
 }
 
-const ReviewList = ({ setId, setOpenReviewDialog, setDialogContent }) => {
+const ReviewList = ({ id, setId, setOpenReviewDialog, setDialogContent }) => {
   const navigate = useNavigate();
   const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
 
   // FILTER STATES
   const [filterBookingCode, setFilterBookingCode] = useState("");
@@ -126,9 +142,9 @@ const ReviewList = ({ setId, setOpenReviewDialog, setDialogContent }) => {
             review._id,
             review.user.full_name,
             review.user.phone,
-            review.booking.number,
+            "#" + review.booking.number,
             review.title,
-            review.content,
+            review.overallScore,
             review.status,
             review.created_date
           )
@@ -224,6 +240,7 @@ const ReviewList = ({ setId, setOpenReviewDialog, setDialogContent }) => {
                             setOpenReviewDialog={setOpenReviewDialog}
                             setDialogContent={setDialogContent}
                             status={row.pre_status}
+                            setOpenDetailDialog={setOpenDetailDialog}
                           />
                         </TableCell>
                       </TableRow>
@@ -246,6 +263,11 @@ const ReviewList = ({ setId, setOpenReviewDialog, setDialogContent }) => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
+      <DetailDialog
+        id={id}
+        setOpen={setOpenDetailDialog}
+        open={openDetailDialog}
+      />
     </>
   );
 };

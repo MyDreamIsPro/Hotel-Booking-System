@@ -1,4 +1,5 @@
 import {
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -16,11 +17,18 @@ const ReviewOptionMenu = ({
   setOpenReviewDialog,
   setDialogContent,
   status,
+  setOpenDetailDialog,
 }) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef();
   const handleCloseMenu = () => {
     if (open) setOpen(false);
+  };
+
+  const handleViewDetail = () => {
+    setId(id);
+    setOpenDetailDialog(true);
+    setOpen(false);
   };
 
   const handleReset = () => {
@@ -85,6 +93,7 @@ const ReviewOptionMenu = ({
         <MenuItem
           onClick={handleReset}
           disabled={status === INTEGER.REVIEW_WAITING}
+          sx={{ color: "primary.main" }}
         >
           <ListItemIcon>
             <Iconify
@@ -96,13 +105,13 @@ const ReviewOptionMenu = ({
           </ListItemIcon>
           <ListItemText
             primary="Chờ duyệt"
-            sx={{ color: "primary.main" }}
             primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>
         <MenuItem
           onClick={handleApprove}
           disabled={status === INTEGER.REVIEW_ACCEPTED}
+          sx={{ color: "success.main" }}
         >
           <ListItemIcon>
             <Iconify
@@ -114,13 +123,13 @@ const ReviewOptionMenu = ({
           </ListItemIcon>
           <ListItemText
             primary="Phê duyệt"
-            sx={{ color: "success.main" }}
             primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>
         <MenuItem
           onClick={handleReject}
           disabled={status === INTEGER.REVIEW_REJECTED}
+          sx={{ color: "error.main" }}
         >
           <ListItemIcon>
             <Iconify
@@ -133,7 +142,21 @@ const ReviewOptionMenu = ({
           <ListItemText
             primary="Từ chối"
             primaryTypographyProps={{ variant: "body2" }}
-            sx={{ color: "error.main" }}
+          />
+        </MenuItem>
+        <Divider />
+        <MenuItem sx={{ color: "primary.main" }} onClick={handleViewDetail}>
+          <ListItemIcon>
+            <Iconify
+              icon="carbon:data-view-alt"
+              width={24}
+              height={24}
+              sx={{ color: "primary.main" }}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary="Chi tiết"
+            primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>
       </Menu>

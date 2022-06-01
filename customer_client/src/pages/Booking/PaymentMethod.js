@@ -24,17 +24,19 @@ import { STRING } from "../../constants/index";
 
 const PAYMENT_METHOD = [
   {
-    text: "Thẻ/tài khoản ngân hàng (ATM nội địa/quốc tế)",
+    text: "Thẻ/tài khoản ngân hàng (ATM nội địa)",
     ariaControls: "panel1a-content",
     id: "panel1a-header",
     banks: INTERNAL_BANKS,
+    buttonText: "THANH TOÁN NỘI ĐỊA",
   },
-  // {
-  //   text: "Thẻ tín dụng/ghi nợ quốc tế",
-  //   ariaControls: "panel2a-content",
-  //   id: "panel2a-header",
-  //   banks: EXTERNAL_BANKS,
-  // },
+  {
+    text: "Thẻ tín dụng/ghi nợ quốc tế",
+    ariaControls: "panel2a-content",
+    id: "panel2a-header",
+    banks: EXTERNAL_BANKS,
+    buttonText: "THANH TOÁN QUỐC TẾ",
+  },
 ];
 
 const VND_TO_DOLLAR = (vnd) => (vnd / 23000).toFixed(2);
@@ -122,7 +124,7 @@ const PaymentMethod = ({
               style={{ marginTop: 20, padding: 15 }}
               onClick={handleInternalCheckout}
             >
-              THANH TOÁN NỘI ĐỊA
+              {method.buttonText}
             </Button>
           </AccordionDetails>
         </Accordion>

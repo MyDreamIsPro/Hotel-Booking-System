@@ -28,7 +28,6 @@ const UpdateDialog = ({ dialogContent, open, setOpen, id, setId }) => {
 
   const handleClose = () => {
     if (doing) return;
-    setId();
     setOpen(false);
   };
 
@@ -69,7 +68,7 @@ const UpdateDialog = ({ dialogContent, open, setOpen, id, setId }) => {
         dispatch(ignoreReview(id, handleSuccess, handleFailure));
         break;
       default:
-        alert("Không hợp lệ");
+        alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
         break;
     }
   };

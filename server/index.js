@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
+import { existsSync, mkdirSync } from "fs";
 // custom
 import userRoutes from "./src/routes/user.js";
 import adminRoutes from "./src/routes/admin.js";
@@ -50,6 +52,9 @@ app.use("/backup", backupRoutes);
 app.use("/account", accountRoutes);
 app.use("/log", logRoutes);
 app.use("/review", reviewRoutes);
+
+// Pre-create required folder
+if (!existsSync("BACKUP")) mkdirSync("BACKUP");
 
 //Connect to DB
 const PORT = process.env.PORT;

@@ -82,6 +82,9 @@ const ConfirmationDialog = ({
       case "EXPENSE":
         dispatch(deleteExpense(id, handleSuccess, handleFailure));
         break;
+      default:
+        alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
+        break;
     }
   };
 

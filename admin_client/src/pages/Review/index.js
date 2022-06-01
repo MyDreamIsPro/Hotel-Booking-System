@@ -5,7 +5,6 @@ import { Typography } from "@mui/material";
 import Page from "../../components/Page";
 import List from "./ReviewList";
 import UpdateDialog from "./UpdateDialog";
-import DetailDialog from "./DetailDialog";
 // logic lib
 // logic custom
 //----------------------------
@@ -28,6 +27,7 @@ const Review = () => {
         BÀI ĐÁNH GIÁ
       </Typography>
       <List
+        id={id}
         setId={setId}
         setDialogContent={setDialogContent}
         setOpenReviewDialog={setOpenReviewDialog}

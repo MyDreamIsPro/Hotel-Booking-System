@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Hotel from "../models/hotel.js";
 import Log from "../models/log.js";
+import Room from "../models/room.js";
 import RoomType from "../models/room_type.js";
 import { existsSync, unlinkSync } from "fs";
 import { STRING, INTEGER } from "../constants/constants.js";
@@ -125,16 +126,20 @@ export const getHotelByFilter = async (req, res) => {
   const filter = req.body;
   try {
     const hotelList = await Hotel.find({ city: filter.fake }).lean();
+    const returnedList = [];
     for (let hotel of hotelList) {
+      const existRoom = await Room.findOne({ hotel: hotel._id });
+      if (!existRoom) continue;
       //if the value inside sort is 1, it returns in ascending order
       //if the value inside sort is -1, it returns in descending order
       const roomType = await RoomType.find({ hotel: hotel._id }, "rent_bill")
         .sort({ rent_bill: 1 })
         .limit(1);
       hotel.min_price = roomType[0]?.rent_bill || 0;
+      returnedList.push(hotel);
     }
     setTimeout(() => {
-      return res.status(200).json(hotelList);
+      return res.status(200).json(returnedList);
     }, 1000);
   } catch (error) {
     console.log(error);

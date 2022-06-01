@@ -16,13 +16,13 @@ import {
 import OptionMenu from "./BookingOptionMenu";
 import NoRecord from "../../components/NoRecord";
 import Filter from "./BookingFilter";
+import DetailDialog from "./DetailDialog";
 // logic lib
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // logic custom
 import NotificationContext from "../../context/Context";
 import { getAllBooking } from "../../redux/actions/booking";
-import { INTEGER } from "../../constants";
 import { formatDate } from "../../utils/date";
 import { formatNumber } from "../../utils/number";
 
@@ -43,6 +43,14 @@ const columns = [
   { id: "status", label: "Trạng thái", minWidth: 100 },
 ];
 
+const STATUS_TAG = [
+  "",
+  <Chip label="Đã hủy" color="error" variant="outlined" />,
+  <Chip label="Sắp tới" color="warning" variant="outlined" />,
+  <Chip label="Đã nhận phòng" color="success" variant="outlined" />,
+  <Chip label="Hoàn tất" color="success" variant="outlined" />,
+];
+
 function createData(
   id,
   number,
@@ -54,22 +62,7 @@ function createData(
   pre_effective_to,
   preStatus
 ) {
-  const status = (
-    <>
-      {(preStatus === INTEGER.BOOKING_IN_PROGRESS && (
-        <Chip label="Sắp tới" color="warning" variant="outlined" />
-      )) ||
-        (preStatus === INTEGER.BOOKING_CHECK_IN && (
-          <Chip label="Đã nhận phòng" color="success" variant="outlined" />
-        )) ||
-        (preStatus === INTEGER.BOOKING_CHECK_OUT && (
-          <Chip label="Hoàn tất" color="success" variant="outlined" />
-        )) ||
-        (preStatus === INTEGER.BOOKING_CANCELED && (
-          <Chip label="Đã hủy" color="error" variant="outlined" />
-        ))}
-    </>
-  );
+  const status = STATUS_TAG[preStatus];
   const amount = formatNumber(preAmount);
   const effective_from = formatDate(pre_effective_from);
   const effective_to = formatDate(pre_effective_to);
@@ -88,9 +81,8 @@ function createData(
 }
 
 const BookingList = ({
+  editedId,
   setEditedId,
-  setOpenEditDialog,
-  setOpenDeleteDialog,
   setDialogContent,
   setOpenBookingDialog,
 }) => {
@@ -101,6 +93,7 @@ const BookingList = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
   // FILTER STATES
   const [filterBookingCode, setFilterBookingCode] = useState("");
   const [filterBookingStatus, setFilterBookingStatus] = useState(0);
@@ -165,7 +158,7 @@ const BookingList = ({
       ? bookingList.map((booking) =>
           createData(
             booking._id,
-            booking.number,
+            "#" + booking.number,
             booking.hotel.name,
             booking.user.full_name,
             booking.user.phone,
@@ -264,12 +257,11 @@ const BookingList = ({
                         <TableCell align="right">
                           <OptionMenu
                             status={row.preStatus}
-                            setOpenEditDialog={setOpenEditDialog}
-                            setOpenDeleteDialog={setOpenDeleteDialog}
                             setEditedId={setEditedId}
                             id={row.id}
                             setDialogContent={setDialogContent}
                             setOpenBookingDialog={setOpenBookingDialog}
+                            setOpenDetailDialog={setOpenDetailDialog}
                           />
                         </TableCell>
                       </TableRow>
@@ -292,6 +284,11 @@ const BookingList = ({
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
+      <DetailDialog
+        open={openDetailDialog}
+        setOpen={setOpenDetailDialog}
+        id={editedId}
+      />
     </>
   );
 };

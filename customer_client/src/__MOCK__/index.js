@@ -91,6 +91,10 @@ export const INTERNAL_BANKS = [
     img: "/static/bank/NCB.png",
   },
   {
+    value: "EXIMBANK",
+    img: "/static/bank/EXIM_BANK.png",
+  },
+  {
     value: "TCB",
     img: "/static/bank/TECH_COM_BANK.png",
   },
@@ -114,7 +118,7 @@ export const EXTERNAL_BANKS = [
     img: "/static/bank/VISA.png",
   },
   {
-    value: "MC",
+    value: "MasterCard",
     img: "/static/bank/MASTER_CARD.png",
   },
   {

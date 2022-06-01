@@ -51,7 +51,7 @@ const SparkLineChart = ({ data, color }) => {
       show: false,
       labels: {
         formatter: (value) => {
-          return value >= 0 ? formatNumber(value) + " VNĐ" : "";
+          return formatNumber(value) + " VNĐ";
         },
       },
     },

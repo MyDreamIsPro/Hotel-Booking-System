@@ -51,7 +51,7 @@ const RoomTypeOptionMenu = ({
         transformOrigin={{ vertical: "center", horizontal: "right" }}
         PaperProps={{ sx: { width: 150, maxWidth: "100%" } }}
       >
-        <MenuItem onClick={handleEdit}>
+        <MenuItem onClick={handleEdit} sx={{ color: "primary.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:edit-fill"
@@ -63,10 +63,9 @@ const RoomTypeOptionMenu = ({
           <ListItemText
             primary="Sửa"
             primaryTypographyProps={{ variant: "body2" }}
-            sx={{ color: "primary.main" }}
           />
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:trash-2-outline"
@@ -78,7 +77,6 @@ const RoomTypeOptionMenu = ({
           <ListItemText
             primary="Xóa"
             primaryTypographyProps={{ variant: "body2" }}
-            sx={{ color: "error.main" }}
           />
         </MenuItem>
       </Menu>

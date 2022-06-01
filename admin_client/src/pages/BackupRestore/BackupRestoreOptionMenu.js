@@ -58,7 +58,7 @@ const BackupRestoreOptionMenu = ({
         transformOrigin={{ vertical: "center", horizontal: "right" }}
         PaperProps={{ sx: { width: 150, maxWidth: "100%" } }}
       >
-        <MenuItem onClick={handleRestore}>
+        <MenuItem onClick={handleRestore} sx={{ color: "success.main" }}>
           <ListItemIcon>
             <Iconify
               icon="ic:baseline-restore"
@@ -70,10 +70,9 @@ const BackupRestoreOptionMenu = ({
           <ListItemText
             primary="Khôi phục"
             primaryTypographyProps={{ variant: "body2" }}
-            sx={{ color: "success.main" }}
           />
         </MenuItem>
-        <MenuItem onClick={handleUpdate}>
+        <MenuItem onClick={handleUpdate} sx={{ color: "primary.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:edit-fill"
@@ -85,10 +84,9 @@ const BackupRestoreOptionMenu = ({
           <ListItemText
             primary="Sửa"
             primaryTypographyProps={{ variant: "body2" }}
-            sx={{ color: "primary.main" }}
           />
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:trash-2-outline"
@@ -99,7 +97,6 @@ const BackupRestoreOptionMenu = ({
           </ListItemIcon>
           <ListItemText
             primary="Xóa"
-            sx={{ color: "error.main" }}
             primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>

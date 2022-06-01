@@ -175,7 +175,15 @@ export const getAllReviewForManagement = async (req, res) => {
   try {
     const review = await Review.find()
       .populate("user", ["full_name", "phone"])
-      .populate("booking", ["number"]);
+      .populate({
+        path: "booking",
+        select: "number",
+        populate: {
+          path: "hotel",
+          model: "Hotel",
+          select: "name",
+        },
+      });
     setTimeout(() => {
       res.status(202).send(review);
     }, 1000);

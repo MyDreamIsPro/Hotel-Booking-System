@@ -51,7 +51,7 @@ const HotelOptionMenu = ({
         transformOrigin={{ vertical: "center", horizontal: "right" }}
         PaperProps={{ sx: { width: 150, maxWidth: "100%" } }}
       >
-        <MenuItem onClick={handleEdit}>
+        <MenuItem onClick={handleEdit} sx={{ color: "primary.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:edit-fill"
@@ -62,11 +62,10 @@ const HotelOptionMenu = ({
           </ListItemIcon>
           <ListItemText
             primary="Sửa"
-            sx={{ color: "primary.main" }}
             primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <ListItemIcon>
             <Iconify
               icon="eva:trash-2-outline"
@@ -77,7 +76,6 @@ const HotelOptionMenu = ({
           </ListItemIcon>
           <ListItemText
             primary="Xóa"
-            sx={{ color: "error.main" }}
             primaryTypographyProps={{ variant: "body2" }}
           />
         </MenuItem>

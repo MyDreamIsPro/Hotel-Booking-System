@@ -56,7 +56,7 @@ const UserOptionMenu = ({
         PaperProps={{ sx: { width: 200, maxWidth: "100%" } }}
       >
         {status ? (
-          <MenuItem sx={{ color: "text.secondary" }} onClick={handleActive}>
+          <MenuItem sx={{ color: "success.main" }} onClick={handleActive}>
             <ListItemIcon>
               <Iconify
                 icon="bxs:user-check"
@@ -67,12 +67,11 @@ const UserOptionMenu = ({
             </ListItemIcon>
             <ListItemText
               primary="Mở tài khoản"
-              sx={{ color: "success.main" }}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </MenuItem>
         ) : (
-          <MenuItem sx={{ color: "text.secondary" }} onClick={handleBan}>
+          <MenuItem sx={{ color: "error.main" }} onClick={handleBan}>
             <ListItemIcon>
               <Iconify
                 icon="bxs:user-x"
@@ -83,7 +82,6 @@ const UserOptionMenu = ({
             </ListItemIcon>
             <ListItemText
               primary="Khóa tài khoản"
-              sx={{ color: "error.main" }}
               primaryTypographyProps={{ variant: "body2" }}
             />
           </MenuItem>

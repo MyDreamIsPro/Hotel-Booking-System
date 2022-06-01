@@ -8,7 +8,7 @@ const UserSchema = mongoose.Schema({
   phone: { type: String, trim: true, unique: true },
   profile_image: {
     type: String,
-    default: "http://localhost:5000/default/profile_image.png",
+    default: "/static/profile_image.png",
   },
   banned: { type: Boolean, default: false },
   role: { type: Number, default: INTEGER.CUSTOMER_ROLE },

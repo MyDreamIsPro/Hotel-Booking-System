@@ -1,4 +1,5 @@
 import {
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -15,9 +16,8 @@ const BookingOptionMenu = ({
   id,
   setEditedId,
   setDialogContent,
-  setOpenEditDialog,
-  setOpenDeleteDialog,
   setOpenBookingDialog,
+  setOpenDetailDialog,
 }) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef();
@@ -25,15 +25,9 @@ const BookingOptionMenu = ({
     if (open) setOpen(false);
   };
 
-  const handleEdit = () => {
+  const handleViewDetail = () => {
     setEditedId(id);
-    setOpenEditDialog(true);
-    setOpen(false);
-  };
-
-  const handleDelete = () => {
-    setEditedId(id);
-    setOpenDeleteDialog(true);
+    setOpenDetailDialog(true);
     setOpen(false);
   };
 
@@ -95,24 +89,6 @@ const BookingOptionMenu = ({
         transformOrigin={{ vertical: "center", horizontal: "right" }}
         PaperProps={{ sx: { width: 200, maxWidth: "100%" } }}
       >
-        {/* <MenuItem sx={{ color: "text.secondary" }} onClick={handleEdit}>
-          <ListItemIcon>
-            <Iconify icon="eva:edit-fill" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText
-            primary="Sửa"
-            primaryTypographyProps={{ variant: "body2" }}
-          />
-        </MenuItem>
-        <MenuItem sx={{ color: "text.secondary" }} onClick={handleDelete}>
-          <ListItemIcon>
-            <Iconify icon="eva:trash-2-outline" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText
-            primary="Xóa"
-            primaryTypographyProps={{ variant: "body2" }}
-          />
-        </MenuItem> */}
         <MenuItem
           sx={{ color: "text.secondary" }}
           disabled={status !== INTEGER.BOOKING_IN_PROGRESS}
@@ -140,7 +116,7 @@ const BookingOptionMenu = ({
           />
         </MenuItem>
         <MenuItem
-          sx={{ color: "text.secondary" }}
+          sx={{ color: "error.main" }}
           disabled={status !== INTEGER.BOOKING_IN_PROGRESS}
           onClick={handleCancel}
         >
@@ -156,6 +132,22 @@ const BookingOptionMenu = ({
             primary="Hủy đơn"
             sx={{ color: "error.main" }}
             primaryTypographyProps={{ variant: "body2" }}
+          />
+        </MenuItem>
+        <Divider />
+        <MenuItem sx={{ color: "primary.main" }} onClick={handleViewDetail}>
+          <ListItemIcon>
+            <Iconify
+              icon="carbon:data-view-alt"
+              width={24}
+              height={24}
+              sx={{ color: "primary.main" }}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary="Chi tiết"
+            primaryTypographyProps={{ variant: "body2" }}
+            // sx={{ color: "primary.main" }}
           />
         </MenuItem>
       </Menu>

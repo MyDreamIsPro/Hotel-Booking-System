@@ -202,6 +202,11 @@ const Sidebar = ({ setOpenSidebar, openSidebar }) => {
                             style={{ borderRadius: 8, marginBottom: 5 }}
                             selected={path === subItem.path}
                             onClick={handleCloseSidebar}
+                            sx={
+                              path === subItem.path
+                                ? { color: "primary.main" }
+                                : {}
+                            }
                           >
                             <ListItemIcon>
                               <Iconify
@@ -220,7 +225,6 @@ const Sidebar = ({ setOpenSidebar, openSidebar }) => {
                                 sx={
                                   path === subItem.path
                                     ? {
-                                        color: "primary.main",
                                         fontWeight: "bold",
                                       }
                                     : {}
@@ -241,6 +245,7 @@ const Sidebar = ({ setOpenSidebar, openSidebar }) => {
                     key={index}
                     onClick={handleCloseSidebar}
                     style={{ borderRadius: 8, marginBottom: 5 }}
+                    sx={path === item.path ? { color: "primary.main" } : {}}
                     selected={path === item.path}
                   >
                     <ListItemIcon>

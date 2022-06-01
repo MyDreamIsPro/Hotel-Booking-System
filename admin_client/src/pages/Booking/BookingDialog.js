@@ -28,7 +28,6 @@ const BookingDialog = ({ dialogContent, open, setOpen, id, setId }) => {
 
   const handleClose = () => {
     if (doing) return;
-    setId();
     setOpen(false);
   };
 
@@ -67,6 +66,9 @@ const BookingDialog = ({ dialogContent, open, setOpen, id, setId }) => {
         break;
       case "CANCEL_BOOKING":
         dispatch(cancelBooking(id, handleSuccess, handleFailure));
+        break;
+      default:
+        alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
         break;
     }
   };
