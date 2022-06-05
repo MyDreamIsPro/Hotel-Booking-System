@@ -6,10 +6,7 @@ import {
   deleteBackup,
   updateBackup,
 } from "../controllers/backup.js";
-import {
-  adminAuthMiddleware,
-  userAuthMiddleware,
-} from "../middlewares/auth.js";
+import { adminAuthMiddleware } from "../middlewares/auth.js";
 
 const router = express.Router();
 

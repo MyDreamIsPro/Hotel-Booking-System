@@ -46,7 +46,9 @@ const PaymenReturn = () => {
           user: user,
           hotel: booking.hotel,
           room_list: booking.roomIds,
+          combo_list: booking.combo_list,
           amount: booking.amount,
+          discount: booking.discount?._id,
           payment_method: "VNPAY - Ngân hàng NCB",
           adult: booking.visitor.adult,
           kid: booking.visitor.kid,
@@ -91,6 +93,7 @@ const PaymenReturn = () => {
     </Backdrop>
   ) : paymentResult === "SUCCESS" ? (
     <Page
+      title="Kết quả đặt phòng"
       style={{
         display: "flex",
         justifyContent: "center",

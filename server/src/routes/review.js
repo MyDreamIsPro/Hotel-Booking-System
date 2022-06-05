@@ -19,7 +19,7 @@ const router = express.Router();
 router.post("/new", userAuthMiddleware, createReview);
 router.get("/hotel/:id", getAllReviewByHotel);
 router.get("/page/:hotel&:page", getAllReviewByPagination);
-router.get("/user/:id", userAuthMiddleware, getAllReviewByUser);
+router.get("/user", userAuthMiddleware, getAllReviewByUser);
 
 // MANAGEMENT
 router.get("/list", adminAuthMiddleware, getAllReviewForManagement);

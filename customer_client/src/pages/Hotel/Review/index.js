@@ -111,24 +111,6 @@ const Review = ({ hotel }) => {
             <Typography variant="h6">
               Hiển thị {info.count} đánh giá thực từ du khách
             </Typography>
-            <Stack flexDirection="row" alignItems="center">
-              <Typography variant="body1" style={{ marginRight: 10 }}>
-                Sắp xếp theo
-              </Typography>
-              <TextField
-                label=""
-                name="filter"
-                variant="outlined"
-                select
-                value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
-              >
-                <MenuItem value={1}>Gần đây nhất</MenuItem>
-                <MenuItem value={2}>Đánh giá, cao đến thấp</MenuItem>
-                <MenuItem value={3}>Đánh giá, thấp đến cao</MenuItem>
-                <MenuItem value={4}>Hữu ích nhất</MenuItem>
-              </TextField>
-            </Stack>
           </ReviewToolbar>
           {/* PAGINATION */}
           <Stack flexDirection="row" justifyContent="center">

@@ -122,7 +122,7 @@ const UserList = ({ setEditedId, setOpenDialog, setTypeDialog }) => {
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     accountList.length > 0

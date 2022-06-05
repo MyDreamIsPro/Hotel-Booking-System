@@ -3,9 +3,9 @@ import { STRING } from "../../constants";
 
 //ACTION creators
 export const getAllReviewByUser =
-  (id, performSuccess, performFailure) => async (dispatch) => {
+  (performSuccess, performFailure) => async (dispatch) => {
     try {
-      const { data } = await api.getAllReviewByUser(id);
+      const { data } = await api.getAllReviewByUser();
       dispatch({ type: STRING.GET_ALL_REVIEW_BY_USER, payload: data });
       performSuccess(data.length);
     } catch (error) {

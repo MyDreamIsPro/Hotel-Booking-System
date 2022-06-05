@@ -8,6 +8,10 @@ export const INTEGER = {
   BOOKING_IN_PROGRESS: 2, // user paid but not check in yet
   BOOKING_CHECK_IN: 3, // user checked in
   BOOKING_CHECK_OUT: 4, // user check-out
+
+  // DISCOUNT TYPE
+  AMOUNT_DISCOUNT: 0,
+  PERCENTAGE_DISCOUNT: 1,
 };
 
 export const STRING = {

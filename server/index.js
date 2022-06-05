@@ -10,7 +10,6 @@ import { existsSync, mkdirSync } from "fs";
 import userRoutes from "./src/routes/user.js";
 import adminRoutes from "./src/routes/admin.js";
 import hotelRoutes from "./src/routes/hotel.js";
-import cityRoutes from "./src/routes/city.js";
 import roomRoutes from "./src/routes/room.js";
 import roomTypeRoutes from "./src/routes/room_type.js";
 import roomServiceRoutes from "./src/routes/room_service.js";
@@ -22,6 +21,8 @@ import accountRoutes from "./src/routes/account.js";
 import dashboardRoutes from "./src/routes/dashboard.js";
 import logRoutes from "./src/routes/log.js";
 import reviewRoutes from "./src/routes/review.js";
+import discountRoutes from "./src/routes/discount.js";
+import comboRoutes from "./src/routes/combo.js";
 
 // pre-config
 dotenv.config();
@@ -40,7 +41,6 @@ app.use(express.static("STATIC"));
 app.use("/dashboard", dashboardRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
-app.use("/city", cityRoutes);
 app.use("/hotel", hotelRoutes);
 app.use("/room", roomRoutes);
 app.use("/room_type", roomTypeRoutes);
@@ -52,6 +52,8 @@ app.use("/backup", backupRoutes);
 app.use("/account", accountRoutes);
 app.use("/log", logRoutes);
 app.use("/review", reviewRoutes);
+app.use("/discount", discountRoutes);
+app.use("/combo", comboRoutes);
 
 // Pre-create required folder
 if (!existsSync("BACKUP")) mkdirSync("BACKUP");

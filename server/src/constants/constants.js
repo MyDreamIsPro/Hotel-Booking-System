@@ -34,10 +34,16 @@ export const INTEGER = {
   REVIEW_WAITING: 1,
   REVIEW_ACCEPTED: 2,
   REVIEW_IGNORED: 3,
+
+  // DISCOUNT TYPE
+  AMOUNT_DISCOUNT: 0,
+  PERCENTAGE_DISCOUNT: 1,
 };
 
 export const STRING = {
   SECRET_KEY: "tuanvq1357*",
+
+  DISCOUNT_CODE_ALREADY_EXIST: "Mã khuyến mãi này đã tồn tại",
   PHONE_EXIST_ERROR_MESSAGE:
     "Số điện thoại này đã tồn tại. Quý khách vui lòng chọn số điện thoại khác",
   USERNAME_EXIST_ERROR_MESSAGE:

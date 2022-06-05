@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import NotificationContext from "../../context/Context";
 import { getAllExpense } from "../../redux/actions/expense";
 import { formatNumber } from "../../utils/number";
+import { formatDateWithHour } from "../../utils/date";
 
 //#region CSS
 //#endregion
@@ -32,11 +33,20 @@ const columns = [
   { id: "hotel", label: "Khách sạn", minWidth: 150 },
   { id: "amount", label: "Tổng tiền (VNĐ)", minWidth: 100 },
   { id: "description", label: "Mô tả", minWidth: 200 },
+  { id: "created_date", label: "Thời gian", minWidth: 200 },
 ];
 
-function createData(id, number, hotel, pre_amount, description) {
+function createData(
+  id,
+  number,
+  hotel,
+  pre_amount,
+  description,
+  pre_created_date
+) {
   const amount = formatNumber(pre_amount);
-  return { id, number, hotel, amount, description };
+  const created_date = formatDateWithHour(pre_created_date);
+  return { id, number, hotel, amount, description, created_date };
 }
 
 const ExpenseList = ({
@@ -104,7 +114,7 @@ const ExpenseList = ({
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     expenseList.length > 0
@@ -116,7 +126,8 @@ const ExpenseList = ({
               expense.number,
               expense.hotel.name,
               expense.amount,
-              expense.description
+              expense.description,
+              expense.created_date
             )
         )
       : [];
@@ -216,7 +227,7 @@ const ExpenseList = ({
                   })}
               </TableBody>
             ) : (
-              <NoRecord col={5} />
+              <NoRecord col={6} />
             )}
           </Table>
         </TableContainer>

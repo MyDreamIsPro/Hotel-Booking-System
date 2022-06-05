@@ -124,7 +124,7 @@ const BackupRestoreList = ({
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     backupList.length > 0

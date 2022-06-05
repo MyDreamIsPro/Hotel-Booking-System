@@ -7,6 +7,6 @@ export const formatPhoneNumber = (phoneNumberString) => {
   return null;
 };
 
-export const formatNumber = (number) => {
+export const formatNumber = (number = 0) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };

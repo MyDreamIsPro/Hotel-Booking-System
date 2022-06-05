@@ -41,8 +41,13 @@ export const createExpense = async (req, res) => {
       created_date: TIME_STAMP,
     });
     await newExpense.save();
+
+    const returnedExpense = await Expense.findOne({
+      _id: newExpense._id,
+    }).populate("hotel", ["name"]);
+
     await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
-    return res.status(200).json(newExpense);
+    return res.status(200).json(returnedExpense);
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
@@ -82,7 +87,7 @@ export const updateExpense = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    ).populate("hotel", ["name"]);
     await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedExpense);
   } catch (error) {

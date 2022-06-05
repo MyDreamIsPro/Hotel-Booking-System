@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 import Hotel from "../models/hotel.js";
+import Combo from "../models/combo.js";
 import Log from "../models/log.js";
 import Room from "../models/room.js";
 import RoomType from "../models/room_type.js";
+import Booking from "../models/booking.js";
+import Review from "../models/review.js";
 import { existsSync, unlinkSync } from "fs";
 import { STRING, INTEGER } from "../constants/constants.js";
 
@@ -75,7 +78,6 @@ export const deleteHotel = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
-
 export const updateHotel = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -127,15 +129,45 @@ export const getHotelByFilter = async (req, res) => {
   try {
     const hotelList = await Hotel.find({ city: filter.fake }).lean();
     const returnedList = [];
+    let bookingList;
     for (let hotel of hotelList) {
       const existRoom = await Room.findOne({ hotel: hotel._id });
       if (!existRoom) continue;
       //if the value inside sort is 1, it returns in ascending order
       //if the value inside sort is -1, it returns in descending order
+      // CALCULATE THE MIN PRICE
       const roomType = await RoomType.find({ hotel: hotel._id }, "rent_bill")
         .sort({ rent_bill: 1 })
         .limit(1);
       hotel.min_price = roomType[0]?.rent_bill || 0;
+      // CALCULATE THE RATING SCORE
+      bookingList = await Booking.find({ hotel: hotel._id }, "_id").lean();
+      bookingList = bookingList.map((item) => item._id);
+
+      const result = await Review.aggregate([
+        {
+          $match: {
+            booking: { $in: bookingList },
+            status: { $eq: INTEGER.REVIEW_ACCEPTED },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            score: { $sum: "$overallScore" },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      if (result.length > 0) {
+        // hotel.score = Math.ceil(result[0].score / result[0].count);
+        hotel.score = result[0].score / result[0].count;
+        hotel.count_review = result[0].count;
+      } else {
+        hotel.score = 0;
+        hotel.count_review = 0;
+      }
+      // ADD COMPUTED ELEMENT
       returnedList.push(hotel);
     }
     setTimeout(() => {
@@ -150,7 +182,11 @@ export const getHotelByFilter = async (req, res) => {
 export const getHotelById = async (req, res) => {
   const { id } = req.params;
   try {
-    const hotel = await Hotel.findOne({ _id: id });
+    const hotel = await Hotel.findOne({ _id: id }).lean();
+    const combo = await Combo.find({ hotel: id }, "name amount detail").sort({
+      amount: 1,
+    });
+    hotel["combo"] = combo;
     setTimeout(() => {
       return res.status(200).json(hotel);
     }, 1000);

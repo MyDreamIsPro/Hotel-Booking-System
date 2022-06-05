@@ -9,10 +9,13 @@ import Item from "./Item";
 //#endregion
 
 const RoomTypeList = ({
+  comboList,
   setOpenViewer,
   setDataViewer,
   selectedRooms,
   setSelectedRooms,
+  selectedComboList,
+  setSelectedComboList,
 }) => {
   const roomTypeList = useSelector((state) => state.room_type);
   return (
@@ -20,11 +23,14 @@ const RoomTypeList = ({
       {roomTypeList.map((roomType, index) => (
         <Item
           key={index}
+          comboList={comboList}
           roomType={roomType}
           setDataViewer={setDataViewer}
           setOpenViewer={setOpenViewer}
           selectedRooms={selectedRooms}
           setSelectedRooms={setSelectedRooms}
+          selectedComboList={selectedComboList}
+          setSelectedComboList={setSelectedComboList}
         />
       ))}
     </>

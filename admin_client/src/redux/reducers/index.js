@@ -10,6 +10,8 @@ import expense from "./expense";
 import account from "./account";
 import log from "./log";
 import review from "./review";
+import discount from "./discount";
+import combo from "./combo";
 
 export default combineReducers({
   user,
@@ -23,4 +25,6 @@ export default combineReducers({
   account,
   log,
   review,
+  discount,
+  combo,
 });

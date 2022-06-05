@@ -9,11 +9,13 @@ import {
   Chip,
 } from "@mui/material";
 import SlideTransition from "../../components/SlideTransition";
+import "./table.css";
 // Logic
 import { useSelector } from "react-redux";
 import { formatNumber } from "../../utils/number";
 import { formatDateWithHour } from "../../utils/date";
-import "./table.css";
+import { INTEGER } from "../../constants";
+
 // ----------------------------
 const BlueBolderText = styled("span")(({ theme }) => ({
   fontWeight: "bolder",
@@ -70,6 +72,18 @@ const DetailDialog = ({ open, setOpen, id }) => {
                   <td>Tổng tiền</td>
                   <td>{formatNumber(booking.amount)} VNĐ</td>
                 </tr>
+                {booking.discount && (
+                  <tr>
+                    <td>Mã khuyến mãi</td>
+                    <td>
+                      <BlueBolderText>{booking.discount.code}</BlueBolderText>{" "}
+                      giảm{" "}
+                      {booking.discount.type === INTEGER.AMOUNT_DISCOUNT
+                        ? formatNumber(booking.discount.value) + " VNĐ"
+                        : booking.discount.value + "%"}
+                    </td>
+                  </tr>
+                )}
                 <tr>
                   <td>Thành viên</td>
                   <td>
@@ -88,7 +102,12 @@ const DetailDialog = ({ open, setOpen, id }) => {
                           " - " +
                           room.room_type.name +
                           " - " +
-                          formatNumber(room.room_type.rent_bill) +
+                          booking.combo_list[index].name +
+                          " - " +
+                          formatNumber(
+                            room.room_type.rent_bill +
+                              booking.combo_list[index].amount
+                          ) +
                           " VNĐ" +
                           "\n"}
                       </span>

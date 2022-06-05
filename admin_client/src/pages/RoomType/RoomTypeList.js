@@ -110,7 +110,7 @@ const RoomTypeList = ({
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     roomTypeList.length > 0

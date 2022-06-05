@@ -19,7 +19,6 @@ import { createBooking, createPaymentUrl } from "../../api/booking";
 import { INTERNAL_BANKS, EXTERNAL_BANKS } from "../../__MOCK__/index";
 import { STRING } from "../../constants/index";
 //#region CSS
-
 //#endregion
 
 const PAYMENT_METHOD = [
@@ -51,9 +50,6 @@ const PaymentMethod = ({
   const booking = JSON.parse(
     localStorage.getItem(STRING.LOCAL_STORAGE_BOOKING_INFO)
   );
-  const user = JSON.parse(
-    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
-  )._id;
 
   const handleInternalCheckout = () => {
     if (!selectedBank) alert("Quý khách vui lòng chọn ngân  hàng");
@@ -66,6 +62,27 @@ const PaymentMethod = ({
           console.log("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
         });
     }
+  };
+
+  const handleCreateBooking = () => {
+    createBooking({
+      hotel: booking.hotel,
+      room_list: booking.roomIds,
+      combo_list: booking.combo_list,
+      amount: booking.amount,
+      discount: booking.discount?._id,
+      payment_method: "PAYPAL",
+      adult: booking.visitor.adult,
+      kid: booking.visitor.kid,
+      baby: booking.visitor.baby,
+      effective_from: booking.startDate,
+      effective_to: booking.endDate,
+      payment_date: new Date(),
+    })
+      .then((res) => {
+        setOpenCompleteDialog(true);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -169,25 +186,9 @@ const PaymentMethod = ({
                 });
               }}
               onApprove={(data, actions) => {
-                return actions.order.capture().then((details) => {
-                  createBooking({
-                    user: user,
-                    hotel: booking.hotel,
-                    room_list: booking.roomIds,
-                    amount: booking.amount,
-                    payment_method: "PAYPAL",
-                    adult: booking.visitor.adult,
-                    kid: booking.visitor.kid,
-                    baby: booking.visitor.baby,
-                    effective_from: booking.startDate,
-                    effective_to: booking.endDate,
-                    payment_date: new Date(),
-                  })
-                    .then((res) => {
-                      setOpenCompleteDialog(true);
-                    })
-                    .catch((err) => console.log(err));
-                });
+                return actions.order
+                  .capture()
+                  .then((details) => handleCreateBooking());
               }}
               onCancel={() => console.log("CANCEL")}
             />

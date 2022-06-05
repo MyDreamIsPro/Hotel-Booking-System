@@ -26,7 +26,7 @@ import { formatDateWithHour } from "../../utils/date";
 
 //----------------------------
 const columns = [
-  { id: "user_id", label: "Mã nhân viên", minWidth: 150 },
+  { id: "user_id", label: "Mã người dùng", minWidth: 150 },
   { id: "full_name", label: "Họ và tên", minWidth: 120 },
   { id: "role", label: "Vai trò", minWidth: 120 },
   { id: "type", label: "Hành động", minWidth: 150 },
@@ -132,7 +132,7 @@ const LogList = () => {
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     logList.length > 0

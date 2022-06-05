@@ -28,8 +28,10 @@ const ItemStyle = styled(Box)(({ theme }) => ({
   flexDirection: "row",
   justifyContent: "space-between",
   marginBottom: 30,
+  height: 293,
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
+    height: "fit-content",
   },
   "&::after": {
     content: '""',
@@ -55,7 +57,6 @@ const ImageSection = styled(Box)(({ theme }) => ({
   borderBottomLeftRadius: 4,
   overflow: "hidden",
   marginRight: 10,
-  height: 325,
   [theme.breakpoints.down("md")]: {
     borderTopRightRadius: 4,
     borderBottomLeftRadius: 0,
@@ -195,19 +196,19 @@ const BookingItem = ({ setOpenImageViewer, setImages, hotel }) => {
           ))}
         </Stack>
         {/* Rating */}
-        <Stack flexDirection="row" alignItems="center" sx={{ my: 1 }}>
+        <Stack flexDirection="row" alignItems="center">
           <Rating
             name="half-rating"
-            defaultValue={4.5}
+            value={hotel.score}
             precision={0.5}
             readOnly
           />
           <Typography variant="body2" style={{ color: "#9E9E9E" }}>
-            (2.412 đánh giá)
+            ({hotel.count_review} đánh giá)
           </Typography>
         </Stack>
         {/* HOT */}
-        <Stack flexDirection="row" alignItems="center">
+        {/* <Stack flexDirection="row" alignItems="center">
           <Iconify
             sx={{ color: "error.main", marginRight: 1 }}
             icon="bi:flag-fill"
@@ -215,7 +216,7 @@ const BookingItem = ({ setOpenImageViewer, setImages, hotel }) => {
           <Typography variant="body2" fontWeight="bold" color="error">
             Chỉ còn 2 phòng, hãy nhanh tay đặt phòng nào!
           </Typography>
-        </Stack>
+        </Stack> */}
         {/* Price */}
         <Stack flexDirection="column" alignItems="flex-end">
           <Stack flexDirection="row" alignItems="center">

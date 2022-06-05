@@ -151,7 +151,7 @@ const BookingList = ({
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     bookingList.length > 0

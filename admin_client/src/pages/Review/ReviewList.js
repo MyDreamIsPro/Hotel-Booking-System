@@ -133,7 +133,7 @@ const ReviewList = ({ id, setId, setOpenReviewDialog, setDialogContent }) => {
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     reviewList.length > 0

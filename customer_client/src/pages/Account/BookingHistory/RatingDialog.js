@@ -22,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import NotificationContext from "../../../context/Context";
 import { createNewReview } from "../../../redux/actions/booking";
-import { STRING } from "../../../constants";
 
 // ----------------------------
 const RATING_MESSAGE = [
@@ -57,11 +56,6 @@ const RatingDialog = ({ open, setOpen, id, setId }) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   // END STEP STATES
-
-  // USER ID
-  const user = JSON.parse(
-    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
-  )._id;
 
   const handleClose = (event, reason) => {
     if (doing) return;
@@ -111,7 +105,6 @@ const RatingDialog = ({ open, setOpen, id, setId }) => {
       createNewReview(
         {
           booking: id,
-          user: user,
           title: title,
           content: content,
           overallScore: overallScore,

@@ -73,8 +73,12 @@ export const createRoomType = async (req, res) => {
       created_date: TIME_STAMP,
     });
     await newRoomType.save();
+    // FOR POPULATE PURPOSE
+    const returnedRoomType = await RoomType.findOne({ _id: newRoomType._id })
+      .populate("hotel", ["_id", "name"])
+      .populate("services", ["_id", "name"]);
     await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
-    return res.status(200).json(newRoomType);
+    return res.status(200).json(returnedRoomType);
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
@@ -123,7 +127,9 @@ export const updateRoomType = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    )
+      .populate("hotel", ["_id", "name"])
+      .populate("services", ["_id", "name"]);
 
     deleteImages(roomType.deleted_images);
 

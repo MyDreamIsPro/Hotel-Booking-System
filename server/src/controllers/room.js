@@ -40,8 +40,11 @@ export const createRoom = async (req, res) => {
       created_date: TIME_STAMP,
     });
     await newRoom.save();
+    const returnedRoom = await Room.findOne({ _id: newRoom._id })
+      .populate("hotel", ["_id", "name"])
+      .populate("room_type", ["_id", "name"]);
     await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
-    return res.status(200).json(newRoom);
+    return res.status(200).json(returnedRoom);
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
@@ -68,7 +71,9 @@ export const updateRoom = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    )
+      .populate("hotel", ["_id", "name"])
+      .populate("room_type", ["_id", "name"]);
     await logAction(req._id, INTEGER.LOG_UPDATE, TIME_STAMP);
     res.status(202).json(updatedRoom);
   } catch (error) {

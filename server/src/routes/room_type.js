@@ -12,6 +12,7 @@ import { roomTypeUploader } from "../middlewares/uploader.js";
 
 const router = express.Router();
 
+// ADMIN
 router.get("/", adminAuthMiddleware, getAllRoomType);
 router.get("/by_hotel/:id", adminAuthMiddleware, getRoomTypeByHotel);
 router.post(
@@ -25,6 +26,8 @@ router.put(
   updateRoomType
 );
 router.delete("/delete/:id", adminAuthMiddleware, deleteRoomType);
+
+// CUSTOMER
 router.post("/search/:hotel_id", getAvailableRoomType);
 
 export default router;

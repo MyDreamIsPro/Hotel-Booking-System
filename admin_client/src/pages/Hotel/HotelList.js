@@ -102,7 +102,7 @@ const HotelList = ({ setEditedId, setOpenEditDialog, setOpenDeleteDialog }) => {
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     hotelList.length > 0

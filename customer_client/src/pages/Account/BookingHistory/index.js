@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import NotificationContext from "../../../context/Context";
 // logic custom
 import { getAllBookingByUser } from "../../../redux/actions/booking";
-import { STRING } from "../../../constants";
 //#region CSS
 //#endregion
 
@@ -35,15 +34,11 @@ const BookingHistory = () => {
     if (filterStatus === 0) return state.booking;
     return state.booking.filter((item) => item.status === filterStatus);
   });
-  const userId = JSON.parse(
-    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
-  )._id;
 
   useEffect(() => {
     let isMounted = true;
     dispatch(
       getAllBookingByUser(
-        userId,
         () => {
           if (isMounted) {
             setIsLoading(false);
@@ -67,7 +62,7 @@ const BookingHistory = () => {
     );
 
     return () => (isMounted = false);
-  }, [dispatch, context, navigate, userId]);
+  }, [dispatch, navigate]);
 
   return (
     <Box
@@ -81,7 +76,7 @@ const BookingHistory = () => {
           <LoadingItem />
           <LoadingItem />
         </>
-      ) : bookingList.length || filterStatus !== 0 > 0 ? (
+      ) : bookingList.length > 0 || filterStatus !== 0 ? (
         <>
           <Filter
             number={bookingList.length}

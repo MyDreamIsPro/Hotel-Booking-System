@@ -13,6 +13,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import SlideTransition from "../../../components/SlideTransition";
 import Iconify from "../../../components/Iconify";
+import { formatNumber } from "../../../utils/Number";
 
 //#region CSS
 const RootStyle = styled("div")(({ theme }) => ({
@@ -135,6 +136,9 @@ const Viewer = ({ open, setOpen, data }) => {
             </Typography>
             <Typography>
               Số lượng khách: {data?.adult} người lớn - {data?.kid} trẻ em
+            </Typography>
+            <Typography>
+              Giá thuê: {formatNumber(data.rent_bill)} đ/đêm
             </Typography>
           </InfoSection>
         </RootStyle>

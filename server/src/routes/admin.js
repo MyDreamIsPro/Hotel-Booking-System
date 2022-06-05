@@ -28,7 +28,7 @@ router.post(
   updateInfo
 );
 
-// management
+// ADMIN
 router.get("/user/list/form", adminAuthMiddleware, getAllUserForForm);
 
 export default router;

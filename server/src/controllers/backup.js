@@ -19,7 +19,7 @@ const logAction = async (user, type, time) => {
 
 export const getAllBackup = async (req, res) => {
   try {
-    const backupList = await Backup.find();
+    const backupList = await Backup.find().sort({ created_date: -1 });
     setTimeout(() => {
       res.status(200).json(backupList);
     }, 1000);
@@ -54,12 +54,13 @@ export const createBackup = async (req, res) => {
         const originalImagePath = "STATIC";
         cpSync(originalImagePath, imagePath, { recursive: true });
         const T2 = performance.now();
+        const input_duration = msToTime(T2 - T1);
         const TIME_STAMP = new Date();
         const backup = new Backup({
           name: backupFolderName,
           user: full_name,
           detail: data.detail,
-          duration: msToTime(T2 - T1),
+          duration: input_duration,
           last_using: TIME_STAMP,
           created_date: TIME_STAMP,
         });

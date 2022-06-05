@@ -39,7 +39,10 @@ const Booking = () => {
   );
   const [open, setOpen] = useState(false);
   const [openCompleteDialog, setOpenCompleteDialog] = useState(false);
-  const isValidBooking = useMemo(() => data && Date.now() < data.expire, []);
+  const isValidBooking = useMemo(
+    () => data && Date.now() < data.expire,
+    [data]
+  );
   return (
     <Page title="Hóa đơn | TuanVQ">
       <Container maxWidth="lg" style={{ paddingTop: 20 }}>

@@ -8,12 +8,13 @@ export default (state = [], action) => {
       return [action.payload, ...state];
     case STRING.DELETE_BOOKING:
       return state.filter((booking) => booking._id !== action.payload);
-    case STRING.CHECK_IN_BOOKING ||
-      STRING.CHECK_OUT_BOOKING ||
-      STRING.CANCEL_BOOKING:
+    case STRING.UPDATE_BOOKING:
       return state.map((booking) =>
         booking._id !== action.payload._id ? booking : action.payload
       );
+    // return state.map((room_type) =>
+    //   room_type._id !== action.payload._id ? room_type : action.payload
+    // );
     default:
       return state;
   }

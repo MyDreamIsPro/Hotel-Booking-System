@@ -4,9 +4,9 @@ import { STRING } from "../../constants";
 
 //ACTION creators
 export const getAllBookingByUser =
-  (userId, performSuccess, performFailure) => async (dispatch) => {
+  (performSuccess, performFailure) => async (dispatch) => {
     try {
-      const { data } = await api.getAllBookingByUser(userId);
+      const { data } = await api.getAllBookingByUser();
       dispatch({ type: STRING.GET_ALL_BOOKING_BY_USER, payload: data });
       performSuccess();
     } catch (error) {

@@ -9,15 +9,17 @@ import User from "./pages/User";
 import Hotel from "./pages/Hotel";
 import Room from "./pages/Room";
 import Booking from "./pages/Booking";
+import Discount from "./pages/Discount";
 import Expense from "./pages/Expense";
 import RoomService from "./pages/RoomService";
 import RoomType from "./pages/RoomType";
 import Log from "./pages/Log";
 import Review from "./pages/Review";
-import Test from "./pages/Test";
 import BackupRestore from "./pages/BackupRestore";
 import Settings from "./pages/Settings";
+import Combo from "./pages/Combo";
 import NotFound from "./pages/NotFound";
+import Test from "./pages/Test";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -36,9 +38,11 @@ export default function AppRoutes() {
           <Route index element={<Navigate to="/room/list" replace />} />
           <Route path="list" element={<Room />} />
           <Route path="service" element={<RoomService />} />
+          <Route path="combo" element={<Combo />} />
           <Route path="type" element={<RoomType />} />
         </Route>
         <Route path="booking" element={<Booking />} />
+        <Route path="discount" element={<Discount />} />
         <Route path="expense" element={<Expense />} />
         <Route path="backup-restore" element={<BackupRestore />} />
         <Route path="log" element={<Log />} />

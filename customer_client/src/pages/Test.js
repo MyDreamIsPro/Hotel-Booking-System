@@ -1,46 +1,58 @@
-import { useState, useEffect } from "react";
+import * as React from "react";
+import { TextField, styled, Box, Badge } from "@mui/material";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateRangePickerDay as MuiDateRangePickerDay } from "@mui/x-date-pickers-pro/DateRangePickerDay";
+import addDays from "date-fns/addDays";
+import isSameDay from "date-fns/isSameDay";
+import { formatDateWithHour } from "../utils/Date";
+
 import Page from "../components/Page";
-import { Button, TextField } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
-import { test } from "../api/test";
-import { checkPaymentReturn } from "../api/booking";
+
+const highlightedDays = [
+  addDays(new Date().setHours(0, 0, 0, 0), 1).getTime(),
+  addDays(new Date().setHours(0, 0, 0, 0), 2).getTime(),
+  addDays(new Date().setHours(0, 0, 0, 0), 3).getTime(),
+  addDays(new Date().setHours(0, 0, 0, 0), 20).getTime(),
+  addDays(new Date().setHours(0, 0, 0, 0), 70).getTime(),
+];
+
+const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
+  const isSeleted = highlightedDays.indexOf(date.getTime()) >= 0;
+  return (
+    <Badge
+      key={date.toString()}
+      overlap="circular"
+      badgeContent={isSeleted ? "🌚" : undefined}
+    >
+      <MuiDateRangePickerDay {...dateRangePickerDayProps} />{" "}
+    </Badge>
+  );
+};
 
 export default function Test() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [amount, setAmount] = useState(0);
-  useEffect(() => {
-    const vnp_params = {};
-    for (const [key, value] of searchParams) {
-      vnp_params[key] = value;
-    }
-    console.log(vnp_params);
-    checkPaymentReturn(vnp_params)
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
-  }, []);
-  const handleTest = () => {
-    test({ amount: amount })
-      .then((res) => {
-        console.log(res.data);
-        window.location.href = res.data;
-      })
-      .catch((err) => console.log(err));
-  };
+  const [value, setValue] = React.useState([null, null]);
   return (
-    <Page title="TEST | Tuanvq" style={{ paddingTop: 200 }}>
-      <TextField
-        label="Giá"
-        value={amount}
-        type="number"
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        onClick={handleTest}
-        style={{ marginTop: 50, padding: 50 }}
-      >
-        TEST
-      </Button>
+    <Page title="TEST">
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DateRangePicker
+          startText="Check-in"
+          endText="Check-out"
+          value={value}
+          renderDay={renderWeekPickerDay}
+          onChange={(newValue) => {
+            setValue(newValue);
+          }}
+          renderInput={(startProps, endProps) => (
+            <React.Fragment>
+              <TextField {...startProps} />
+              <Box sx={{ mx: 2 }}> to </Box>
+              <TextField {...endProps} />
+            </React.Fragment>
+          )}
+        />
+      </LocalizationProvider>
     </Page>
   );
 }

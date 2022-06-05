@@ -19,6 +19,8 @@ import { deleteRoomType } from "../redux/actions/room_type";
 import { deleteRoom } from "../redux/actions/room";
 import { deleteBackup } from "../redux/actions/backup";
 import { deleteExpense } from "../redux/actions/expense";
+import { deleteDiscount } from "../redux/actions/discount";
+import { deleteCombo } from "../redux/actions/combo";
 
 // ----------------------------
 const ConfirmationDialog = ({
@@ -81,6 +83,12 @@ const ConfirmationDialog = ({
         break;
       case "EXPENSE":
         dispatch(deleteExpense(id, handleSuccess, handleFailure));
+        break;
+      case "DISCOUNT":
+        dispatch(deleteDiscount(id, handleSuccess, handleFailure));
+        break;
+      case "COMBO":
+        dispatch(deleteCombo(id, handleSuccess, handleFailure));
         break;
       default:
         alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");

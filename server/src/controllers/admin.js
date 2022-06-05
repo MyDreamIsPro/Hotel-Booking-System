@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
@@ -54,10 +53,8 @@ export const changePassword = async (req, res) => {
 
 export const updateInfo = async (req, res) => {
   const user = req.body;
-  if (!mongoose.Types.ObjectId.isValid(user._id))
-    return res.status(401).send(STRING.AUTHENTICATION_FAILED);
   try {
-    await User.findByIdAndUpdate(user._id, { ...user }, { new: true });
+    await User.findByIdAndUpdate(req._id, { ...user }, { new: true });
     return res.status(200).send("Update completed");
   } catch (error) {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
@@ -109,7 +106,6 @@ export const login = async (req, res) => {
         secure: false,
       })
       .json({
-        _id: existedUser._id,
         full_name: existedUser.full_name,
         profile_image: existedUser.profile_image,
         role: existedUser.role,
@@ -149,7 +145,6 @@ export const signup = async (req, res) => {
         secure: false,
       })
       .json({
-        _id: newUser._id,
         full_name: newUser.full_name,
         profile_image: newUser.profile_image,
         role: newUser.role,

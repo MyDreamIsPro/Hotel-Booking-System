@@ -1,21 +1,25 @@
+import { useState, useEffect } from "react";
 // UI lib
 import {
   Box,
   Button,
   Divider,
+  FormControl,
+  FormControlLabel,
   IconButton,
+  Radio,
+  RadioGroup,
   Stack,
   styled,
   Tooltip,
   Typography,
+  Collapse,
 } from "@mui/material";
-
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 // UI custom
 import Iconify from "../../../components/Iconify";
 
 // logic lib
-import { Link as RouterLink } from "react-router-dom";
-
 // logic custom
 import { formatNumber } from "../../../utils/Number";
 
@@ -55,6 +59,8 @@ const InfoSection = styled(Box)(({ theme }) => ({
 const InfoButton = styled(Typography)(({ theme }) => ({
   cursor: "pointer",
   color: theme.palette.primary.main,
+  width: "fit-content",
+  userSelect: "none",
   "&:hover": {
     textDecoration: "underline",
   },
@@ -63,22 +69,45 @@ const InfoButton = styled(Typography)(({ theme }) => ({
 
 //----------------------------
 const Item = ({
+  comboList,
   setOpenViewer,
   setDataViewer,
   roomType,
   selectedRooms,
   setSelectedRooms,
+  selectedComboList,
+  setSelectedComboList,
 }) => {
+  const [selectedCombo, setSelectedCombo] = useState(0);
+  const [openCollapse, setOpenCollapse] = useState(false);
+  const [amount, setAmount] = useState(
+    roomType.rent_bill + comboList[0].amount
+  );
+
+  const handleChange = (event) => {
+    setSelectedCombo(event.target.value);
+  };
+
   const handleSelectRoom = () => {
     setSelectedRooms([
       ...selectedRooms,
-      { _id: roomType._id, name: roomType.name, rent_bill: roomType.rent_bill },
+      { _id: roomType._id, name: roomType.name, rent_bill: amount },
     ]);
+    setSelectedComboList([...selectedComboList, comboList[selectedCombo]._id]);
+    setOpenCollapse(true);
   };
+
+  useEffect(() => {
+    setAmount(roomType.rent_bill + comboList[selectedCombo].amount);
+  }, [selectedCombo, comboList, roomType.rent_bill]);
 
   const handleOpenViewer = () => {
     setDataViewer(roomType);
     setOpenViewer(true);
+  };
+
+  const handleToggleCollapse = () => {
+    setOpenCollapse(!openCollapse);
   };
   return (
     <RootStyle>
@@ -95,9 +124,9 @@ const Item = ({
         />
       </ImageSection>
       <InfoSection>
-        <Typography variant="h5">{roomType.name}</Typography>
+        <Typography variant="h4">{roomType.name}</Typography>
         <Stack
-          sx={{ width: "100%", height: 50 }}
+          sx={{ width: "100%", my: 0.5 }}
           alignItems="center"
           flexDirection="row"
         >
@@ -105,8 +134,8 @@ const Item = ({
             icon="bi:crop"
             style={{ marginRight: 10, width: 20, height: 20 }}
           />
-          <Typography variant="body2" style={{ marginRight: 10 }}>
-            {formatNumber(roomType.size)}m²
+          <Typography variant="body1">
+            {formatNumber(roomType.size)} m²
           </Typography>
           <Divider
             orientation="vertical"
@@ -114,6 +143,7 @@ const Item = ({
               height: 15,
               width: 2,
               backgroundColor: "#252525",
+              marginLeft: 10,
               marginRight: 10,
             }}
           />
@@ -121,13 +151,56 @@ const Item = ({
             style={{ marginRight: 15, width: 20, height: 20 }}
             icon="bi:people"
           />
-          <Typography variant="body2" style={{ marginRight: 10 }}>
-            {roomType.adult} người lớn và {roomType.kid} trẻ em
+          <Typography variant="body1" style={{ marginRight: 10 }}>
+            {roomType.adult} người lớn - {roomType.kid} trẻ em
           </Typography>
         </Stack>
+        <Typography variant="body1" mb={0.5}>
+          Giá thuê: {formatNumber(roomType.rent_bill)}đ/đêm
+        </Typography>
         <InfoButton variant="body1" onClick={handleOpenViewer}>
           Chi tiết phòng
         </InfoButton>
+        <InfoButton variant="body1" onClick={handleToggleCollapse}>
+          Danh sách gói
+        </InfoButton>
+        <Collapse in={openCollapse} timeout="auto" unmountOnExit>
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={selectedCombo}
+              onChange={handleChange}
+            >
+              {comboList.map((item, index) => (
+                <FormControlLabel
+                  key={index}
+                  value={index}
+                  control={<Radio />}
+                  label={
+                    <Stack flexDirection="row" alignItems="center">
+                      <Typography mr={1}>
+                        <span style={{ fontWeight: "bold" }}>
+                          {formatNumber(item.name)}
+                        </span>{" "}
+                        -{" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          {formatNumber(item.amount)}đ
+                        </span>
+                        /đêm
+                      </Typography>
+                      <Tooltip title={item.detail} arrow>
+                        <IconButton size="small">
+                          <HelpOutlineIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                  }
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </Collapse>
         <Stack
           flexDirection="column"
           alignItems="flex-end"
@@ -139,13 +212,13 @@ const Item = ({
             alignItems="center"
             style={{ marginBottom: 10 }}
           >
-            <Typography variant="body2">Chỉ từ</Typography>
+            <Typography variant="body2">Tổng</Typography>
             <Typography
               variant="h4"
               fontWeight={700}
               sx={{ color: "primary.main", px: 1 }}
             >
-              {formatNumber(roomType.rent_bill)} đ
+              {formatNumber(amount)} đ
             </Typography>
             <Typography variant="body2">/ đêm</Typography>
           </Stack>

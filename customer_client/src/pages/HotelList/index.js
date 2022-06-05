@@ -38,7 +38,7 @@ const ResultStyle = styled(Box)(({ theme }) => ({
 
 const HotelList = () => {
   const [result, setResult] = useState({ loading: false, num: -1 });
-  const [filterValue, setFilterValue] = useState(1);
+  const [sortValue, setSortValue] = useState(1);
   const [openImageViewer, setOpenImageViewer] = useState(false);
   const [images, setImages] = useState([]);
 
@@ -65,19 +65,19 @@ const HotelList = () => {
                       name="filter"
                       variant="outlined"
                       select
-                      value={filterValue}
+                      value={sortValue}
                       disabled={result.loading}
-                      onChange={(e) => setFilterValue(e.target.value)}
+                      onChange={(e) => setSortValue(e.target.value)}
                     >
-                      <MenuItem value={1}>Gần đây nhất</MenuItem>
-                      <MenuItem value={2}>Đánh giá, cao đến thấp</MenuItem>
-                      <MenuItem value={3}>Đánh giá, thấp đến cao</MenuItem>
-                      <MenuItem value={4}>Hữu ích nhất</MenuItem>
+                      <MenuItem value={1}>Giá thấp đến cao</MenuItem>
+                      <MenuItem value={2}>Giá cao đến thấp</MenuItem>
+                      <MenuItem value={3}>Hữu ích nhất</MenuItem>
                     </TextField>
                   </Stack>
                 </ResultStyle>
               </Container>
               <List
+                sortValue={sortValue}
                 setOpenImageViewer={setOpenImageViewer}
                 setImages={setImages}
               />

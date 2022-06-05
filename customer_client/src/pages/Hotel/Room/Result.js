@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 // UI lib
 import {
   Accordion,
@@ -9,6 +10,7 @@ import {
   IconButton,
   Stack,
   styled,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -21,9 +23,10 @@ import { useNavigate } from "react-router-dom";
 // logic custom
 import { formatDate, getDiffDays } from "../../../utils/Date";
 import { formatNumber } from "../../../utils/Number";
-import { STRING } from "../../../constants";
+import { INTEGER, STRING } from "../../../constants";
 import { holdRoom } from "../../../api/room";
 import { checkAuth } from "../../../api/user";
+import { checkDiscount } from "../../../api/discount";
 
 //#region CSS
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -66,16 +69,33 @@ const Result = ({
   visitor,
   selectedRooms,
   setSelectedRooms,
+  selectedComboList,
+  setSelectedComboList,
   setOpenNotEnoughDialog,
   setNotEnoughRooms,
   setOpenAuthenticatedDialog,
 }) => {
   const navigate = useNavigate();
+  const [code, setCode] = useState("");
+  const [discount, setDiscount] = useState(null);
   const diffDays = getDiffDays(startDate, endDate);
 
-  const amount =
-    selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
-    diffDays;
+  const basedAmount = useMemo(
+    () =>
+      selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
+      diffDays,
+    [diffDays, selectedRooms]
+  );
+
+  const amount = useMemo(
+    () =>
+      discount
+        ? discount.type === INTEGER.AMOUNT_DISCOUNT
+          ? basedAmount - discount.value
+          : basedAmount - basedAmount * (discount.value / 100)
+        : basedAmount,
+    [basedAmount, discount]
+  );
 
   const validateBookingInfo = () => {
     if (selectedRooms.length > 0) {
@@ -94,9 +114,12 @@ const Result = ({
               startDate: startDate,
               endDate: endDate,
               visitor: visitor,
+              discount: discount,
               selectedRooms: selectedRooms,
+              combo_list: selectedComboList,
               expire: Date.now() + HOLDING_TIME, //add 10 minutes
               amount: amount,
+              basedAmount: basedAmount,
               roomIds: res.data,
             })
           );
@@ -126,7 +149,34 @@ const Result = ({
     setSelectedRooms(
       selectedRooms.filter((room, index) => index !== remove_index)
     );
+    setSelectedComboList(
+      selectedComboList.filter((combo, index) => index !== remove_index)
+    );
   };
+
+  const applyDiscount = () => {
+    if (code === "") {
+      alert("Quý khách vui lòng nhập mã khuyến mãi");
+      return;
+    }
+    checkDiscount({ code: code, amount: amount })
+      .then((res) => {
+        setDiscount(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 409) alert(err.response.data);
+        else if (err.response.status === 401) {
+          alert("Phiên đăng nhập đã hết hạn");
+          navigate("/login", { replace: true });
+        }
+      });
+  };
+
+  const removeDiscount = () => {
+    setDiscount(null);
+    setCode("");
+  };
+
   return (
     <RootStyle boxShadow={3}>
       <Typography variant="h5" fontWeight="bold" textAlign="center">
@@ -279,6 +329,39 @@ const Result = ({
           height: 1.5,
         }}
       />
+      {/* DISCOUNT */}
+      <Stack
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        my={2}
+      >
+        <TextField
+          size="small"
+          label="Mã khuyến mãi"
+          name="discount"
+          variant="outlined"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          disabled={discount !== null || selectedRooms.length === 0}
+        />
+        <Button
+          variant="contained"
+          color={discount ? "error" : "primary"}
+          onClick={discount ? removeDiscount : applyDiscount}
+          disabled={selectedRooms.length === 0}
+        >
+          {discount ? "Gỡ" : "Áp dụng"}
+        </Button>
+      </Stack>
+      <Divider
+        style={{
+          backgroundColor: "#637381",
+          marginTop: 10,
+          marginBottom: 10,
+          height: 1.5,
+        }}
+      />
       {/* PRICE */}
       <Stack
         flexDirection="row"
@@ -289,9 +372,40 @@ const Result = ({
           Tổng tiền:
         </Typography>
         <Typography variant="h5" color="primary" fontWeight="bold">
-          {formatNumber(amount)} <span style={{ fontSize: 17 }}>đ</span>
+          {formatNumber(basedAmount)} <span style={{ fontSize: 17 }}>đ</span>
         </Typography>
       </Stack>
+      {/* PRICE AFTER APPLYING DISCOUNT */}
+      {discount && (
+        <>
+          <Stack
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Khuyến mãi:
+            </Typography>
+            <Typography variant="h5" color="primary" fontWeight="bold">
+              -{formatNumber(discount.value)}
+              {discount.type === INTEGER.PERCENTAGE_DISCOUNT && "%"}
+            </Typography>
+          </Stack>
+          {/* PRICE AFTER APPLYING DISCOUNT */}
+          <Stack
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Sau khuyến mãi:
+            </Typography>
+            <Typography variant="h5" color="primary" fontWeight="bold">
+              {formatNumber(amount)} <span style={{ fontSize: 17 }}>đ</span>
+            </Typography>
+          </Stack>
+        </>
+      )}
       {/* BUTTON */}
       <Button
         fullWidth

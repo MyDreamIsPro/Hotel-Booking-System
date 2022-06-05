@@ -32,8 +32,6 @@ const DetailDialog = ({ open, setOpen, id }) => {
     return open && id ? state.review.find((item) => item._id === id) : null;
   });
 
-  console.log(review);
-
   const handleClose = () => {
     setOpen(false);
   };

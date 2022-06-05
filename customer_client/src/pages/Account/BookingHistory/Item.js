@@ -15,7 +15,6 @@ import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 import Iconify from "../../../components/Iconify";
 // logic lib
 import { Link as RouterLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
 // logic custom
 import { formatNumber } from "../../../utils/Number";
 import { formatDate } from "../../../utils/Date";
@@ -34,7 +33,6 @@ const RootStyle = styled(Box)(({ theme }) => ({
 }));
 const ImageSection = styled("div")(({ theme }) => ({
   width: "30%",
-  backgroundColor: "red",
   marginRight: 20,
   [theme.breakpoints.down(922)]: {
     width: "100%",

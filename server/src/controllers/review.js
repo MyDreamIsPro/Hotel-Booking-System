@@ -22,6 +22,7 @@ export const createReview = async (req, res) => {
     const TIME_STAMP = new Date();
     const new_review = new Review({
       ...review,
+      user: req._id,
       created_date: TIME_STAMP,
     });
     await new_review.save();
@@ -155,7 +156,7 @@ export const getAllReviewByPagination = async (req, res) => {
 };
 
 export const getAllReviewByUser = async (req, res) => {
-  const user = req.params.id;
+  const user = req._id;
   try {
     const review = await Review.find({ user: user }).populate("booking", [
       "number",
@@ -183,7 +184,8 @@ export const getAllReviewForManagement = async (req, res) => {
           model: "Hotel",
           select: "name",
         },
-      });
+      })
+      .sort({ created_date: -1 });
     setTimeout(() => {
       res.status(202).send(review);
     }, 1000);
@@ -192,6 +194,7 @@ export const getAllReviewForManagement = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
+
 export const acceptReview = async (req, res) => {
   const id = req.params.id;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -206,7 +209,17 @@ export const acceptReview = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    )
+      .populate("user", ["full_name", "phone"])
+      .populate({
+        path: "booking",
+        select: "number",
+        populate: {
+          path: "hotel",
+          model: "Hotel",
+          select: "name",
+        },
+      });
     await logAction(req._id, INTEGER.LOG_APPROVE_REVIEW, TIME_STAMP);
     res.status(202).send(updated_review);
   } catch (error) {
@@ -229,7 +242,17 @@ export const ignoreReview = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    )
+      .populate("user", ["full_name", "phone"])
+      .populate({
+        path: "booking",
+        select: "number",
+        populate: {
+          path: "hotel",
+          model: "Hotel",
+          select: "name",
+        },
+      });
     await logAction(req._id, INTEGER.LOG_REJECT_REVIEW, TIME_STAMP);
     res.status(202).send(updated_review);
   } catch (error) {
@@ -252,7 +275,17 @@ export const resetReview = async (req, res) => {
         modified_date: TIME_STAMP,
       },
       { new: true }
-    );
+    )
+      .populate("user", ["full_name", "phone"])
+      .populate({
+        path: "booking",
+        select: "number",
+        populate: {
+          path: "hotel",
+          model: "Hotel",
+          select: "name",
+        },
+      });
     await logAction(req._id, INTEGER.LOG_RESET_REVIEW, TIME_STAMP);
     res.status(202).send(updated_review);
   } catch (error) {

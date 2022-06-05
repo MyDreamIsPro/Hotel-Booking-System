@@ -25,8 +25,6 @@ import viLocale from "date-fns/locale/vi";
 // logic custom
 import CustomDateAdapter from "../../../components/CustomDateAdapter";
 import { getAvailableRoomType } from "../../../redux/actions/room_type";
-import { STRING } from "../../../constants";
-import { setDate } from "date-fns";
 //#region CSS
 const FilterStyle = styled(Stack)(({ theme }) => ({
   [theme.breakpoints.down(928)]: {

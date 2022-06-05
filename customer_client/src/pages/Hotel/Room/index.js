@@ -57,6 +57,7 @@ const Room = ({ hotel }) => {
   const [endDate, setEndDate] = useState(new Date(Date.now() + 86400000));
   const [visitor, setVisitor] = useState({ adult: 1, kid: 0, baby: 0 });
   const [selectedRooms, setSelectedRooms] = useState([]);
+  const [selectedComboList, setSelectedComboList] = useState([]);
   return (
     <Box
       style={{
@@ -109,10 +110,13 @@ const Room = ({ hotel }) => {
               {result.num > 0 ? (
                 <>
                   <List
+                    comboList={hotel.combo}
                     setOpenViewer={setOpenViewer}
                     setDataViewer={setDataViewer}
                     selectedRooms={selectedRooms}
                     setSelectedRooms={setSelectedRooms}
+                    selectedComboList={selectedComboList}
+                    setSelectedComboList={setSelectedComboList}
                   />
                   <Viewer
                     data={dataViewer}
@@ -174,6 +178,8 @@ const Room = ({ hotel }) => {
           visitor={visitor}
           selectedRooms={selectedRooms}
           setSelectedRooms={setSelectedRooms}
+          selectedComboList={selectedComboList}
+          setSelectedComboList={setSelectedComboList}
           setOpenNotEnoughDialog={setOpenNotEnoughDialog}
           setNotEnoughRooms={setNotEnoughRooms}
           setOpenAuthenticatedDialog={setOpenAuthenticatedDialog}

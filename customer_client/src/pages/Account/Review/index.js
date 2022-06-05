@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import NotificationContext from "../../../context/Context";
 // logic custom
 import { getAllReviewByUser } from "../../../redux/actions/review";
-import { STRING } from "../../../constants";
 //#region CSS
 //#endregion
 
@@ -31,15 +30,11 @@ const Review = () => {
 
     return state.review.filter((item) => item.status === filterStatus);
   });
-  const userId = JSON.parse(
-    localStorage.getItem(STRING.LOCAL_STORAGE_PROFILE_KEY)
-  )._id;
 
   useEffect(() => {
     let isMounted = true;
     dispatch(
       getAllReviewByUser(
-        userId,
         () => {
           if (isMounted) {
             setIsLoading(false);
@@ -63,7 +58,7 @@ const Review = () => {
     );
 
     return () => (isMounted = false);
-  }, [dispatch, context, userId, navigate]);
+  }, [dispatch, context, navigate]);
 
   return (
     <Box

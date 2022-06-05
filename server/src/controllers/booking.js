@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
+import Discount from "../models/discount.js";
 import Booking from "../models/booking.js";
+import UserUseDiscount from "../models/user_use_discount.js";
 import Room from "../models/room.js";
 import Log from "../models/log.js";
 import { INTEGER, STRING } from "../constants/constants.js";
@@ -31,8 +33,27 @@ export const createBooking = async (req, res) => {
       .sort({ number: -1 })
       .limit(1)
       .then((data) => (data[0] ? data[0].number : 0));
+
+    // HANDLE DISCOUNT
+    if (booking.discount) {
+      await Discount.updateOne(
+        { _id: booking.discount },
+        {
+          $inc: { quantity: -1 },
+        }
+      );
+    }
+    // MARK USER USED DISCOUNT
+    const userUseDiscount = new UserUseDiscount({
+      discount: booking.discount,
+      user: req._id,
+      created_date: TIME_STAMP,
+    });
+    await userUseDiscount.save();
+
     const newBooking = new Booking({
       ...booking,
+      user: req._id,
       number: maxBookingNumber + 1,
       effective_from: new Date(booking.effective_from),
       effective_to: new Date(booking.effective_to),
@@ -40,15 +61,10 @@ export const createBooking = async (req, res) => {
       created_date: TIME_STAMP,
     });
     // Change room status to FILLED
-    for (let room of booking.room_list) {
-      await Room.findByIdAndUpdate(
-        room,
-        {
-          status: INTEGER.ROOM_RENTED,
-        },
-        { new: true }
-      );
-    }
+    await Room.updateMany(
+      { _id: { $in: booking.room_list } },
+      { $set: { status: INTEGER.ROOM_RENTED } }
+    );
     // Save booking
     await newBooking.save();
     await logAction(req._id, INTEGER.LOG_BOOK_BOOKING, TIME_STAMP);
@@ -63,9 +79,7 @@ export const createBooking = async (req, res) => {
 };
 
 export const getAllBookingByUser = async (req, res) => {
-  const userId = req.params.userId;
-  if (!mongoose.Types.ObjectId.isValid(userId))
-    return res.status(401).send(STRING.AUTHENTICATION_FAILED);
+  const userId = req._id;
   try {
     const bookingList = await Booking.find({ user: userId })
       .populate("hotel", ["name", "images"])
@@ -160,13 +174,30 @@ export const checkPaymentReturn = async (req, res) => {
         ? "SUCCESS"
         : "FAIL";
 
+    // PAYMENT SUCCESSFUL
     if (PAYMENT_RESULT === "SUCCESS") {
-      // PAYMENT SUCCESSFUL
       const TIME_STAMP = new Date();
       const maxBookingNumber = await Booking.find()
         .sort({ number: -1 })
         .limit(1)
         .then((data) => (data[0] ? data[0].number : 0));
+      // HANDLE DISCOUNT
+      if (booking.discount) {
+        await Discount.updateOne(
+          { _id: booking.discount },
+          {
+            $inc: { quantity: -1 },
+          }
+        );
+      }
+      // MARK USER USED DISCOUNT
+      const userUseDiscount = new UserUseDiscount({
+        discount: booking.discount,
+        user: booking.user,
+        created_date: TIME_STAMP,
+      });
+      await userUseDiscount.save();
+
       const newBooking = new Booking({
         ...booking,
         number: maxBookingNumber + 1,
@@ -205,12 +236,57 @@ export const checkPaymentReturn = async (req, res) => {
   }
 };
 
+export const cancelBookingByUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const TIME_STAMP = new Date();
+    const booking = await Booking.findOne({ _id: id });
+    if (!booking) return res.status(404).send(STRING.BOOKING_NOT_FOUND);
+
+    const cancelledBooking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        status: INTEGER.BOOKING_CANCELED,
+        modified_date: TIME_STAMP,
+      },
+      { new: true }
+    ).populate("hotel", ["_id", "name", "images"]);
+
+    if (cancelledBooking.discount) {
+      await Discount.updateOne(
+        { _id: cancelledBooking.discount },
+        {
+          $inc: { quantity: 1 },
+        }
+      );
+
+      // REMOVE USER FROM USING THE DISCOUNT
+      await UserUseDiscount.deleteOne({
+        discount: cancelledBooking.discount,
+        user: req._id,
+      });
+    }
+
+    await Room.updateMany(
+      { _id: { $in: cancelledBooking.room_list } },
+      { status: INTEGER.ROOM_EMPTY }
+    );
+    await logAction(req._id, INTEGER.LOG_CANCEL_BOOKING, TIME_STAMP);
+    res.status(200).json(cancelledBooking);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
 // MANAGEMENT
 export const getAllBookingForAdmin = async (req, res) => {
   try {
     const booking = await Booking.find()
       .populate("hotel", ["_id", "name"])
       .populate("user", ["_id", "full_name", "phone"])
+      .populate("discount", ["code", "title", "type", "value"])
+      .populate({ path: "combo_list", select: ["name", "amount"] })
       // NESTED POPULATION IN MONGOOSE
       .populate({
         path: "room_list",
@@ -220,7 +296,8 @@ export const getAllBookingForAdmin = async (req, res) => {
           model: "RoomType",
           select: "name rent_bill",
         },
-      });
+      })
+      .sort({ created_date: -1 });
     setTimeout(() => {
       res.status(200).json(booking);
     }, 1000);
@@ -236,12 +313,20 @@ export const cancelBooking = async (req, res) => {
     const TIME_STAMP = new Date();
     const booking = await Booking.findOne({ _id: id });
     if (!booking) return res.status(404).send(STRING.BOOKING_NOT_FOUND);
-    const cancelledBooking = await Booking.findByIdAndUpdate(id, {
-      status: INTEGER.BOOKING_CANCELED,
-      modified_date: TIME_STAMP,
-    })
+
+    const cancelledBooking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        status: INTEGER.BOOKING_CANCELED,
+        modified_date: TIME_STAMP,
+      },
+      { new: true }
+    )
       .populate("hotel", ["_id", "name"])
       .populate("user", ["_id", "full_name", "phone"])
+      .populate("discount", ["code", "title", "type", "value"])
+      .populate({ path: "combo_list", select: ["name", "amount"] })
+      // NESTED POPULATION IN MONGOOSE
       .populate({
         path: "room_list",
         select: "number",
@@ -251,6 +336,20 @@ export const cancelBooking = async (req, res) => {
           select: "name rent_bill",
         },
       });
+
+    if (cancelledBooking.discount) {
+      await Discount.updateOne(
+        { _id: cancelledBooking.discount },
+        {
+          $inc: { quantity: 1 },
+        }
+      );
+      // REMOVE USER FROM USING THE DISCOUNT
+      await UserUseDiscount.deleteOne({
+        discount: cancelledBooking.discount,
+        user: cancelledBooking.user,
+      });
+    }
     await Room.updateMany(
       { _id: { $in: cancelledBooking.room_list } },
       { status: INTEGER.ROOM_EMPTY }
@@ -269,12 +368,19 @@ export const checkInBooking = async (req, res) => {
     return res.status(404).send(STRING.BOOKING_NOT_FOUND);
   try {
     const TIME_STAMP = new Date();
-    const checkedInBooking = await Booking.findByIdAndUpdate(id, {
-      status: INTEGER.BOOKING_CHECK_IN,
-      modified_date: TIME_STAMP,
-    })
+    const checkedInBooking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        status: INTEGER.BOOKING_CHECK_IN,
+        modified_date: TIME_STAMP,
+      },
+      { new: true }
+    )
       .populate("hotel", ["_id", "name"])
       .populate("user", ["_id", "full_name", "phone"])
+      .populate("discount", ["code", "title", "type", "value"])
+      .populate({ path: "combo_list", select: ["name", "amount"] })
+      // NESTED POPULATION IN MONGOOSE
       .populate({
         path: "room_list",
         select: "number",
@@ -284,6 +390,7 @@ export const checkInBooking = async (req, res) => {
           select: "name rent_bill",
         },
       });
+
     await logAction(req._id, INTEGER.LOG_CHECK_IN_BOOKING, TIME_STAMP);
     res.status(200).json(checkedInBooking);
   } catch (error) {
@@ -298,12 +405,19 @@ export const checkOutBooking = async (req, res) => {
     return res.status(404).send(STRING.BOOKING_NOT_FOUND);
   try {
     const TIME_STAMP = new Date();
-    const checkedOutBooking = await Booking.findByIdAndUpdate(id, {
-      status: INTEGER.BOOKING_CHECK_OUT,
-      modified_date: TIME_STAMP,
-    })
+    const checkedOutBooking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        status: INTEGER.BOOKING_CHECK_OUT,
+        modified_date: TIME_STAMP,
+      },
+      { new: true }
+    )
       .populate("hotel", ["_id", "name"])
       .populate("user", ["_id", "full_name", "phone"])
+      .populate("discount", ["code", "title", "type", "value"])
+      .populate({ path: "combo_list", select: ["name", "amount"] })
+      // NESTED POPULATION IN MONGOOSE
       .populate({
         path: "room_list",
         select: "number",

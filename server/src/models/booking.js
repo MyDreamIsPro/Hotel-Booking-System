@@ -22,6 +22,16 @@ const BookingSchema = mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
     required: true,
   },
+  combo_list: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Combo" }],
+    required: true,
+  },
+  discount: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Discount",
+    default: null,
+    unique: false,
+  },
   amount: { type: Number, required: true },
   payment_method: { type: String, required: true },
   status: { type: Number, default: INTEGER.BOOKING_IN_PROGRESS },

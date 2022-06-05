@@ -4,6 +4,7 @@ import {
   getAllBookingByUser,
   getAllBookingForAdmin,
   cancelBooking,
+  cancelBookingByUser,
   checkInBooking,
   checkOutBooking,
   createPaymentUrl,
@@ -17,8 +18,8 @@ import {
 const router = express.Router();
 
 router.post("/new", userAuthMiddleware, createBooking);
-router.get("/list/:userId", userAuthMiddleware, getAllBookingByUser);
-router.get("/cancel/:id", userAuthMiddleware, cancelBooking);
+router.get("/list", userAuthMiddleware, getAllBookingByUser);
+router.get("/cancel/:id", userAuthMiddleware, cancelBookingByUser);
 router.post("/create-payment-url", createPaymentUrl);
 router.post("/check-payment-return", checkPaymentReturn);
 

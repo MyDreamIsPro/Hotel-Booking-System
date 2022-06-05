@@ -24,7 +24,7 @@ export const checkInBooking =
   (id, performSuccess, performFailure) => async (dispatch) => {
     try {
       const { data } = await api.checkInBooking(id);
-      dispatch({ type: STRING.CHECK_IN_BOOKING, payload: data });
+      dispatch({ type: STRING.UPDATE_BOOKING, payload: data });
       performSuccess();
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ export const checkOutBooking =
   (id, performSuccess, performFailure) => async (dispatch) => {
     try {
       const { data } = await api.checkOutBooking(id);
-      dispatch({ type: STRING.CHECK_OUT_BOOKING, payload: data });
+      dispatch({ type: STRING.UPDATE_BOOKING, payload: data });
       performSuccess();
     } catch (error) {
       console.log(error);
@@ -56,7 +56,7 @@ export const cancelBooking =
   (id, performSuccess, performFailure) => async (dispatch) => {
     try {
       const { data } = await api.cancelBooking(id);
-      dispatch({ type: STRING.CANCEL_BOOKING, payload: data });
+      dispatch({ type: STRING.UPDATE_BOOKING, payload: data });
       performSuccess();
     } catch (error) {
       console.log(error);

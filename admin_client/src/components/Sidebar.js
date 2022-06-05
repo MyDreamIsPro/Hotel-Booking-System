@@ -53,6 +53,10 @@ const links = [
         path: "/room/list",
       },
       {
+        text: "Gói dịch vụ",
+        path: "/room/combo",
+      },
+      {
         text: "Loại phòng",
         path: "/room/type",
       },
@@ -66,6 +70,12 @@ const links = [
     text: "Đơn đặt chỗ",
     icon: "akar-icons:schedule",
     path: "/booking",
+    isAdminRequired: false,
+  },
+  {
+    text: "Mã khuyến mãi",
+    icon: "ic:outline-discount",
+    path: "/discount",
     isAdminRequired: false,
   },
   {

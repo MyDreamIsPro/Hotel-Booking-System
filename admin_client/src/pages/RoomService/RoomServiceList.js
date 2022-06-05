@@ -99,7 +99,7 @@ const RoomServiceList = ({
     return () => {
       isMounted = false;
     };
-  }, [context, dispatch, navigate]);
+  }, [dispatch, navigate]);
 
   const rows =
     roomServiceList.length > 0

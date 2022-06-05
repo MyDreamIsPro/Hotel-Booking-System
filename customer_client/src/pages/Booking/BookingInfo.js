@@ -17,6 +17,7 @@ import Iconify from "../../components/Iconify";
 import { getDiffDays, formatDate } from "../../utils/Date";
 import { formatNumber } from "../../utils/Number";
 import useCountDown from "../../hooks/useCountDown";
+import { INTEGER } from "../../constants";
 
 //#region CSS
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -53,14 +54,9 @@ const BookingInfo = ({ data, setOpen }) => {
   const [timeLeft, setEndTime] = useCountDown(data.expire, () => setOpen(true));
   const diffDays = useMemo(
     () => getDiffDays(new Date(data.startDate), new Date(data.endDate)),
-    []
+    [data.startDate, data.endDate]
   );
-  const amount = useMemo(
-    () =>
-      data.selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
-      diffDays,
-    []
-  );
+
   //TIMER
   const minutes = Math.floor(timeLeft / 60000) % 60;
   const seconds = Math.floor(timeLeft / 1000) % 60;
@@ -231,6 +227,7 @@ const BookingInfo = ({ data, setOpen }) => {
           height: 1.5,
         }}
       />
+
       {/* PRICE */}
       <Stack
         flexDirection="row"
@@ -241,9 +238,42 @@ const BookingInfo = ({ data, setOpen }) => {
           Tổng tiền:
         </Typography>
         <Typography variant="h3" color="primary" fontWeight="bold">
-          {formatNumber(amount)} <span style={{ fontSize: 17 }}>đ</span>
+          {formatNumber(data.basedAmount)}{" "}
+          <span style={{ fontSize: 17 }}>đ</span>
         </Typography>
       </Stack>
+      {/* DISCOUNT */}
+      {data.discount && (
+        <>
+          <Stack
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Khuyến mãi:
+            </Typography>
+            <Typography variant="h3" color="primary" fontWeight="bold">
+              -{formatNumber(data.discount.value)}
+              {data.discount.type === INTEGER.PERCENTAGE_DISCOUNT && "%"}
+            </Typography>
+          </Stack>
+          {/* PRICE AFTER APPLYING DISCOUNT */}
+          <Stack
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Sau khuyến mãi:
+            </Typography>
+            <Typography variant="h3" color="primary" fontWeight="bold">
+              {formatNumber(data.amount)}{" "}
+              <span style={{ fontSize: 17 }}>đ</span>
+            </Typography>
+          </Stack>
+        </>
+      )}
     </RootStyle>
   );
 };
