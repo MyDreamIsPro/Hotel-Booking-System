@@ -14,6 +14,7 @@ const Booking = () => {
   const [editedId, setEditedId] = useState();
   // BOOKING DIALOG
   const [openBookingDialog, setOpenBookingDialog] = useState(false);
+  const [openPrinterDialog, setOpenPrinterDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState({
     title: "",
     content: "",

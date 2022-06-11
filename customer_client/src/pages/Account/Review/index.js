@@ -58,7 +58,7 @@ const Review = () => {
     );
 
     return () => (isMounted = false);
-  }, [dispatch, context, navigate]);
+  }, [dispatch, navigate]);
 
   return (
     <Box

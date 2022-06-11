@@ -147,7 +147,6 @@ const BookingOptionMenu = ({
           <ListItemText
             primary="Chi tiết"
             primaryTypographyProps={{ variant: "body2" }}
-            // sx={{ color: "primary.main" }}
           />
         </MenuItem>
       </Menu>

@@ -92,7 +92,7 @@ const Info = () => {
     return () => {
       isMounted = false;
     };
-  }, [navigate, context]);
+  }, [navigate]);
 
   const handleChangeAvatar = (image) => {
     setAvatar(image);

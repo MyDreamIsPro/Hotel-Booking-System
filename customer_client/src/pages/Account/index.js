@@ -5,9 +5,11 @@ import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 // UI custom
 import Page from "../../components/Page";
 import Info from "./Info";
+import Discount from "./Discount";
 import BookingHistory from "./BookingHistory";
 import Review from "./Review";
 import Authentication from "./Authentication";
@@ -60,24 +62,31 @@ const data = [
     page: <Info />,
   },
   {
+    tab: "discount",
+    icon: <CardGiftcardIcon />,
+    label: "QUÀ CỦA TÔI",
+    index: 1,
+    page: <Discount />,
+  },
+  {
     tab: "booking",
     icon: <CreditScoreIcon />,
     label: "LỊCH SỬ ĐẶT CHỖ",
-    index: 1,
+    index: 2,
     page: <BookingHistory />,
   },
   {
     tab: "review",
     icon: <ThumbsUpDownIcon />,
     label: "BÀI NHẬN XÉT",
-    index: 2,
+    index: 3,
     page: <Review />,
   },
   {
     tab: "security",
     icon: <SecurityIcon />,
     label: "MẬT KHẨU VÀ BẢO MẬT",
-    index: 3,
+    index: 4,
     page: <Authentication />,
   },
 ];

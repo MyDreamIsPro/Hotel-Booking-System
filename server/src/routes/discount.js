@@ -5,6 +5,7 @@ import {
   deleteDiscount,
   getAllDiscount,
   updateDiscount,
+  getDiscountByUser,
 } from "../controllers/discount.js";
 import {
   adminAuthMiddleware,
@@ -21,5 +22,6 @@ router.delete("/delete/:id", adminAuthMiddleware, deleteDiscount);
 
 // CUSTOMER
 router.post("/check", userAuthMiddleware, checkDiscount);
+router.get("/user", userAuthMiddleware, getDiscountByUser);
 
 export default router;

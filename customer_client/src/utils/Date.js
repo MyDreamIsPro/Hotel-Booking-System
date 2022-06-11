@@ -34,6 +34,7 @@ export const addMonth = (originalDate, numberOfMonths) => {
   return newDate;
 };
 export const getDiffDays = (begin, end) => Math.floor((end - begin) / 86400000); // 1000ms * 60s * 60m * 24h
+
 export const getDiffMonths = (begin, end) =>
   end.getMonth() +
   12 * end.getFullYear() -

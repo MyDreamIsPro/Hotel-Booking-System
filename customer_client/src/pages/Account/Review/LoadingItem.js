@@ -1,5 +1,4 @@
-import { Skeleton, Stack, styled } from "@mui/material";
-import { Box } from "@mui/system";
+import { Skeleton, Stack, styled, Box } from "@mui/material";
 
 //#region CSS
 const RootStyle = styled(Box)(({ theme }) => ({

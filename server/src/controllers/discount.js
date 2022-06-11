@@ -145,3 +145,22 @@ export const checkDiscount = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
+
+export const getDiscountByUser = async (req, res) => {
+  try {
+    const TIMESTAMP = new Date().setHours(0, 0, 0, 0);
+    let used_discount = await UserUseDiscount.find({ user: req._id });
+    used_discount = used_discount.map((item) => item.discount);
+    const discount_list = await Discount.find({
+      _id: { $nin: used_discount },
+      quantity: { $gt: 0 },
+      effective_to: { $gt: TIMESTAMP },
+    });
+    setTimeout(() => {
+      res.status(200).json(discount_list);
+    }, 1000);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
