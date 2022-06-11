@@ -12,6 +12,7 @@ import log from "./log";
 import review from "./review";
 import discount from "./discount";
 import combo from "./combo";
+import peak_day from "./peak_day";
 
 export default combineReducers({
   user,
@@ -27,4 +28,5 @@ export default combineReducers({
   review,
   discount,
   combo,
+  peak_day,
 });

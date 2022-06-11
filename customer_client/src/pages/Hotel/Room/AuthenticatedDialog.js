@@ -15,7 +15,11 @@ const AuthenticatedDialog = ({ open, setOpen }) => {
     if (open) setOpen(false);
   };
   const handleMoveToLoginPage = () => {
-    navigate("/login", { state: { returnUrl: returnPath } });
+    navigate("/login", {
+      state: {
+        returnUrl: returnPath + "?tab=room-list",
+      },
+    });
   };
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">

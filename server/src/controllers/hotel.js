@@ -6,6 +6,7 @@ import Room from "../models/room.js";
 import RoomType from "../models/room_type.js";
 import Booking from "../models/booking.js";
 import Review from "../models/review.js";
+import PeakDay from "../models/peak_day.js";
 import { existsSync, unlinkSync } from "fs";
 import { STRING, INTEGER } from "../constants/constants.js";
 
@@ -183,10 +184,23 @@ export const getHotelById = async (req, res) => {
   const { id } = req.params;
   try {
     const hotel = await Hotel.findOne({ _id: id }).lean();
+    // GET HOTEL'S COMBO
     const combo = await Combo.find({ hotel: id }, "name amount detail").sort({
       amount: 1,
     });
     hotel["combo"] = combo;
+    // GET PEAK DAYS
+    let peakDayList = await PeakDay.find({}, "start_date end_date")
+      .sort({
+        start_date: 1,
+      })
+      .lean();
+    for (let range of peakDayList) {
+      delete range["_id"];
+      range["start_date"] = range["start_date"].getTime();
+      range["end_date"] = range["end_date"].getTime();
+    }
+    hotel["peakDayList"] = peakDayList;
     setTimeout(() => {
       return res.status(200).json(hotel);
     }, 1000);

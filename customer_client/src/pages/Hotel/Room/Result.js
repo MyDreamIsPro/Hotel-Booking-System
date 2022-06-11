@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 // UI lib
 import {
   Accordion,
@@ -29,18 +29,6 @@ import { checkAuth } from "../../../api/user";
 import { checkDiscount } from "../../../api/discount";
 
 //#region CSS
-const RootStyle = styled(Box)(({ theme }) => ({
-  width: "32%",
-  height: "fit-content",
-  position: "sticky",
-  top: 100,
-  zIndex: 99,
-  borderRadius: 4,
-  padding: 15,
-  [theme.breakpoints.down(1144)]: {
-    display: "none",
-  },
-}));
 const AccordionStyle = styled(Accordion)({
   padding: 0,
   boxShadow: "none",
@@ -49,11 +37,9 @@ const AccordionStyle = styled(Accordion)({
     display: "none",
   },
 });
-
 const AccordionSummaryStyle = styled(AccordionSummary)({
   padding: 0,
 });
-
 const AccordionDetailsStyle = styled(AccordionDetails)({
   padding: 0,
 });
@@ -74,6 +60,7 @@ const Result = ({
   setOpenNotEnoughDialog,
   setNotEnoughRooms,
   setOpenAuthenticatedDialog,
+  numPeakDay,
 }) => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
@@ -82,9 +69,17 @@ const Result = ({
 
   const basedAmount = useMemo(
     () =>
-      selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
-      diffDays,
-    [diffDays, selectedRooms]
+      Math.floor(
+        selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
+          (diffDays + (numPeakDay > 0 || 1 - 1) * (20 / 100))
+      ),
+    // const normalDayPrice = (diffDays - numPeakDay + 1) * price;
+    // const peakDayPrice =
+    //   numPeakDay > 0
+    //     ? (numPeakDay - 1) * Math.floor(price + price * (20 / 100))
+    //     : 0;
+    // return normalDayPrice + peakDayPrice;
+    [diffDays, selectedRooms, numPeakDay]
   );
 
   const amount = useMemo(
@@ -96,6 +91,19 @@ const Result = ({
         : basedAmount,
     [basedAmount, discount]
   );
+
+  //REMOVE DISCOUNT IF USER RE-SEARCH
+  useEffect(() => {
+    let isMounted = true;
+    if (selectedRooms.length === 0 && isMounted) {
+      setDiscount(null);
+      setCode("");
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedRooms]);
 
   const validateBookingInfo = () => {
     if (selectedRooms.length > 0) {
@@ -166,8 +174,7 @@ const Result = ({
       .catch((err) => {
         if (err.response.status === 409) alert(err.response.data);
         else if (err.response.status === 401) {
-          alert("Phiên đăng nhập đã hết hạn");
-          navigate("/login", { replace: true });
+          setOpenAuthenticatedDialog(true);
         }
       });
   };
@@ -178,7 +185,7 @@ const Result = ({
   };
 
   return (
-    <RootStyle boxShadow={3}>
+    <>
       <Typography variant="h5" fontWeight="bold" textAlign="center">
         Thông tin đặt phòng
       </Typography>
@@ -262,6 +269,20 @@ const Result = ({
           {diffDays + 1} ngày {diffDays} đêm
         </Typography>
       </Stack>
+      {/* PEAK DAY */}
+      {numPeakDay > 0 && (
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          style={{ marginTop: 10, marginBottom: 10 }}
+        >
+          <Typography variant="body1">Số ngày cao điểm(+20%)</Typography>
+          <Typography variant="body1" fontWeight="bold">
+            {numPeakDay - 1} ngày
+          </Typography>
+        </Stack>
+      )}
+      {/* NUMBER OF ROOMS */}
       <Stack
         flexDirection="row"
         justifyContent="space-between"
@@ -415,7 +436,7 @@ const Result = ({
       >
         ĐẶT NGAY
       </Button>
-    </RootStyle>
+    </>
   );
 };
 

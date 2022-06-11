@@ -85,6 +85,12 @@ const links = [
     isAdminRequired: false,
   },
   {
+    text: "Ngày cao điểm",
+    icon: "bi:calendar-week",
+    path: "/peak-day",
+    isAdminRequired: false,
+  },
+  {
     text: "Tài khoản",
     icon: "bxs:user-account",
     path: "/user",

@@ -20,6 +20,7 @@ import Settings from "./pages/Settings";
 import Combo from "./pages/Combo";
 import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
+import PeakDay from "./pages/PeakDay";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -42,6 +43,7 @@ export default function AppRoutes() {
           <Route path="type" element={<RoomType />} />
         </Route>
         <Route path="booking" element={<Booking />} />
+        <Route path="peak-day" element={<PeakDay />} />
         <Route path="discount" element={<Discount />} />
         <Route path="expense" element={<Expense />} />
         <Route path="backup-restore" element={<BackupRestore />} />

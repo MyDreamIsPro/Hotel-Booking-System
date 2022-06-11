@@ -7,11 +7,9 @@ import Overview from "./Overview";
 import Room from "./Room";
 import Review from "./Review";
 // logic lib
-
+import { useSearchParams } from "react-router-dom";
 // logic custom
-
 //#region CSS
-
 //#endregion
 
 //----------------------------
@@ -44,7 +42,37 @@ function a11yProps(index) {
 }
 
 const Content = ({ hotel }) => {
-  const [value, setValue] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const data = [
+    {
+      tab: "overview",
+      label: "TỔNG QUAN",
+      index: 0,
+      page: <Overview hotel={hotel} />,
+    },
+    {
+      tab: "room-list",
+      label: "HẠNG PHÒNG",
+      index: 1,
+      page: <Room hotel={hotel} />,
+    },
+    {
+      tab: "review",
+      label: "ĐÁNH GIÁ",
+      index: 2,
+      page: <Review hotel={hotel} />,
+    },
+  ];
+
+  const [value, setValue] = useState(() => {
+    const item = data.filter((item) => searchParams.get("tab") === item.tab)[0];
+    if (item === undefined) {
+      return 0;
+    } else {
+      return item.index;
+    }
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -62,20 +90,19 @@ const Content = ({ hotel }) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="TỔNG QUAN" {...a11yProps(0)} />
+          {data.map((item, index) => (
+            <Tab key={index} label={item.label} {...a11yProps(item.index)} />
+          ))}
+          {/* <Tab label="TỔNG QUAN" {...a11yProps(0)} />
           <Tab label="HẠNG PHÒNG" {...a11yProps(1)} />
-          <Tab label="ĐÁNH GIÁ" {...a11yProps(2)} />
+          <Tab label="ĐÁNH GIÁ" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        <Overview hotel={hotel} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Room hotel={hotel} />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <Review hotel={hotel} />
-      </TabPanel>
+      {data.map((item, index) => (
+        <TabPanel key={index} value={value} index={item.index}>
+          {item.page}
+        </TabPanel>
+      ))}
     </Container>
   );
 };

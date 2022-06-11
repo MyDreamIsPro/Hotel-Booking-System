@@ -21,6 +21,12 @@ const ImageSelector = styled(Box)({
 
 const ImageUploader = ({ files, setFiles, setFieldValue, hasError }) => {
   const { getRootProps, getInputProps } = useDropzone({
+    // accept: {
+    //   "image/jpeg": [],
+    //   "image/jpg": [],
+    //   "image/png": [],
+    //   "image/webp": [],
+    // },
     accept: "image/jpeg,image/jpg,image/png,image/webp",
     onDrop: (acceptedFiles) => {
       const newArray = acceptedFiles.map((file) =>
@@ -42,7 +48,7 @@ const ImageUploader = ({ files, setFiles, setFieldValue, hasError }) => {
         Kéo thả hoặc Click để chọn ảnh
       </Typography>
       <Typography variant="body2" textAlign="center">
-        Các định dạng hợp lệ *.jpeg, *.jpg, *.png
+        Các định dạng hợp lệ *.jpeg, *.jpg, *.png, *.webp
       </Typography>
     </ImageSelector>
   );

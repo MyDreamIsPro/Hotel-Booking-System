@@ -84,6 +84,10 @@ const Dashboard = () => {
           );
         else performFailure(true, "Phiên đăng nhập hết hạn");
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [context, navigate]);
 
   return (

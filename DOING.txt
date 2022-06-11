@@ -1,1 +1,31 @@
-REVIEW DETAIL DIALOG
+MOMO RETURN URL
+//SUCCESS
+http://localhost:3001/test?partnerCode=MOMOLI4T20220606
+    orderId=MOMOLI4T202206061654529849797
+    requestId=MOMOLI4T202206061654529849797
+    amount=50000
+    orderInfo=Thanh+toan+don+hang+%231231233+tai+TUANVU+COTO+HOTEL
+    orderType=momo_wallet
+    transId=2683312781
+    resultCode=0
+    message=Successful.
+    payType=qr
+    responseTime=1654529889785
+    extraData=
+    signature=f749ddf81f2a7c8636ee0e18a12ba367ead5e9623d84b6b0e7e74401d3f6f74a
+    partnerUserId=MLeB_hAzLMBws7I4BC0LLIZBoyDfqPKZdag
+
+//ERROR
+http://localhost:3001/test?partnerCode=MOMOLI4T20220606
+    orderId=MOMOLI4T202206061654529216343
+    requestId=MOMOLI4T202206061654529216343
+    amount=50000
+    orderInfo=Thanh+toan+don+hang+%231231233+tai+TUANVU+COTO+HOTEL
+    orderType=momo_wallet
+    transId=1654529331319
+    resultCode=1006
+    message=Transaction+denied+by+user.
+    payType=
+    responseTime=1654529331337
+    extraData=
+    signature=e0326ee8f8fd7d754aebc99f3b0d5f76fe91577dfa0a4b42259e16310f2ff8e4

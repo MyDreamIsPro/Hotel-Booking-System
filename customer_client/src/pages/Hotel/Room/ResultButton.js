@@ -16,9 +16,9 @@ const RootStyle = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const ResultButton = ({ number }) => {
+const ResultButton = ({ number, setOpen }) => {
   const handle = () => {
-    alert("ALO");
+    setOpen(true);
   };
   return (
     <RootStyle onClick={handle}>

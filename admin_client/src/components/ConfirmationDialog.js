@@ -21,6 +21,7 @@ import { deleteBackup } from "../redux/actions/backup";
 import { deleteExpense } from "../redux/actions/expense";
 import { deleteDiscount } from "../redux/actions/discount";
 import { deleteCombo } from "../redux/actions/combo";
+import { deletePeakDay } from "../redux/actions/peak_day";
 
 // ----------------------------
 const ConfirmationDialog = ({
@@ -89,6 +90,9 @@ const ConfirmationDialog = ({
         break;
       case "COMBO":
         dispatch(deleteCombo(id, handleSuccess, handleFailure));
+        break;
+      case "PEAK_DAY":
+        dispatch(deletePeakDay(id, handleSuccess, handleFailure));
         break;
       default:
         alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");

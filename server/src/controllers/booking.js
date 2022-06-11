@@ -4,16 +4,12 @@ import Booking from "../models/booking.js";
 import UserUseDiscount from "../models/user_use_discount.js";
 import Room from "../models/room.js";
 import Log from "../models/log.js";
-import { INTEGER, STRING } from "../constants/constants.js";
-// For vnpay
+import { INTEGER, STRING, VNPAY, MOMO } from "../constants/constants.js";
+// For payment
 import dateFormat from "dateformat";
 import querystring from "qs";
 import crypto from "crypto";
-// VNPAY
-const TMN_CODE = "E1OG5FT2";
-const HASH_SECRET = "ILAGUEUHBAOMDROPQRCTNMUPHDMBOUCK";
-const VNP_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-const RETURN_URL = "http://localhost:3001/payment-return";
+import https from "https";
 
 const logAction = async (user, type, time) => {
   const newLog = new Log({
@@ -93,7 +89,7 @@ export const getAllBookingByUser = async (req, res) => {
   }
 };
 
-export const createPaymentUrl = async (req, res) => {
+export const createVnpayPaymentUrl = async (req, res) => {
   const transaction = req.body;
   try {
     var ipAddr =
@@ -102,10 +98,10 @@ export const createPaymentUrl = async (req, res) => {
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress;
 
-    var tmnCode = TMN_CODE;
-    var secretKey = HASH_SECRET;
-    var vnpUrl = VNP_URL;
-    var returnUrl = RETURN_URL;
+    var tmnCode = VNPAY.TMN_CODE;
+    var secretKey = VNPAY.HASH_SECRET;
+    var vnpUrl = VNPAY.VNP_URL;
+    var returnUrl = VNPAY.RETURN_URL;
 
     var date = new Date();
 
@@ -150,12 +146,118 @@ export const createPaymentUrl = async (req, res) => {
   }
 };
 
-export const checkPaymentReturn = async (req, res) => {
+export const createMomoPaymentUrl = async (req, res) => {
+  const transaction = req.body;
+  try {
+    //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
+    //parameters
+    let partnerCode = MOMO.PARTNER_CODE;
+    let accessKey = MOMO.ACCESS_KEY;
+    let secretkey = MOMO.SECRET_KEY;
+    let requestId = partnerCode + new Date().getTime();
+    let orderId = requestId;
+    let orderInfo = "Thanh toan don hang tai TUANVU COTO HOTEL";
+    let redirectUrl = MOMO.RETURN_URL;
+    let ipnUrl = "https://callback.url/notify";
+    // let ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
+    let amount = transaction.amount;
+    let requestType = "captureWallet";
+    let extraData = ""; //pass empty value if your merchant does not have stores
+
+    //before sign HMAC SHA256 with format
+    //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+    let rawSignature =
+      "accessKey=" +
+      accessKey +
+      "&amount=" +
+      amount +
+      "&extraData=" +
+      extraData +
+      "&ipnUrl=" +
+      ipnUrl +
+      "&orderId=" +
+      orderId +
+      "&orderInfo=" +
+      orderInfo +
+      "&partnerCode=" +
+      partnerCode +
+      "&redirectUrl=" +
+      redirectUrl +
+      "&requestId=" +
+      requestId +
+      "&requestType=" +
+      requestType;
+    //puts raw signature
+    // console.log("--------------------RAW SIGNATURE----------------");
+    // console.log(rawSignature);
+    //signature
+    let signature = crypto
+      .createHmac("sha256", secretkey)
+      .update(rawSignature)
+      .digest("hex");
+
+    //json object send to MoMo endpoint
+    const requestBody = JSON.stringify({
+      partnerCode: partnerCode,
+      accessKey: accessKey,
+      requestId: requestId,
+      amount: amount,
+      orderId: orderId,
+      orderInfo: orderInfo,
+      redirectUrl: redirectUrl,
+      ipnUrl: ipnUrl,
+      extraData: extraData,
+      requestType: requestType,
+      signature: signature,
+      lang: "en",
+    });
+    //Create the HTTPS objects
+    const options = {
+      hostname: "test-payment.momo.vn",
+      port: 443,
+      path: "/v2/gateway/api/create",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(requestBody),
+      },
+    };
+    //Send the request and get the response
+    const MOMO_REQ = https.request(options, (MOMO_RES) => {
+      // console.log(`Status: ${MOMO_RES.statusCode}`);
+      // console.log(`Headers: ${JSON.stringify(MOMO_RES.headers)}`);
+      MOMO_RES.setEncoding("utf8");
+      MOMO_RES.on("data", (body) => {
+        // console.log("Body: ");
+        // console.log(body);
+        // console.log("payUrl: ");
+        // console.log(JSON.parse(body).payUrl);
+        res.status(200).send(JSON.parse(body).payUrl);
+      });
+      MOMO_RES.on("end", () => {
+        console.log("No more data in response.");
+      });
+    });
+
+    MOMO_REQ.on("error", (e) => {
+      console.log(`problem with request: ${e.message}`);
+    });
+    // write data to request body
+    console.log("Sending....");
+    MOMO_REQ.write(requestBody);
+    MOMO_REQ.end();
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
+export const checkVnpayPaymentReturn = async (req, res) => {
   const data = req.body;
   try {
     const booking = data.booking;
     // DOING
-    var vnp_Params = data.vnp_params;
+    var vnp_Params = data.params;
     booking["payment_method"] = `VNPAY - ${vnp_Params["vnp_BankCode"]}`;
 
     var secureHash = vnp_Params["vnp_SecureHash"];
@@ -166,7 +268,7 @@ export const checkPaymentReturn = async (req, res) => {
     vnp_Params = sortObject(vnp_Params);
 
     var signData = querystring.stringify(vnp_Params, { encode: false });
-    var hmac = crypto.createHmac("sha512", HASH_SECRET);
+    var hmac = crypto.createHmac("sha512", VNPAY.HASH_SECRET);
     var signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
     // DOING
     const PAYMENT_RESULT =
@@ -189,14 +291,14 @@ export const checkPaymentReturn = async (req, res) => {
             $inc: { quantity: -1 },
           }
         );
+        // MARK USER USED DISCOUNT
+        const userUseDiscount = new UserUseDiscount({
+          discount: booking.discount,
+          user: booking.user,
+          created_date: TIME_STAMP,
+        });
+        await userUseDiscount.save();
       }
-      // MARK USER USED DISCOUNT
-      const userUseDiscount = new UserUseDiscount({
-        discount: booking.discount,
-        user: booking.user,
-        created_date: TIME_STAMP,
-      });
-      await userUseDiscount.save();
 
       const newBooking = new Booking({
         ...booking,
@@ -227,6 +329,105 @@ export const checkPaymentReturn = async (req, res) => {
       );
     }
 
+    setTimeout(() => {
+      res.status(200).send(PAYMENT_RESULT);
+    }, 1000);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
+export const checkMomoPaymentReturn = async (req, res) => {
+  const data = req.body;
+  try {
+    const booking = data.booking;
+    booking["payment_method"] = "MOMO - QRCODE";
+    // PREPARE PARAMS
+    let momo_params = data.params;
+    const signature = momo_params["signature"];
+    momo_params["accessKey"] = MOMO.ACCESS_KEY;
+
+    delete momo_params["signature"];
+
+    momo_params = sortMomoObject(momo_params);
+
+    // CREATE RAW SIGNATURE
+    let raw_signature = "";
+    let totalKeyCount = Object.keys(momo_params).length;
+    let curKeyCount = 1;
+    for (let key in momo_params) {
+      if (curKeyCount === totalKeyCount) {
+        raw_signature += key + "=" + momo_params[key];
+        break;
+      }
+      raw_signature += key + "=" + momo_params[key] + "&";
+      curKeyCount++;
+    }
+
+    // GENERATE SIGNATURE FOR CHECKING
+    let generated_signature = crypto
+      .createHmac("sha256", MOMO.SECRET_KEY)
+      .update(raw_signature)
+      .digest("hex");
+
+    const PAYMENT_RESULT =
+      signature === generated_signature && momo_params["resultCode"] === "0"
+        ? "SUCCESS"
+        : "FAIL";
+
+    // PAYMENT SUCCESSFUL
+    if (PAYMENT_RESULT === "SUCCESS") {
+      const TIME_STAMP = new Date();
+      const maxBookingNumber = await Booking.find()
+        .sort({ number: -1 })
+        .limit(1)
+        .then((data) => (data[0] ? data[0].number : 0));
+      // HANDLE DISCOUNT
+      if (booking.discount) {
+        await Discount.updateOne(
+          { _id: booking.discount },
+          {
+            $inc: { quantity: -1 },
+          }
+        );
+        // MARK USER USED DISCOUNT
+        const userUseDiscount = new UserUseDiscount({
+          discount: booking.discount,
+          user: booking.user,
+          created_date: TIME_STAMP,
+        });
+        await userUseDiscount.save();
+      }
+
+      const newBooking = new Booking({
+        ...booking,
+        number: maxBookingNumber + 1,
+        effective_from: new Date(booking.effective_from),
+        effective_to: new Date(booking.effective_to),
+        payment_date: new Date(booking.payment_date),
+        created_date: TIME_STAMP,
+      });
+      // Change room status to FILLED
+      for (let room of booking.room_list) {
+        await Room.findByIdAndUpdate(
+          room,
+          {
+            status: INTEGER.ROOM_RENTED,
+          },
+          { new: true }
+        );
+      }
+      // Save booking
+      await newBooking.save();
+      await logAction(booking.user, INTEGER.LOG_BOOK_BOOKING, TIME_STAMP);
+    } else {
+      // PAYMENT FAILURE
+      await Room.updateMany(
+        { _id: { $in: booking.room_list } },
+        { $set: { status: INTEGER.ROOM_EMPTY } }
+      );
+    }
     setTimeout(() => {
       res.status(200).send(PAYMENT_RESULT);
     }, 1000);
@@ -454,4 +655,13 @@ function sortObject(obj) {
     sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
   }
   return sorted;
+}
+
+function sortMomoObject(obj) {
+  return Object.keys(obj)
+    .sort()
+    .reduce(function (result, key) {
+      result[key] = obj[key];
+      return result;
+    }, {});
 }

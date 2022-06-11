@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Booking from "../models/booking.js";
 import RoomType from "../models/room_type.js";
+import PeakDay from "../models/peak_day.js";
 import Room from "../models/room.js";
 import Log from "../models/log.js";
 import { existsSync, unlinkSync } from "fs";
@@ -195,22 +196,12 @@ export const getAvailableRoomType = async (req, res) => {
     const bookingList = await Booking.find(
       {
         hotel: hotel_id,
-        $or: [
-          {
-            status: {
-              $gt: INTEGER.BOOKING_CANCELED,
-              $lt: INTEGER.BOOKING_CHECK_OUT,
-            },
-            effective_from: { $gte: begin, $lte: end },
-          },
-          {
-            status: {
-              $gt: INTEGER.BOOKING_CANCELED,
-              $lt: INTEGER.BOOKING_CHECK_OUT,
-            },
-            effective_to: { $gte: begin, $lte: end },
-          },
-        ],
+        status: {
+          $gt: INTEGER.BOOKING_CANCELED,
+          $lt: INTEGER.BOOKING_CHECK_OUT,
+        },
+        effective_from: { $lte: end },
+        effective_to: { $gte: begin },
       },
       "room_list"
     );
@@ -233,6 +224,8 @@ export const getAvailableRoomType = async (req, res) => {
     // Select available room types
     let room_type = [];
 
+    let overLappingDay = 0;
+
     //check if there is any room available
     if (available_room_list.length > 0) {
       const available_room_type = await Room.distinct("room_type")
@@ -248,11 +241,32 @@ export const getAvailableRoomType = async (req, res) => {
           .where("_id")
           .in(available_room_type)
           .populate("services", ["icon", "name"]);
+
+        const peakDayList = await PeakDay.find(
+          {
+            start_date: { $lte: end },
+            end_date: { $gte: begin },
+          },
+          "name start_date end_date"
+        );
+
+        for (let peakDay of peakDayList) {
+          const start_date = new Date(peakDay.start_date).getTime();
+          const end_date = new Date(peakDay.end_date).getTime();
+          const minEndDate = end_date > end ? end : end_date;
+          const maxStartDate = start_date > begin ? start_date : begin;
+
+          const diffDays = Math.floor((minEndDate - maxStartDate) / 86400000);
+          overLappingDay =
+            diffDays >= 0 ? overLappingDay + diffDays + 1 : overLappingDay;
+        }
       }
     }
     //return
     setTimeout(() => {
-      res.status(202).json(room_type);
+      res
+        .status(202)
+        .json({ room_type: room_type, numPeakDay: overLappingDay });
     }, 1000);
   } catch (error) {
     console.log(error);

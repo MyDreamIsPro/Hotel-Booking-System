@@ -17,7 +17,10 @@ import failLottieJson from "../__MOCK__/lottie/error.json";
 import { Link, useSearchParams } from "react-router-dom";
 // logic custom
 import { STRING } from "../constants";
-import { checkPaymentReturn } from "../api/booking";
+import {
+  checkVnpayPaymentReturn,
+  checkMomoPaymentReturn,
+} from "../api/booking";
 //#region CSS
 //#endregion
 
@@ -36,37 +39,54 @@ const PaymenReturn = () => {
 
   useEffect(() => {
     if (booking && user) {
-      let vnp_params = {};
+      let params = {};
       for (const [key, value] of searchParams) {
-        vnp_params[key] = value;
+        params[key] = value;
       }
-      checkPaymentReturn({
-        vnp_params: vnp_params,
-        booking: {
-          user: user,
-          hotel: booking.hotel,
-          room_list: booking.roomIds,
-          combo_list: booking.combo_list,
-          amount: booking.amount,
-          discount: booking.discount?._id,
-          payment_method: "VNPAY - Ngân hàng NCB",
-          adult: booking.visitor.adult,
-          kid: booking.visitor.kid,
-          baby: booking.visitor.baby,
-          effective_from: booking.startDate,
-          effective_to: booking.endDate,
-          payment_date: new Date(),
-        },
-      })
-        .then((res) => {
-          setPaymentResult(res.data);
-          setLoading(false);
+      const created_booking = {
+        user: user,
+        hotel: booking.hotel,
+        room_list: booking.roomIds,
+        combo_list: booking.combo_list,
+        amount: booking.amount,
+        discount: booking.discount?._id,
+        // payment_method: "VNPAY - Ngân hàng NCB",
+        adult: booking.visitor.adult,
+        kid: booking.visitor.kid,
+        baby: booking.visitor.baby,
+        effective_from: booking.startDate,
+        effective_to: booking.endDate,
+        payment_date: new Date(),
+      };
+      if (params.hasOwnProperty("vnp_ResponseCode")) {
+        checkVnpayPaymentReturn({
+          params: params,
+          booking: created_booking,
         })
-        .catch((err) => {
-          setPaymentResult("FAIL");
-          setLoading(false);
-          console.log(err);
-        });
+          .then((res) => {
+            setPaymentResult(res.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setPaymentResult("FAIL");
+            setLoading(false);
+            console.log(err);
+          });
+      } else if (params.hasOwnProperty("resultCode")) {
+        checkMomoPaymentReturn({ params: params, booking: created_booking })
+          .then((res) => {
+            setPaymentResult(res.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setPaymentResult("FAIL");
+            setLoading(false);
+            console.log(err);
+          });
+      } else {
+        setPaymentResult("FAIL");
+        setLoading(false);
+      }
     }
   }, []);
 

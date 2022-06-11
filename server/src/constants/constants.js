@@ -63,3 +63,30 @@ export const STRING = {
   USER_BANNED:
     "Tài khoản này đã bị khóa. Quý khách vui lòng liên hệ quản trị viên để biết thêm chi tiết",
 };
+
+export const VNPAY = {
+  TMN_CODE: "E1OG5FT2",
+  HASH_SECRET: "ILAGUEUHBAOMDROPQRCTNMUPHDMBOUCK",
+  VNP_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
+  RETURN_URL: "http://localhost:3001/payment-return",
+};
+
+export const MOMO = {
+  //ducbh62
+  PARTNER_CODE: "MOMOLI4T20220606",
+  ACCESS_KEY: "ZJF8MQ0IcCIFwDwG",
+  SECRET_KEY: "rfhtqnLkMuZJgScHWQnAKCGK9UwEqR83",
+  RETURN_URL: "http://localhost:3001/payment-return",
+
+  //ducbh62workspace
+  // PARTNER_CODE: "MOMONHEB20220607",
+  // ACCESS_KEY: "Mow0CiMFezieXWT1",
+  // SECRET_KEY: "TN6eIucrveVRB8xK2cuVEGsDMtG84Y3U",
+  // RETURN_URL: "http://localhost:3001/payment-return",
+
+  //MOMO
+  // PARTNER_CODE: "MOMO",
+  // ACCESS_KEY: "F8BBA842ECF85",
+  // SECRET_KEY: "K951B6PE1waDMi640xX08PD3vg6EkVlz",
+  // RETURN_URL: "http://localhost:3001/payment-return",
+};

@@ -158,6 +158,13 @@ const Item = ({
         <Typography variant="body1" mb={0.5}>
           Giá thuê: {formatNumber(roomType.rent_bill)}đ/đêm
         </Typography>
+        {/* <Typography variant="body1" mb={0.5}>
+          (
+          {formatNumber(
+            Math.floor(roomType.rent_bill + roomType.rent_bill * (20 / 100))
+          )}{" "}
+          ngày cao điểm)
+        </Typography> */}
         <InfoButton variant="body1" onClick={handleOpenViewer}>
           Chi tiết phòng
         </InfoButton>

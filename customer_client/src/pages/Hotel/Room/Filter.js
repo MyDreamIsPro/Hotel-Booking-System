@@ -10,11 +10,14 @@ import {
   TextField,
   Typography,
   IconButton,
+  Badge,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import GradeIcon from "@mui/icons-material/Grade";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateRangePickerDay as MuiDateRangePickerDay } from "@mui/x-date-pickers-pro/DateRangePickerDay";
 // UI custom
 import MenuPopover from "../../../components/Popover";
 // logic lib
@@ -76,6 +79,8 @@ const Filter = ({
   setEndDate,
   setVisitor,
   setSelectedRooms,
+  peakDayList,
+  setNumPeakDay,
 }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -83,6 +88,29 @@ const Filter = ({
   const handleCloseVisitorChooser = () => {
     setOpen(false);
   };
+
+  const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
+    let isSelected = false;
+    for (let item of peakDayList) {
+      const val = date.getTime();
+      if (val >= item.start_date && val <= item.end_date) {
+        isSelected = true;
+        break;
+      }
+    }
+    return (
+      <Badge
+        key={date.toString()}
+        overlap="circular"
+        badgeContent={
+          isSelected ? <GradeIcon color="error" fontSize="small" /> : undefined
+        }
+      >
+        <MuiDateRangePickerDay {...dateRangePickerDayProps} />{" "}
+      </Badge>
+    );
+  };
+
   return (
     <Box
       boxShadow={3}
@@ -103,6 +131,12 @@ const Filter = ({
           date: Yup.array().of(Yup.date().required("Chưa nhập ngày")),
         })}
         onSubmit={(values, { setSubmitting }) => {
+          if (values.date[0].getTime() === values.date[1].getTime()) {
+            setSubmitting(false);
+            return alert(
+              "Ngày nhận phòng và ngày trả phòng không được giống nhau"
+            );
+          }
           setStartDate(values.date[0]);
           setEndDate(values.date[1]);
           setVisitor({
@@ -116,9 +150,10 @@ const Filter = ({
             getAvailableRoomType(
               hotel_id,
               values,
-              (numResult) => {
+              (numResult, numPeakDay) => {
                 setSubmitting(false);
                 setResult({ loading: false, num: numResult });
+                setNumPeakDay(numPeakDay);
               },
               () => {
                 setSubmitting(false);
@@ -150,6 +185,7 @@ const Filter = ({
                   endText="Ngày trả phòng"
                   value={values.date}
                   onChange={(newValue) => setFieldValue("date", [...newValue])}
+                  renderDay={renderWeekPickerDay}
                   renderInput={(startProps, endProps) => (
                     <DateChooser flexDirection="row" alignItems="center">
                       <TextField {...startProps} />

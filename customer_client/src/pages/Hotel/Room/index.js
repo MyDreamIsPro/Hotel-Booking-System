@@ -16,6 +16,7 @@ import List from "./List";
 import Loading from "./Loading";
 import Viewer from "./Viewer";
 import NotEnoughDialog from "./NotEnoughDialog";
+import ResultDialog from "./ResultDialog";
 import AuthenticatedDialog from "./AuthenticatedDialog";
 import ResultButton from "./ResultButton";
 // logic lib
@@ -39,6 +40,19 @@ const RoomListWrapper = styled("div")(({ theme }) => ({
     marginRight: 0,
   },
 }));
+
+const ResultStyle = styled(Box)(({ theme }) => ({
+  width: "32%",
+  height: "fit-content",
+  position: "sticky",
+  top: 100,
+  zIndex: 99,
+  borderRadius: 4,
+  padding: 15,
+  [theme.breakpoints.down(1144)]: {
+    display: "none",
+  },
+}));
 //#endregion
 
 //----------------------------
@@ -49,6 +63,7 @@ const Room = ({ hotel }) => {
   const [openViewer, setOpenViewer] = useState(false);
   const [dataViewer, setDataViewer] = useState({});
   const [openNotEnoughDialog, setOpenNotEnoughDialog] = useState(false);
+  const [openResultDialog, setOpenResultDialog] = useState(false);
   const [notEnoughRooms, setNotEnoughRooms] = useState([]);
   const [openAuthenticatedDialog, setOpenAuthenticatedDialog] = useState(false);
 
@@ -58,6 +73,8 @@ const Room = ({ hotel }) => {
   const [visitor, setVisitor] = useState({ adult: 1, kid: 0, baby: 0 });
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [selectedComboList, setSelectedComboList] = useState([]);
+  const [numPeakDay, setNumPeakDay] = useState(0);
+
   return (
     <Box
       style={{
@@ -72,6 +89,8 @@ const Room = ({ hotel }) => {
         setEndDate={setEndDate}
         setVisitor={setVisitor}
         setSelectedRooms={setSelectedRooms}
+        peakDayList={hotel.peakDayList}
+        setNumPeakDay={setNumPeakDay}
       />
       <Stack
         flexDirection="row"
@@ -169,21 +188,44 @@ const Room = ({ hotel }) => {
             </Box>
           )}
         </RoomListWrapper>
-        <ResultButton number={selectedRooms.length} />
-        <Result
-          hotelId={hotel._id}
-          hotelName={hotel.name}
-          startDate={startDate}
-          endDate={endDate}
-          visitor={visitor}
-          selectedRooms={selectedRooms}
-          setSelectedRooms={setSelectedRooms}
-          selectedComboList={selectedComboList}
-          setSelectedComboList={setSelectedComboList}
-          setOpenNotEnoughDialog={setOpenNotEnoughDialog}
-          setNotEnoughRooms={setNotEnoughRooms}
-          setOpenAuthenticatedDialog={setOpenAuthenticatedDialog}
+        <ResultButton
+          number={selectedRooms.length}
+          setOpen={setOpenResultDialog}
         />
+        <ResultStyle boxShadow={3}>
+          <Result
+            hotelId={hotel._id}
+            hotelName={hotel.name}
+            startDate={startDate}
+            endDate={endDate}
+            visitor={visitor}
+            selectedRooms={selectedRooms}
+            setSelectedRooms={setSelectedRooms}
+            selectedComboList={selectedComboList}
+            setSelectedComboList={setSelectedComboList}
+            setOpenNotEnoughDialog={setOpenNotEnoughDialog}
+            setNotEnoughRooms={setNotEnoughRooms}
+            setOpenAuthenticatedDialog={setOpenAuthenticatedDialog}
+            numPeakDay={numPeakDay}
+          />
+        </ResultStyle>
+        <ResultDialog open={openResultDialog} setOpen={setOpenResultDialog}>
+          <Result
+            hotelId={hotel._id}
+            hotelName={hotel.name}
+            startDate={startDate}
+            endDate={endDate}
+            visitor={visitor}
+            selectedRooms={selectedRooms}
+            setSelectedRooms={setSelectedRooms}
+            selectedComboList={selectedComboList}
+            setSelectedComboList={setSelectedComboList}
+            setOpenNotEnoughDialog={setOpenNotEnoughDialog}
+            setNotEnoughRooms={setNotEnoughRooms}
+            setOpenAuthenticatedDialog={setOpenAuthenticatedDialog}
+            numPeakDay={numPeakDay}
+          />
+        </ResultDialog>
         <NotEnoughDialog
           open={openNotEnoughDialog}
           setOpen={setOpenNotEnoughDialog}

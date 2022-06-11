@@ -15,7 +15,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // UI custom
 // logic lib
 // logic custom
-import { createBooking, createPaymentUrl } from "../../api/booking";
+import {
+  createBooking,
+  createVnpayPaymentUrl,
+  createMomoPaymentUrl,
+} from "../../api/booking";
 import { INTERNAL_BANKS, EXTERNAL_BANKS } from "../../__MOCK__/index";
 import { STRING } from "../../constants/index";
 //#region CSS
@@ -51,17 +55,27 @@ const PaymentMethod = ({
     localStorage.getItem(STRING.LOCAL_STORAGE_BOOKING_INFO)
   );
 
-  const handleInternalCheckout = () => {
+  const handleVnpayCheckout = () => {
     if (!selectedBank) alert("Quý khách vui lòng chọn ngân  hàng");
     else {
       setPaymentProcessing(true);
-      createPaymentUrl({ bank: selectedBank, amount: booking.amount })
+      createVnpayPaymentUrl({ bank: selectedBank, amount: booking.amount })
         .then((res) => (window.location.href = res.data))
         .catch((err) => {
           setPaymentProcessing(false);
-          console.log("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
+          alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
         });
     }
+  };
+
+  const handleMomoCheckout = () => {
+    setPaymentProcessing(true);
+    createMomoPaymentUrl({ amount: booking.amount })
+      .then((res) => (window.location.href = res.data))
+      .catch((err) => {
+        setPaymentProcessing(false);
+        alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
+      });
   };
 
   const handleCreateBooking = () => {
@@ -138,8 +152,8 @@ const PaymentMethod = ({
             </Grid>
             <Button
               variant="contained"
-              style={{ marginTop: 20, padding: 15 }}
-              onClick={handleInternalCheckout}
+              style={{ marginTop: 20, padding: 10 }}
+              onClick={handleVnpayCheckout}
             >
               {method.buttonText}
             </Button>
@@ -193,6 +207,42 @@ const PaymentMethod = ({
               onCancel={() => console.log("CANCEL")}
             />
           </PayPalScriptProvider>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* MOMO */}
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel4a-content"
+          id="panel4a-header"
+          style={{ backgroundColor: "#F2F2F2" }}
+        >
+          <Typography variant="body1" fontWeight="bold">
+            MOMO
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ backgroundColor: "#F2F2F2" }}>
+          <img
+            src="/static/bank/MOMO.png"
+            alt="momo logo"
+            width="200"
+            height="200"
+            style={{ margin: "0 auto" }}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            style={{
+              backgroundColor: "#D82D8B",
+              margin: "10px 0",
+              padding: "10px 0",
+            }}
+            onClick={handleMomoCheckout}
+          >
+            THANH TOÁN QUA MOMO
+          </Button>
         </AccordionDetails>
       </Accordion>
     </div>

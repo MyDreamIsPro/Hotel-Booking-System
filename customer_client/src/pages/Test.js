@@ -1,12 +1,11 @@
 import * as React from "react";
 import { TextField, styled, Box, Badge } from "@mui/material";
+import GradeIcon from "@mui/icons-material/Grade";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateRangePickerDay as MuiDateRangePickerDay } from "@mui/x-date-pickers-pro/DateRangePickerDay";
 import addDays from "date-fns/addDays";
-import isSameDay from "date-fns/isSameDay";
-import { formatDateWithHour } from "../utils/Date";
 
 import Page from "../components/Page";
 
@@ -24,7 +23,7 @@ const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
     <Badge
       key={date.toString()}
       overlap="circular"
-      badgeContent={isSeleted ? "🌚" : undefined}
+      badgeContent={isSeleted ? <GradeIcon color="error" /> : undefined}
     >
       <MuiDateRangePickerDay {...dateRangePickerDayProps} />{" "}
     </Badge>
