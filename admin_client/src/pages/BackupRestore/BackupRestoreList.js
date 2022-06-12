@@ -35,28 +35,18 @@ import { getAllBackup } from "../../redux/actions/backup";
 const columns = [
   { id: "name", label: "Mã", minWidth: 100 },
   { id: "user", label: "Người sao lưu", minWidth: 100 },
-  { id: "duration", label: "Tổng thời gian", minWidth: 150 },
   { id: "detail", label: "Chi tiết", minWidth: 100 },
   { id: "last_using", label: "Sử dụng", minWidth: 100 },
   { id: "created_date", label: "Ngày sao lưu", minWidth: 100 },
 ];
 
-function createData(
-  id,
-  name,
-  user,
-  duration,
-  detail,
-  pre_last_using,
-  pre_created_date
-) {
+function createData(id, name, user, detail, pre_last_using, pre_created_date) {
   const last_using = formatDateWithHour(pre_last_using, "-");
   const created_date = formatDateWithHour(pre_created_date, "-");
   return {
     id,
     name,
     user,
-    duration,
     detail,
     last_using,
     created_date,
@@ -133,7 +123,6 @@ const BackupRestoreList = ({
             backup._id,
             backup.name,
             backup.user,
-            backup.duration,
             backup.detail,
             backup.last_using,
             backup.created_date
@@ -235,7 +224,7 @@ const BackupRestoreList = ({
                   })}
               </TableBody>
             ) : (
-              <NoRecord col={7} />
+              <NoRecord col={6} />
             )}
           </Table>
         </TableContainer>

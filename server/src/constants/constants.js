@@ -53,6 +53,7 @@ export const STRING = {
   UNEXPECTED_ERROR_MESSAGE: "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau",
   OLD_PASSWORD_WRONG: "Mật khẩu cũ không chính xác",
   PERMISSION_DENIED: "Tài khoản này không được cấp quyền truy cập",
+  DELETE_RELATED_RECORD: "Không thể xóa do có bản ghi liên quan",
 
   AUTHENTICATION_FAILED:
     "Qúy khách vui lòng đăng nhập để thực hiện chức năng này",

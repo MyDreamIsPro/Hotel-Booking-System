@@ -131,7 +131,10 @@ const Filter = ({
           date: Yup.array().of(Yup.date().required("Chưa nhập ngày")),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          if (values.date[0].getTime() === values.date[1].getTime()) {
+          if (
+            new Date(values.date[0]).setHours(0, 0, 0, 0) ===
+            new Date(values.date[1]).setHours(0, 0, 0, 0)
+          ) {
             setSubmitting(false);
             return alert(
               "Ngày nhận phòng và ngày trả phòng không được giống nhau"

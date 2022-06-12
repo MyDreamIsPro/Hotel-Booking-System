@@ -13,7 +13,8 @@ export const createHotel =
       if (!error.response || error.response.status !== 401)
         performFailure(
           false,
-          "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
+          error.response.data ||
+            "Đã có lỗi xảy ra, quý khách vui lòng thử lại sau"
         );
       else performFailure(true, "Phiên đăng nhập hết hạn");
     }
@@ -47,7 +48,8 @@ export const deleteHotel =
       if (!error.response || error.response.status !== 401)
         performFailure(
           false,
-          "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
+          error.response.data ||
+            "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
         );
       else performFailure(true, "Phiên đăng nhập hết hạn");
     }
@@ -64,7 +66,8 @@ export const updateHotel =
       if (!error.response || error.response.status !== 401)
         performFailure(
           false,
-          "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
+          error.response.data ||
+            "Đã có lỗi xảy ra, quý khách vui lòng thử lại sau"
         );
       else performFailure(true, "Phiên đăng nhập hết hạn");
     }

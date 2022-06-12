@@ -44,7 +44,8 @@ export const deleteRoom =
       if (!error.response || error.response.status !== 401)
         performFailure(
           false,
-          "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
+          error.response.data ||
+            "Đã có lỗi xảy ra. Quý khách vui lòng thử lại sau"
         );
       else performFailure(true, "Phiên đăng nhập hết hạn");
     }

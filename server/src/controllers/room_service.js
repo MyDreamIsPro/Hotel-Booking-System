@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import RoomService from "../models/room_service.js";
+import RoomType from "../models/room_type.js";
 import Log from "../models/log.js";
 import { STRING, INTEGER } from "../constants/constants.js";
 
@@ -72,6 +73,14 @@ export const deleteRoomService = async (req, res) => {
     return res.status(404).send("No room_service with that id");
   }
   try {
+    // CHECK RELATED RECORD
+    let delete_id = mongoose.Types.ObjectId(id);
+    const related_room_type = await RoomType.findOne({ services: delete_id });
+    if (related_room_type) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     await RoomService.findOneAndRemove({ _id: id });
     await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);

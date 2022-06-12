@@ -3,6 +3,7 @@ import Hotel from "../models/hotel.js";
 import Combo from "../models/combo.js";
 import Log from "../models/log.js";
 import Room from "../models/room.js";
+import Expense from "../models/expense.js";
 import RoomType from "../models/room_type.js";
 import Booking from "../models/booking.js";
 import Review from "../models/review.js";
@@ -47,6 +48,24 @@ export const getAllHotel = async (req, res) => {
 export const createHotel = async (req, res) => {
   const hotel = req.body;
   try {
+    // VALIDATE UNIQUE
+    const existed_hotel = await Hotel.findOne({
+      $or: [
+        { name: hotel.name },
+        { phone: hotel.phone },
+        { email: hotel.email },
+      ],
+    });
+    if (existed_hotel) {
+      if (existed_hotel.name === hotel.name)
+        return res.status(409).send("Tên khách sạn đã tồn tại");
+      if (existed_hotel.phone === hotel.phone)
+        return res.status(409).send("Số điện thoại khách sạn đã tồn tại");
+      if (existed_hotel.email === hotel.email)
+        return res.status(409).send("Email khách sạn đã tồn tại");
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     const newHotel = new Hotel({
       ...hotel,
@@ -56,6 +75,14 @@ export const createHotel = async (req, res) => {
       created_date: TIME_STAMP,
     });
     await newHotel.save();
+    const default_combo = new Combo({
+      name: "Gói mặc định",
+      hotel: newHotel._id,
+      amount: 0,
+      detail: "Gói mặc định cho quý khách",
+      created_date: TIME_STAMP,
+    });
+    await default_combo.save();
     await logAction(req._id, INTEGER.LOG_ADD, TIME_STAMP);
     return res.status(200).json(newHotel);
   } catch (error) {
@@ -63,12 +90,36 @@ export const createHotel = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
+
 export const deleteHotel = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).send("No hotel with that id");
   }
   try {
+    // CHECK RELATED RECORD
+    const related_room = await Room.findOne({ hotel: id });
+    if (related_room) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+    const related_room_type = await RoomType.findOne({ hotel: id });
+    if (related_room_type) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+    const related_combo = await Combo.findOne({ hotel: id });
+    if (related_combo) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+    const related_expense = await Expense.findOne({ hotel: id });
+    if (related_expense) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+    const related_booking = await Booking.findOne({ hotel: id });
+    if (related_booking) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     const deletedHotel = await Hotel.findOneAndRemove({ _id: id });
     deleteImages(deletedHotel.images);
@@ -79,6 +130,7 @@ export const deleteHotel = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
+
 export const updateHotel = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -86,6 +138,25 @@ export const updateHotel = async (req, res) => {
   }
   const hotel = req.body;
   try {
+    // VALIDATE UNIQUE
+    const existed_hotel = await Hotel.findOne({
+      _id: { $ne: id },
+      $or: [
+        { name: hotel.name },
+        { phone: hotel.phone },
+        { email: hotel.email },
+      ],
+    });
+    if (existed_hotel) {
+      if (existed_hotel.name === hotel.name)
+        return res.status(409).send("Tên khách sạn đã tồn tại");
+      if (existed_hotel.phone === hotel.phone)
+        return res.status(409).send("Số điện thoại khách sạn đã tồn tại");
+      if (existed_hotel.email === hotel.email)
+        return res.status(409).send("Email khách sạn đã tồn tại");
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     deleteImages(hotel.deleted_images);
     let new_images = [];

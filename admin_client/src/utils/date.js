@@ -17,6 +17,8 @@ export const formatDateWithHour = (date, symbol = "/") => {
     convertDate(d.getHours()) +
     ":" +
     convertDate(d.getMinutes()) +
+    ":" +
+    convertDate(d.getSeconds()) +
     " " +
     convertDate(d.getDate()) +
     symbol +

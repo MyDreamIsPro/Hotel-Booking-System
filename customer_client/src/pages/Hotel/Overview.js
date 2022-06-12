@@ -91,8 +91,8 @@ const Overview = ({ hotel }) => {
       }}
     >
       {/* DETAIL */}
-      <TitleStyle variant="h4">
-        THỰC ĐƠN NGHỈ DƯỠNG TRỌN VẸN CHO CẢ GIA ĐÌNH
+      <TitleStyle variant="h4" textTransform="uppercase">
+        KHÁCH SẠN {hotel.name}
       </TitleStyle>
       <DetailContent>
         <Typography variant="body1" textAlign="justify" style={{ flex: 1 }}>

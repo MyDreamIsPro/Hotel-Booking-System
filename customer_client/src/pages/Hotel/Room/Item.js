@@ -186,15 +186,23 @@ const Item = ({
                   control={<Radio />}
                   label={
                     <Stack flexDirection="row" alignItems="center">
+                      <Iconify
+                        icon="emojione:wrapped-gift"
+                        style={{ width: 25, height: 25, marginRight: 3 }}
+                      />
                       <Typography mr={1}>
                         <span style={{ fontWeight: "bold" }}>
                           {formatNumber(item.name)}
                         </span>{" "}
-                        -{" "}
-                        <span style={{ fontWeight: "bold" }}>
-                          {formatNumber(item.amount)}đ
-                        </span>
-                        /đêm
+                        {item.amount > 0 && (
+                          <>
+                            -{" "}
+                            <span style={{ fontWeight: "bold" }}>
+                              {formatNumber(item.amount)}đ
+                            </span>
+                            /đêm
+                          </>
+                        )}
                       </Typography>
                       <Tooltip title={item.detail} arrow>
                         <IconButton size="small">

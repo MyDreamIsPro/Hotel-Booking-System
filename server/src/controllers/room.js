@@ -91,6 +91,14 @@ export const deleteRoom = async (req, res) => {
     return res.status(404).send("No room with that id");
   }
   try {
+    // CHECK RELATED RECORD
+    let delete_id = mongoose.Types.ObjectId(id);
+    const related_booking = await Booking.findOne({ room_list: delete_id });
+    if (related_booking) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     await Room.findOneAndRemove({ _id: id });
     await logAction(req._id, INTEGER.LOG_DELETE, TIME_STAMP);

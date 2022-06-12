@@ -97,7 +97,7 @@ const Review = () => {
             style={{ width: "60%" }}
           />
           <Typography variant="h6" mb={1}>
-            Quý khách chưa có bài đánh giá nào
+            Quý khách chưa có bài đánh giá
           </Typography>
         </Box>
       )}

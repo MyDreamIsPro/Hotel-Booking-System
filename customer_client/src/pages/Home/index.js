@@ -164,20 +164,22 @@ const Home = () => {
               Tiêu chuẩn cho khách sạn, resort sang trọng ở Việt Nam
             </TypoStyle>
             <TypoStyle variant="body2">
-              Conceived by the Fernando family, Sri Lankan tea producers &
-              founders of Dilmah Ceylon Tea, Resplendent Ceylon’s collection of
-              small, luxury resorts offer the discerning traveler a remarkable
-              circuit across Sri Lanka, with a range of authentic experiences,
-              while contributing towards local communities & the environment
-              through the MJF Foundation & Dilmah Conservation.
+              TUANVU COTO HOTEL gây ấn tượng với trải nghiệm số, luôn thấu hiểu
+              và xem khách hàng là trung tâm cốt lõi trong mọi hoạt động. KPMG
+              trích dẫn ý kiến của một khách hàng trong báo cáo: “Trong suốt kỳ
+              nghỉ của chúng tôi, TUANVU COTO HOTEL đã hỗ trợ chu đáo từ khi đón
+              tại sân bay cho đến toàn bộ thời gian lưu trú tại khu nghỉ dưỡng.
+              Đội ngũ nhân viên của TUANVU COTO HOTEL rất nhiệt tình, chuyên
+              nghiệp và cung cấp những dịch vụ cao cấp để kỳ nghỉ của chúng tôi
+              trở nên tuyệt vời và đáng nhớ”.
             </TypoStyle>
             <TypoStyle variant="body2">
-              Conceived by the Fernando family, Sri Lankan tea producers &
-              founders of Dilmah Ceylon Tea, Resplendent Ceylon’s collection of
-              small, luxury resorts offer the discerning traveler a remarkable
-              circuit across Sri Lanka, with a range of authentic experiences,
-              while contributing towards local communities & the environment
-              through the MJF Foundation & Dilmah Conservation.
+              Với những nỗ lực không ngừng nghỉ trong đầu tư xây dựng, mở rộng
+              hệ thống và nâng cấp dịch vụ, TUANVU COTO HOTEL đã thành công
+              khẳng định vị thế là doanh nghiệp dẫn đầu trong ngành du lịch Việt
+              Nam. Thương hiệu cung cấp hệ sinh thái tất cả trong một từ khách
+              sạn, khu nghỉ dưỡng đến sân golf, công viên giải trí,... tại nhiều
+              địa điểm trên toàn quốc.
             </TypoStyle>
           </Stack>
         </HalfFrame>

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Discount from "../models/discount.js";
+import Booking from "../models/booking.js";
 import UserUseDiscount from "../models/user_use_discount.js";
 import Log from "../models/log.js";
 import { STRING, INTEGER } from "../constants/constants.js";
@@ -85,6 +86,19 @@ export const deleteDiscount = async (req, res) => {
     return res.status(404).send("No discount with that id");
   }
   try {
+    // CHECK RELATED RECORD
+    const related_booking = await Booking.findOne({ discount: id });
+    if (related_booking) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+    const related_user_use_discount = await UserUseDiscount.findOne({
+      discount: id,
+    });
+    if (related_user_use_discount) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     await UserUseDiscount.deleteMany({ discount: id });
     await Discount.findOneAndRemove({ _id: id });

@@ -30,6 +30,15 @@ export const createPeakDay = async (req, res) => {
   const start_date = new Date(peakDay.start_date).setHours(0, 0, 0, 0);
   const end_date = new Date(peakDay.end_date).setHours(0, 0, 0, 0);
   try {
+    // VALIDATE OVERLAPPING DAY
+    const overlappingDay = await PeakDay.findOne({
+      start_date: { $lte: end_date },
+      end_date: { $gte: start_date },
+    });
+    if (overlappingDay) {
+      return res.status(409).send("Ngày cao điểm bị trùng lặp");
+    }
+    // PROCESS
     const TIME_STAMP = new Date();
     const newPeakDay = new PeakDay({
       ...peakDay,
@@ -55,6 +64,16 @@ export const updatePeakDay = async (req, res) => {
   const start_date = new Date(peakDay.start_date).setHours(0, 0, 0, 0);
   const end_date = new Date(peakDay.end_date).setHours(0, 0, 0, 0);
   try {
+    // VALIDATE OVERLAPPING DAY
+    const overlappingDay = await PeakDay.findOne({
+      _id: { $ne: id },
+      start_date: { $lte: end_date },
+      end_date: { $gte: start_date },
+    });
+    if (overlappingDay) {
+      return res.status(409).send("Ngày cao điểm bị trùng lặp");
+    }
+    // PROCESS
     const TIME_STAMP = new Date();
     const updatedPeakDay = await PeakDay.findByIdAndUpdate(
       id,

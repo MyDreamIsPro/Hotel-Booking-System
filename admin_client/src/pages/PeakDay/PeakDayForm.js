@@ -70,6 +70,13 @@ const PeakDayForm = ({ open, setOpen, editedId, setEditedId }) => {
             name: Yup.string().required("Chưa nhập tiêu đề"),
           })}
           onSubmit={(values, { setSubmitting }) => {
+            if (
+              new Date(values.start_date).setHours(0, 0, 0, 0) >=
+              new Date(values.end_date).setHours(0, 0, 0, 0)
+            ) {
+              setSubmitting(false);
+              return alert("Ngày kết thúc phải lớn hơn ngày bắt đầu");
+            }
             if (editedId)
               dispatch(
                 updatePeakDay(

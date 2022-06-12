@@ -152,6 +152,13 @@ export const deleteRoomType = async (req, res) => {
     return res.status(404).send("No room_service with that id");
   }
   try {
+    // CHECK RELATED RECORD
+    const related_room = await Room.findOne({ room_type: id });
+    if (related_room) {
+      return res.status(409).send(STRING.DELETE_RELATED_RECORD);
+    }
+
+    // PROCESS
     const TIME_STAMP = new Date();
     const deletedRoomType = await RoomType.findOneAndRemove({ _id: id });
     deleteImages(deletedRoomType.images);

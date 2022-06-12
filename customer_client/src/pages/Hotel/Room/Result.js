@@ -67,20 +67,17 @@ const Result = ({
   const [discount, setDiscount] = useState(null);
   const diffDays = getDiffDays(startDate, endDate);
 
-  const basedAmount = useMemo(
-    () =>
-      Math.floor(
-        selectedRooms.reduce((result, room) => result + room.rent_bill, 0) *
-          (diffDays + (numPeakDay > 0 || 1 - 1) * (20 / 100))
-      ),
-    // const normalDayPrice = (diffDays - numPeakDay + 1) * price;
-    // const peakDayPrice =
-    //   numPeakDay > 0
-    //     ? (numPeakDay - 1) * Math.floor(price + price * (20 / 100))
-    //     : 0;
-    // return normalDayPrice + peakDayPrice;
-    [diffDays, selectedRooms, numPeakDay]
-  );
+  const basedAmount = useMemo(() => {
+    const price = selectedRooms.reduce(
+      (result, room) => result + room.rent_bill,
+      0
+    );
+    const peakday = numPeakDay > 0 ? numPeakDay - 1 : 0;
+    // console.log(price);
+    // console.log(diffDays);
+    // console.log(peakday);
+    return Math.floor(price * (diffDays + peakday * (20 / 100)));
+  }, [diffDays, selectedRooms, numPeakDay]);
 
   const amount = useMemo(
     () =>

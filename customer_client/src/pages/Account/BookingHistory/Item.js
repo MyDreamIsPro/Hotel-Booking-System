@@ -117,7 +117,7 @@ const Item = ({ data, setId, setOpenCancelDialog, setOpenRatingDialog }) => {
           </HotelName>
           <Typography variant="body1">
             Mã số đặt phòng:{" "}
-            <span style={{ fontWeight: "bold" }}>{data.number}</span>
+            <span style={{ fontWeight: "bold" }}>#{data.number}</span>
           </Typography>
           <Stack flexDirection="row" alignItems="center">
             <Typography variant="body1" mr={0.5}>

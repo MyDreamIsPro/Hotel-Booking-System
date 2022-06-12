@@ -33,7 +33,6 @@ export const createBackup = async (req, res) => {
   const full_name = req.full_name;
   const data = req.body;
   try {
-    const T1 = performance.now();
     const backupFolderName = Date.now().toString();
     const databasePath = path.join("BACKUP", backupFolderName, "database");
     const imagePath = path.join("BACKUP", backupFolderName, "images");
@@ -53,14 +52,11 @@ export const createBackup = async (req, res) => {
         }
         const originalImagePath = "STATIC";
         cpSync(originalImagePath, imagePath, { recursive: true });
-        const T2 = performance.now();
-        const input_duration = msToTime(T2 - T1);
         const TIME_STAMP = new Date();
         const backup = new Backup({
           name: backupFolderName,
           user: full_name,
           detail: data.detail,
-          duration: input_duration,
           last_using: TIME_STAMP,
           created_date: TIME_STAMP,
         });
