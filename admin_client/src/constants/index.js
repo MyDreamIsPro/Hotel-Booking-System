@@ -116,4 +116,7 @@ export const STRING = {
   // SYSTEM
   LOCAL_STORAGE_PROFILE_KEY:
     "065211f7a119d769f567ae067eb75951714d6a1df57bc30ff695befaed27059a613c76bdebf98e6d9700d4db50a99f7c",
+
+  // SERVER URL
+  SERVER_URL: "http://localhost:5000",
 };

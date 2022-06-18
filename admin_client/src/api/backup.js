@@ -1,6 +1,7 @@
 import axios from "axios";
+import { STRING } from "../constants";
 axios.defaults.withCredentials = true;
-const API = axios.create({ baseURL: "https://tuanvq-project.herokuapp.com" });
+const API = axios.create({ baseURL: STRING.SERVER_URL });
 
 export const getAllBackup = () => API.get("/backup");
 export const createBackup = (backup) => API.post("/backup/new", backup);

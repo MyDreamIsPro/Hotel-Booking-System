@@ -1,6 +1,7 @@
 import axios from "axios";
+import { STRING } from "../constants";
 axios.defaults.withCredentials = true;
-const API = axios.create({ baseURL: "https://tuanvq-project.herokuapp.com" });
+const API = axios.create({ baseURL: STRING.SERVER_URL });
 
 export const getAllReview = () => API.get("/review/list");
 export const ignoreReview = (id) => API.get(`/review/ignore/${id}`);

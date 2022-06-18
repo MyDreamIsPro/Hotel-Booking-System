@@ -57,17 +57,13 @@ app.use("/discount", discountRoutes);
 app.use("/combo", comboRoutes);
 app.use("/peak_day", peakDayRoutes);
 
-app.get("/", function (res, req) {
-  res.send("hello");
-});
-
 // Pre-create required folder
 if (!existsSync("BACKUP")) mkdirSync("BACKUP");
 
 //Connect to DB
 const PORT = process.env.PORT;
-const CONNECTION_URL = process.env.CONNECTION_URL;
-// const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";
+const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";
+// const CONNECTION_URL = process.env.CONNECTION_URL;
 
 mongoose
   .connect(CONNECTION_URL, {
