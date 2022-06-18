@@ -60,7 +60,7 @@ const Login = () => {
           <Typography variant="body1">
             Xin vui lòng đăng nhập để truy cập
           </Typography>
-          <Stack direction="row" spacing={2} sx={{ my: 2 }}>
+          {/* <Stack direction="row" spacing={2} sx={{ my: 2 }}>
             <Button fullWidth size="large" color="inherit" variant="outlined">
               <Iconify
                 icon="eva:google-fill"
@@ -90,7 +90,7 @@ const Login = () => {
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Hoặc tiếp tục với
             </Typography>
-          </Divider>
+          </Divider> */}
 
           {hasError && (
             <Box

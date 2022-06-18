@@ -35,7 +35,7 @@ const links = [
     text: "Tổng quan",
     icon: "ant-design:pie-chart-outlined",
     path: "/dashboard",
-    isAdminRequired: false,
+    isAdminRequired: true,
   },
   {
     text: "Khách sạn",
@@ -46,7 +46,7 @@ const links = [
   {
     text: "Phòng",
     icon: "ic:outline-meeting-room",
-    isAdminRequired: false,
+    isAdminRequired: true,
     children: [
       {
         text: "Danh sách",

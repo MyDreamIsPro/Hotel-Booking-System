@@ -76,7 +76,7 @@ export const createHotel = async (req, res) => {
     });
     await newHotel.save();
     const default_combo = new Combo({
-      name: "Gói mặc định",
+      name: "Gói mặc định (bữa sáng)",
       hotel: newHotel._id,
       amount: 0,
       detail: "Gói mặc định cho quý khách",

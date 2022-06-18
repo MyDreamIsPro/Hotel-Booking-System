@@ -52,7 +52,7 @@ const Register = () => {
       <Container maxWidth="sm" style={{ paddingTop: 20 }}>
         <Box sx={{ boxShadow: 3, borderRadius: 4, padding: 3 }}>
           <Typography variant="h5">Đăng ký</Typography>
-          <Stack direction="row" spacing={2} sx={{ my: 2 }}>
+          {/* <Stack direction="row" spacing={2} sx={{ my: 2 }}>
             <Button fullWidth size="large" color="inherit" variant="outlined">
               <Iconify
                 icon="eva:google-fill"
@@ -82,7 +82,7 @@ const Register = () => {
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Hoặc tiếp tục với
             </Typography>
-          </Divider>
+          </Divider> */}
 
           {hasError && (
             <Box

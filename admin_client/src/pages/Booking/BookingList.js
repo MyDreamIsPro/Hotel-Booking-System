@@ -40,7 +40,7 @@ const columns = [
   { id: "amount", label: "Tổng tiền (VNĐ)", minWidth: 150 },
   { id: "effective_from", label: "Nhận phòng", minWidth: 130 },
   { id: "effective_to", label: "Trả phòng", minWidth: 120 },
-  { id: "status", label: "Trạng thái", minWidth: 100 },
+  { id: "status", label: "Trạng thái", minWidth: 120 },
 ];
 
 const STATUS_TAG = [
