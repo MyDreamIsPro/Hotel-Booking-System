@@ -13,7 +13,8 @@ const userStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.profile_image = "http://localhost:5000/user/" + fileName;
+    req.body.profile_image =
+      "https://tuanvq-project.herokuapp.com/user/" + fileName;
     cb(null, fileName);
   },
 });
@@ -30,7 +31,9 @@ const hotelStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.images.push("http://localhost:5000/hotel/" + fileName);
+    req.body.images.push(
+      "https://tuanvq-project.herokuapp.com/hotel/" + fileName
+    );
     cb(null, fileName);
   },
 });
@@ -47,7 +50,9 @@ const roomTypeStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.images.push("http://localhost:5000/room/" + fileName);
+    req.body.images.push(
+      "https://tuanvq-project.herokuapp.com/room/" + fileName
+    );
     cb(null, fileName);
   },
 });

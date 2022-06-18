@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API = axios.create({ baseURL: "http://localhost:5000" });
+const API = axios.create({ baseURL: "https://tuanvq-project.herokuapp.com" });
 
 export const getAllBooking = () => API.get("/booking/admin/list");
 export const checkInBooking = (id) => API.get(`/booking/check-in/${id}`);

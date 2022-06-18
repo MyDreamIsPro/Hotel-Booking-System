@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API = axios.create({ baseURL: "http://localhost:5000" });
+const API = axios.create({ baseURL: "https://tuanvq-project.herokuapp.com" });
 
 export const getAllBackup = () => API.get("/backup");
 export const createBackup = (backup) => API.post("/backup/new", backup);
