@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 // UI
 import {
   Button,
@@ -12,14 +12,14 @@ import {
 // Logic
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import NotificationContext from "../../context/Context";
+import { useSnackbar } from "notistack";
 import { restore } from "../../redux/actions/backup";
 
 // ----------------------------
 const RestoreDialog = ({ open, setOpen, id, setId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [doing, setDoing] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -30,21 +30,13 @@ const RestoreDialog = ({ open, setOpen, id, setId }) => {
   };
 
   const handleSuccess = () => {
-    context.setNotification({
-      type: "success",
-      content: "Khôi phục dữ liệu thành công",
-    });
+    enqueueSnackbar("Khôi phục dữ liệu thành công", { variant: "success" });
     setDoing(false);
     handleClose();
-    context.setOpen(true);
   };
 
   const handleFailure = (needLogin, message) => {
-    context.setNotification({
-      type: "error",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "error" });
     setDoing(false);
     if (needLogin)
       navigate("/login", {

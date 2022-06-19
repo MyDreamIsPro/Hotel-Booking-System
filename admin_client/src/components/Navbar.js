@@ -2,12 +2,9 @@ import PropTypes from "prop-types";
 // UI lib
 import { styled } from "@mui/material/styles";
 import { Stack, IconButton } from "@mui/material";
-
 // UI custom
 import Iconify from "./Iconify";
-
 // logic lib
-
 // logic custom
 import { INTEGER } from "../constants";
 import AccountPopover from "./Popover/Account";
@@ -47,9 +44,6 @@ export default function Navbar({ setOpenSidebar, openSidebar }) {
           onClick={() => setOpenSidebar(!openSidebar)}
         >
           <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-        <IconButton sx={{ color: "text.primary" }}>
-          <Iconify icon="charm:search" />
         </IconButton>
       </Stack>
       <AccountPopover />

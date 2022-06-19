@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 // UI
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 // Logic
-import NotificationContext from "../../context/Context";
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { banAccount, activeAccount } from "../../redux/actions/account";
@@ -19,7 +19,7 @@ import { banAccount, activeAccount } from "../../redux/actions/account";
 const UserDialog = ({ typeDialog, open, setOpen, id, setId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [doing, setDoing] = useState(false);
 
   const handleClose = () => {
@@ -29,24 +29,18 @@ const UserDialog = ({ typeDialog, open, setOpen, id, setId }) => {
   };
 
   const handleSuccess = () => {
-    context.setNotification({
-      type: "success",
-      content:
-        typeDialog === "BAN"
-          ? "Khóa tài khoản thành công"
-          : "Mở khóa tài khoản thành công",
-    });
-    context.setOpen(true);
+    enqueueSnackbar(
+      typeDialog === "BAN"
+        ? "Khóa tài khoản thành công"
+        : "Mở khóa tài khoản thành công",
+      { variant: "success" }
+    );
     setDoing(false);
     handleClose();
   };
 
   const handleFailure = (needLogin, message) => {
-    context.setNotification({
-      type: "error",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "error" });
     setDoing(false);
     if (needLogin)
       navigate("/login", {
@@ -64,6 +58,8 @@ const UserDialog = ({ typeDialog, open, setOpen, id, setId }) => {
       case "ACTIVE":
         dispatch(activeAccount(id, handleSuccess, handleFailure));
         break;
+      default:
+        alert("Đã có lỗi xảy ra");
     }
   };
 

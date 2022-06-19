@@ -1,7 +1,6 @@
 import Chart from "react-apexcharts";
-import { formatNumber } from "../../../utils/number";
 
-const RoomChart = ({ data, color }) => {
+const RoomChart = ({ data }) => {
   const series = data;
   const options = {
     chart: {

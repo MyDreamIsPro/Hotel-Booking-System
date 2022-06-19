@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useRef, useState } from "react";
 // UI lib
 import { alpha } from "@mui/material/styles";
 import {
@@ -20,11 +20,8 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 // logic custom
-import NotificationContext from "../../context/Context";
 import { logout } from "../../redux/actions/user";
-import useReponsive from "../../theme/useReponsive";
 import { STRING } from "../../constants";
-import { checkAuth } from "../../api/user";
 
 //#region CSS
 

@@ -1,6 +1,6 @@
 import { STRING } from "../../constants";
 
-export default (state = [], action) => {
+const log = (state = [], action) => {
   switch (action.type) {
     case STRING.GET_ALL_LOG:
       return action.payload;
@@ -8,3 +8,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default log;

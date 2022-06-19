@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { existsSync, mkdirSync } from "fs";
+import { STRING } from "../constants/constants.js";
 
 const userStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -13,8 +14,7 @@ const userStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.profile_image =
-      "https://tuanvq-project.herokuapp.com/user/" + fileName;
+    req.body.profile_image = `${STRING.SERVER_URL}/user/${fileName}`;
     cb(null, fileName);
   },
 });
@@ -31,9 +31,7 @@ const hotelStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.images.push(
-      "https://tuanvq-project.herokuapp.com/hotel/" + fileName
-    );
+    req.body.images.push(`${STRING.SERVER_URL}/hotel/${fileName}`);
     cb(null, fileName);
   },
 });
@@ -50,9 +48,7 @@ const roomTypeStorage = multer.diskStorage({
     if (!existsSync(REQUIRED_PATH))
       mkdirSync(REQUIRED_PATH, { recursive: true });
 
-    req.body.images.push(
-      "https://tuanvq-project.herokuapp.com/room/" + fileName
-    );
+    req.body.images.push(`${STRING.SERVER_URL}/room/${fileName}`);
     cb(null, fileName);
   },
 });

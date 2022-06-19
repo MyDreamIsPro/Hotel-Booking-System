@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 // UI lib
 import {
   Dialog,
@@ -26,12 +26,12 @@ import {
 } from "../../components/FormattedInput";
 import ImageUploader from "../../components/ImageUploader";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 // logic custom
-import NotificationContext from "../../context/Context";
 import { createHotel } from "../../redux/actions/hotel";
 import { city, HOTEL_SERVICES } from "../../__MOCK__";
 import { updateHotel } from "../../redux/actions/hotel";
@@ -62,7 +62,7 @@ const DeleteImageButton = styled(IconButton)({
 const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [files, setFiles] = useState([]);
   const [deletedImages, setDeletedImages] = useState([]);
   const hotel = useSelector((state) =>
@@ -79,6 +79,10 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
     setFiles([]);
     setDeletedImages([]);
     setOpen(false);
+  };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
   };
   return (
     <Dialog
@@ -185,20 +189,15 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   formData,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật khách sạn thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật khách sạn thành công",
+                      "success"
+                    );
                     handleCloseDialog();
                     setSubmitting(false);
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -209,20 +208,12 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createHotel(
                   formData,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Thêm khách sạn thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification("Thêm khách sạn thành công", "success");
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

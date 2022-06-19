@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 // UI lib
 import {
   Box,
@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // logic custom
 import { getAllDiscount } from "../../redux/actions/discount";
-import NotificationContext from "../../context/Context";
+import { useSnackbar } from "notistack";
 import { formatDateWithHour } from "../../utils/date";
 import { formatNumber } from "../../utils/number";
 import { INTEGER } from "../../constants";
@@ -38,8 +38,8 @@ const columns = [
   { id: "value", label: "Giá trị", minWidth: 150 },
   { id: "quantity", label: "Số lượng", minWidth: 100 },
   { id: "pricing_condition", label: "Đơn hàng tối thiểu", minWidth: 170 },
-  { id: "effective_from", label: "Thời gian bắt đầu", minWidth: 170 },
-  { id: "effective_to", label: "Thời gian kết thúc", minWidth: 170 },
+  { id: "effective_from", label: "Thời gian bắt đầu", minWidth: 200 },
+  { id: "effective_to", label: "Thời gian kết thúc", minWidth: 200 },
 ];
 
 function createData(
@@ -82,7 +82,7 @@ const DiscountList = ({
   setOpenDeleteDialog,
 }) => {
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -134,8 +134,7 @@ const DiscountList = ({
         },
         (needLogin, message) => {
           if (isMounted) {
-            context.setNotification({ type: "error", content: message });
-            context.setOpen(true);
+            enqueueSnackbar(message, { variant: "error" });
             setLoading(false);
             if (needLogin)
               navigate("/login", {

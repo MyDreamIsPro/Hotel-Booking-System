@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 // UI lib
 import { Box, Grid, Typography } from "@mui/material";
 // UI custom
@@ -9,9 +9,9 @@ import BookingSection from "./Section/BookingSection";
 import IncomExpenseInterestSection from "./Section/IncomExpenseInterestSection";
 import HotelSection from "./Section/HotelSection";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 // logic custom
-import NotificationContext from "../../context/Context";
 import { getDashboard } from "../../api/dashboard";
 //#region CSS
 //#endregion
@@ -19,7 +19,7 @@ import { getDashboard } from "../../api/dashboard";
 //----------------------------
 const Dashboard = () => {
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [income, setIncome] = useState([]);
   const [expense, setExpense] = useState([]);
   const [bookingCount, setBookingCount] = useState({
@@ -43,8 +43,7 @@ const Dashboard = () => {
 
     const performFailure = (needLogin, message) => {
       if (isMounted) {
-        context.setNotification({ type: "error", content: message });
-        context.setOpen(true);
+        enqueueSnackbar(message, { variant: "error" });
         setLoading(false);
         if (needLogin)
           navigate("/login", {
@@ -88,7 +87,7 @@ const Dashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [context, navigate]);
+  }, [navigate]);
 
   return (
     <Page title="Tổng quan">

@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -12,13 +11,13 @@ import {
 // UI custom
 import SlideTransition from "../../components/SlideTransition";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 // logic custom
 import { createBackup, updateBackup } from "../../redux/actions/backup";
-import NotificationContext from "../../context/Context";
 //#region CSS
 //#endregion
 
@@ -27,7 +26,7 @@ import NotificationContext from "../../context/Context";
 const BackupRestoreForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const backup = useSelector((state) =>
     editedId ? state.backup.find((item) => item._id === editedId) : null
   );
@@ -35,6 +34,10 @@ const BackupRestoreForm = ({ open, setOpen, editedId, setEditedId }) => {
   const handleCloseDialog = () => {
     if (editedId) setEditedId();
     setOpen(false);
+  };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
   };
 
   return (
@@ -63,20 +66,15 @@ const BackupRestoreForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật bản sao lưu thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật bản sao lưu thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -87,20 +85,12 @@ const BackupRestoreForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createBackup(
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Tạo bản sao lưu thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification("Tạo bản sao lưu thành công", "success");
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

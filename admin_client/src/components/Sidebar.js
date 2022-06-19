@@ -22,6 +22,19 @@ import { INTEGER, STRING } from "../constants";
 //#region CSS
 const SidebarHolder = styled("div")(({ theme }) => ({
   width: INTEGER.DRAWER_WIDTH,
+  "& .MuiDrawer-paper::-webkit-scrollbar": {
+    width: "10px",
+  },
+  "& .MuiDrawer-paper::-webkit-scrollbar-track": {
+    backgroundColor: "transparent",
+  },
+  "& .MuiDrawer-paper::-webkit-scrollbar-thumb": {
+    backgroundColor: "#D7DBDF",
+    borderRadius: 4,
+  },
+  "& .MuiDrawer-paper::-webkit-scrollbar-thumb:hover": {
+    background: "#555",
+  },
   [theme.breakpoints.down("lg")]: {
     width: 0,
   },
@@ -157,7 +170,10 @@ const Sidebar = ({ setOpenSidebar, openSidebar }) => {
       >
         <Box
           role="presentation"
-          style={{ width: INTEGER.DRAWER_WIDTH, padding: 10 }}
+          style={{
+            width: INTEGER.DRAWER_WIDTH,
+            padding: 10,
+          }}
         >
           <List>
             {links.map(

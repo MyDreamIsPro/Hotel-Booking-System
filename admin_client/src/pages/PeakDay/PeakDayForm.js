@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -15,13 +14,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 // UI custom
 import SlideTransition from "../../components/SlideTransition";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 // logic custom
 import { createPeakDay, updatePeakDay } from "../../redux/actions/peak_day";
-import NotificationContext from "../../context/Context";
 //#region CSS
 //#endregion
 
@@ -30,7 +29,7 @@ const INITIAL_DATES = [new Date(), new Date(Date.now() + 86400000)];
 const PeakDayForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const peakDay = useSelector((state) =>
     editedId ? state.peak_day.find((item) => item._id === editedId) : null
   );
@@ -38,6 +37,10 @@ const PeakDayForm = ({ open, setOpen, editedId, setEditedId }) => {
   const handleCloseDialog = () => {
     if (editedId) setEditedId();
     setOpen(false);
+  };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
   };
   return (
     <Dialog
@@ -83,20 +86,15 @@ const PeakDayForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật ngày cao điểm thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật ngày cao điểm thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -107,20 +105,15 @@ const PeakDayForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createPeakDay(
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Thêm ngày cao điểm thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Thêm ngày cao điểm thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

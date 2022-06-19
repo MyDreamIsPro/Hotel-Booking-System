@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 // UI lib
 import {
   Box,
@@ -19,11 +19,11 @@ import {
   IdFormatCustom,
 } from "../../components/FormattedInput";
 // logic lib
+import { useSnackbar } from "notistack";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 // logic custom
-import NotificationContext from "../../context/Context";
 import { getInfo, updateInfo } from "../../api/user";
 
 //#region CSS
@@ -58,13 +58,17 @@ const InfoSection = styled(Stack)(({ theme }) => ({
 
 //----------------------------
 const Account = () => {
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [show, setShow] = useState(false);
   const inputFile = useRef(null);
   const [avatar, setAvatar] = useState();
   const [preview, setPreview] = useState();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -74,11 +78,7 @@ const Account = () => {
           if (isMounted) setUser(res.data);
         })
         .catch((err) => {
-          context.setNotification({
-            type: "error",
-            content: err.response.data,
-          });
-          context.setOpen(true);
+          showNotification(err.response.data, "error");
           if (err.response.status === 401)
             navigate("/login", {
               state: { returnUrl: "/settings?tab=info" },
@@ -92,7 +92,7 @@ const Account = () => {
     return () => {
       isMounted = false;
     };
-  }, [navigate, context]);
+  }, [navigate]);
 
   const handleChangeAvatar = (image) => {
     setAvatar(image);
@@ -236,19 +236,11 @@ const Account = () => {
 
             updateInfo(formData)
               .then((res) => {
-                context.setNotification({
-                  type: "success",
-                  content: "Sửa thông tin thành công",
-                });
-                context.setOpen(true);
+                showNotification("Sửa thông tin thành công", "success");
                 setSubmitting(false);
               })
               .catch((err) => {
-                context.setNotification({
-                  type: "error",
-                  content: "Đã có lỗi xảy ra",
-                });
-                context.setOpen(true);
+                showNotification("Đã có lỗi xảy ra", "error");
                 setSubmitting(false);
               });
           }}

@@ -1,13 +1,14 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { checkAuth } from "../api/user";
-import NotificationContext from "../context/Context";
+import { useSnackbar } from "notistack";
+
 // -----------------------------------------------
 const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   useEffect(() => {
     checkAuth()
@@ -15,11 +16,7 @@ const ProtectedRoute = () => {
         setIsAuthenticated(true);
       })
       .catch(() => {
-        context.setNotification({
-          type: "error",
-          content: "Phiên đăng nhập hết hạn",
-        });
-        context.setOpen(true);
+        enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "success" });
         navigate("/login", { replace: true });
       });
   }, []);

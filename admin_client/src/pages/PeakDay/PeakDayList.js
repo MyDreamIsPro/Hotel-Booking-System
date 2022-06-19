@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 // UI lib
 import {
   Box,
@@ -16,11 +16,11 @@ import OptionMenu from "./PeakDayOptionMenu";
 import Filter from "./PeakDayFilter";
 import NoRecord from "../../components/NoRecord";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // logic custom
 import { getAllPeakDay } from "../../redux/actions/peak_day";
-import NotificationContext from "../../context/Context";
 import { formatDate } from "../../utils/date";
 
 //#region CSS
@@ -47,7 +47,7 @@ const PeakDayList = ({
   setOpenDeleteDialog,
 }) => {
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -87,8 +87,8 @@ const PeakDayList = ({
         },
         (needLogin, message) => {
           if (isMounted) {
-            context.setNotification({ type: "error", content: message });
-            context.setOpen(true);
+            enqueueSnackbar(message, { variant: "error" });
+
             setLoading(false);
             if (needLogin)
               navigate("/login", {

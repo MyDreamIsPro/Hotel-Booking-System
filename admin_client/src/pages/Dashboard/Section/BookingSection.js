@@ -52,7 +52,11 @@ const BookingSection = ({ data }) => {
                   borderRadius: "50%",
                 }}
               >
-                <img src={item.img} style={{ width: 130, height: 130 }} />
+                <img
+                  alt="illustration"
+                  src={item.img}
+                  style={{ width: 130, height: 130 }}
+                />
               </div>
             </Stack>
           </Box>

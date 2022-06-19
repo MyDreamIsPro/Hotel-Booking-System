@@ -1,8 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 // UI lib
 import {
   Button,
-  Container,
   TextField,
   InputAdornment,
   IconButton,
@@ -15,13 +14,13 @@ import {
 import Iconify from "../components/Iconify";
 
 // Logic lib
+import { useSnackbar } from "notistack";
 import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
 // UI custom
-import NotificationContext from "../context/Context";
 import Page from "../components/Page";
 
 // Logic custom
@@ -30,9 +29,9 @@ import { login } from "../redux/actions/user";
 // -------------------------------------------
 
 const Login = () => {
-  const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const state = useLocation().state;
 
   const [hasError, setHasError] = useState(false);
@@ -85,11 +84,9 @@ const Login = () => {
               login(
                 { ...values },
                 () => {
-                  context.setNotification({
-                    type: "success",
-                    content: "Đăng nhập thành công",
+                  enqueueSnackbar("Đăng nhập thành công", {
+                    variant: "success",
                   });
-                  context.setOpen(true);
                   setSubmitting(false);
                   navigate(state ? state.returnUrl : "/dashboard");
                 },

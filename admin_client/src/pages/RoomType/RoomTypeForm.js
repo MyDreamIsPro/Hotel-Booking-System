@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 // UI lib
 import {
   Dialog,
@@ -23,12 +23,12 @@ import MultipleAsyncAutocomplete from "../../components/AsyncAutocomplete/Multip
 import SingleAsyncAutocomplete from "../../components/AsyncAutocomplete/SingleAutocomplete";
 import ImageUploader from "../../components/ImageUploader";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 // logic custom
-import NotificationContext from "../../context/Context";
 import { createRoomType, updateRoomType } from "../../redux/actions/room_type";
 import { getAllHotelForForm } from "../../api/hotel";
 
@@ -58,7 +58,7 @@ const DeleteImageButton = styled(IconButton)({
 const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [files, setFiles] = useState([]);
   const [deletedImages, setDeletedImages] = useState([]);
   const roomType = useSelector((state) =>
@@ -66,19 +66,11 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
   );
 
   const handleSuccess = (message) => {
-    context.setNotification({
-      type: "success",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "success" });
   };
 
   const handleFailure = (message) => {
-    context.setNotification({
-      type: "error",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "error" });
   };
 
   useEffect(() => {
@@ -603,7 +595,7 @@ const RoomTypeForm = ({ open, setOpen, editedId, setEditedId }) => {
                   sx={{ marginLeft: 2 }}
                   type="submit"
                   variant="contained"
-                  disabled={isSubmitting ? true : false}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <CircularProgress style={{ color: "#252525" }} />

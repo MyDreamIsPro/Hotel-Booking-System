@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -15,13 +14,13 @@ import {
 import SlideTransition from "../../components/SlideTransition";
 import SingleAsyncAutocomplete from "../../components/AsyncAutocomplete/SingleAutocomplete";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 // logic custom
 import { PriceFormatCustom } from "../../components/FormattedInput";
-import NotificationContext from "../../context/Context";
 import { createExpense, updateExpense } from "../../redux/actions/expense";
 import { getAllHotelForForm } from "../../api/hotel";
 
@@ -33,25 +32,17 @@ import { getAllHotelForForm } from "../../api/hotel";
 const ExpenseForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const expense = useSelector((state) =>
     editedId ? state.expense.find((item) => item._id === editedId) : null
   );
 
   const handleSuccess = (message) => {
-    context.setNotification({
-      type: "success",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "success" });
   };
 
   const handleFailure = (message) => {
-    context.setNotification({
-      type: "error",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "error" });
   };
 
   const handleCloseDialog = () => {

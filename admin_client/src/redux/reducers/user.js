@@ -1,6 +1,6 @@
 import { STRING } from "../../constants";
 
-export default (state = {}, action) => {
+const user = (state = {}, action) => {
   switch (action.type) {
     case STRING.GET_INFO:
       return action.payload;
@@ -23,3 +23,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default user;

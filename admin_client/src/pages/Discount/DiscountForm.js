@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -19,6 +18,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SlideTransition from "../../components/SlideTransition";
 import { PriceFormatCustom } from "../../components/FormattedInput";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,6 @@ import * as Yup from "yup";
 import viLocale from "date-fns/locale/vi";
 // logic custom
 import CustomDateAdapter from "../../components/CustomDateAdapter";
-import NotificationContext from "../../context/Context";
 import { createDiscount, updateDiscount } from "../../redux/actions/discount";
 import { INTEGER } from "../../constants";
 //#region CSS
@@ -37,7 +36,7 @@ import { INTEGER } from "../../constants";
 const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const discount = useSelector((state) =>
     editedId ? state.discount.find((item) => item._id === editedId) : null
   );
@@ -45,6 +44,10 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
   const handleCloseDialog = () => {
     if (editedId) setEditedId();
     setOpen(false);
+  };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
   };
   return (
     <Dialog
@@ -112,20 +115,15 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật mã khuyến mãi thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật mã khuyến mãi thành công",
+                      "success"
+                    );
                     handleCloseDialog();
                     setSubmitting(false);
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -136,20 +134,15 @@ const HotelForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createDiscount(
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Thêm mã khuyến mãi thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Thêm mã khuyến mãi thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

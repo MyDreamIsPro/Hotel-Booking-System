@@ -39,6 +39,7 @@ const HotelSection = ({ hotel, room }) => {
               alignItems="center"
             >
               <img
+                alt="illustration"
                 src={item.img}
                 style={{ height: 200, objectFit: "contain" }}
               />

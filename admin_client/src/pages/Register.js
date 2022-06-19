@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 // UI lib
 import {
   Button,
@@ -9,32 +9,28 @@ import {
   Link,
   Stack,
   Typography,
-  Divider,
   Box,
   CircularProgress,
 } from "@mui/material";
 import Iconify from "../components/Iconify";
-
 // UI custom
-import NotificationContext from "../context/Context";
 import Page from "../components/Page";
 import { PhoneFormatCustom } from "../components/FormattedInput";
-
 // Logic lib
-import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useDispatch } from "react-redux";
-
 // Logic custom
 import { signup } from "../redux/actions/user";
 
 // -------------------------------------------
 
 const Register = () => {
-  const context = useContext(NotificationContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -101,11 +97,9 @@ const Register = () => {
                 signup(
                   { ...values },
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Đăng ký thành công",
+                    enqueueSnackbar("Đăng ký thành công", {
+                      variant: "success",
                     });
-                    context.setOpen(true);
                     setSubmitting(false);
                     navigate("/dashboard");
                   },

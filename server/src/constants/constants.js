@@ -63,6 +63,8 @@ export const STRING = {
   BOOKING_NOT_FOUND: "Đơn đặt chỗ không tồn tại",
   USER_BANNED:
     "Tài khoản này đã bị khóa. Quý khách vui lòng liên hệ quản trị viên để biết thêm chi tiết",
+
+  SERVER_URL: "http://localhost:5000",
 };
 
 export const VNPAY = {

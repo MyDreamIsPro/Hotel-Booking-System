@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 // UI
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 // Logic
-import NotificationContext from "../context/Context";
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deleteRoomService } from "../redux/actions/room_service";
@@ -34,7 +34,7 @@ const ConfirmationDialog = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [doing, setDoing] = useState(false);
 
   const handleClose = () => {
@@ -44,21 +44,13 @@ const ConfirmationDialog = ({
   };
 
   const handleSuccess = () => {
-    context.setNotification({
-      type: "success",
-      content: "Xóa thành công",
-    });
-    context.setOpen(true);
+    enqueueSnackbar("Xóa thành công", { variant: "success" });
     setDoing(false);
     handleClose();
   };
 
   const handleFailure = (needLogin, message) => {
-    context.setNotification({
-      type: "error",
-      content: message,
-    });
-    context.setOpen(true);
+    enqueueSnackbar(message, { variant: "error" });
     setDoing(false);
     if (needLogin) navigate("/login", { replace: true });
     handleClose();

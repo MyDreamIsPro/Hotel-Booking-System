@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -12,6 +11,7 @@ import {
 // UI custom
 import SlideTransition from "../../components/SlideTransition";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,6 @@ import {
   createRoomService,
   updateRoomService,
 } from "../../redux/actions/room_service";
-import NotificationContext from "../../context/Context";
 //#region CSS
 //#endregion
 
@@ -30,7 +29,7 @@ import NotificationContext from "../../context/Context";
 const RoomServiceForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const roomService = useSelector((state) =>
     editedId ? state.room_service.find((item) => item._id === editedId) : null
   );
@@ -38,6 +37,10 @@ const RoomServiceForm = ({ open, setOpen, editedId, setEditedId }) => {
   const handleCloseDialog = () => {
     if (editedId) setEditedId();
     setOpen(false);
+  };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
   };
   return (
     <Dialog
@@ -69,20 +72,15 @@ const RoomServiceForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật dịch vụ phòng thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật dịch vụ phòng thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -93,20 +91,15 @@ const RoomServiceForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createRoomService(
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Thêm dịch vụ phòng thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Thêm dịch vụ phòng thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

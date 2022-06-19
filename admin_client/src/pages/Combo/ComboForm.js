@@ -1,4 +1,3 @@
-import { useContext } from "react";
 // UI lib
 import {
   Dialog,
@@ -15,6 +14,7 @@ import {
 import SlideTransition from "../../components/SlideTransition";
 import SingleAsyncAutocomplete from "../../components/AsyncAutocomplete/SingleAutocomplete";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,6 @@ import * as Yup from "yup";
 // logic custom
 import { getAllHotelForForm } from "../../api/hotel";
 import { createCombo, updateCombo } from "../../redux/actions/combo";
-import NotificationContext from "../../context/Context";
 import { PriceFormatCustom } from "../../components/FormattedInput";
 //#region CSS
 //#endregion
@@ -32,7 +31,7 @@ import { PriceFormatCustom } from "../../components/FormattedInput";
 const ComboForm = ({ open, setOpen, editedId, setEditedId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const combo = useSelector((state) =>
     editedId ? state.combo.find((item) => item._id === editedId) : null
   );
@@ -41,6 +40,11 @@ const ComboForm = ({ open, setOpen, editedId, setEditedId }) => {
     if (editedId) setEditedId();
     setOpen(false);
   };
+
+  const showNotification = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
+  };
+
   return (
     <Dialog
       open={open}
@@ -85,20 +89,15 @@ const ComboForm = ({ open, setOpen, editedId, setEditedId }) => {
                   editedId,
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Cập nhật gói dịch vụ thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification(
+                      "Cập nhật gói dịch vụ thành công",
+                      "success"
+                    );
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }
@@ -109,20 +108,12 @@ const ComboForm = ({ open, setOpen, editedId, setEditedId }) => {
                 createCombo(
                   values,
                   () => {
-                    context.setNotification({
-                      type: "success",
-                      content: "Thêm gói dịch vụ thành công",
-                    });
-                    context.setOpen(true);
+                    showNotification("Thêm gói dịch vụ thành công", "success");
                     setSubmitting(false);
                     handleCloseDialog();
                   },
                   (needLogin, message) => {
-                    context.setNotification({
-                      type: "error",
-                      content: message,
-                    });
-                    context.setOpen(true);
+                    showNotification(message, "error");
                     setSubmitting(false);
                     if (needLogin) navigate("/login", { replace: true });
                   }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 // UI lib
 import {
   Box,
@@ -18,11 +18,11 @@ import NoRecord from "../../components/NoRecord";
 import Filter from "./ReviewFilter";
 import OptionMenu from "./ReviewOptionMenu";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // logic custom
 import { getAllReview } from "../../redux/actions/review";
-import NotificationContext from "../../context/Context";
 import { formatDateWithHour } from "../../utils/date";
 import DetailDialog from "./DetailDialog";
 //#region CSS
@@ -76,7 +76,7 @@ function createData(
 
 const ReviewList = ({ id, setId, setOpenReviewDialog, setDialogContent }) => {
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -119,8 +119,7 @@ const ReviewList = ({ id, setId, setOpenReviewDialog, setDialogContent }) => {
         },
         (needLogin, message) => {
           if (isMounted) {
-            context.setNotification({ type: "error", content: message });
-            context.setOpen(true);
+            enqueueSnackbar(message, { variant: "error" });
             setLoading(false);
             if (needLogin)
               navigate("/login", {

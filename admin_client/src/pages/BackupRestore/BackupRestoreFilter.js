@@ -1,5 +1,4 @@
-import { Autocomplete, Grid, TextField } from "@mui/material";
-import { city } from "../../__MOCK__";
+import { Grid, TextField } from "@mui/material";
 
 const BackupFilter = ({ filterBackupCode, setFilterBackupCode }) => {
   return (

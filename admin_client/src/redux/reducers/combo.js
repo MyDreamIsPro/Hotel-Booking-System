@@ -1,6 +1,6 @@
 import { STRING } from "../../constants";
 
-export default (state = [], action) => {
+const combo = (state = [], action) => {
   switch (action.type) {
     case STRING.GET_ALL_COMBO:
       return action.payload;
@@ -16,3 +16,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default combo;

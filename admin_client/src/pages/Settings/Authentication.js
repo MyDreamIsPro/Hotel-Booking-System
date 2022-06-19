@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 // UI lib
 import {
   Box,
@@ -12,16 +12,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 // UI custom
 import Iconify from "../../components/Iconify";
 // logic lib
+import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 // logic custom
-import NotificationContext from "../../context/Context";
 import { changePassword } from "../../api/user";
 import { formatDate } from "../../utils/date";
 import { getDeviceSpec } from "../../utils/Device";
@@ -73,7 +72,7 @@ const LoadingList = () => {
 
 const Authentication = () => {
   const navigate = useNavigate();
-  const context = useContext(NotificationContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -144,20 +143,14 @@ const Authentication = () => {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             changePassword(values)
               .then((res) => {
-                context.setNotification({
-                  type: "success",
-                  content: "Đổi mật khẩu thành công",
+                enqueueSnackbar("Đổi mật khẩu thành công", {
+                  variant: "success",
                 });
-                context.setOpen(true);
                 setSubmitting(false);
                 resetForm();
               })
               .catch((err) => {
-                context.setNotification({
-                  type: "error",
-                  content: err.response.data,
-                });
-                context.setOpen(true);
+                enqueueSnackbar(err.response.data, { variant: "error" });
                 setSubmitting(false);
                 if (err.response.status === 401) {
                   navigate("/login", {
