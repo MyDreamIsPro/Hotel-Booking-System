@@ -38,14 +38,14 @@ export const createBooking = async (req, res) => {
           $inc: { quantity: -1 },
         }
       );
+      // MARK USER USED DISCOUNT
+      const userUseDiscount = new UserUseDiscount({
+        discount: booking.discount,
+        user: req._id,
+        created_date: TIME_STAMP,
+      });
+      await userUseDiscount.save();
     }
-    // MARK USER USED DISCOUNT
-    const userUseDiscount = new UserUseDiscount({
-      discount: booking.discount,
-      user: req._id,
-      created_date: TIME_STAMP,
-    });
-    await userUseDiscount.save();
 
     const newBooking = new Booking({
       ...booking,

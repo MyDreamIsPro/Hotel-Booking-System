@@ -21,6 +21,7 @@ import Combo from "./pages/Combo";
 import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import PeakDay from "./pages/PeakDay";
+import Chat from "./pages/Chat";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -48,6 +49,7 @@ export default function AppRoutes() {
         <Route path="expense" element={<Expense />} />
         <Route path="backup-restore" element={<BackupRestore />} />
         <Route path="log" element={<Log />} />
+        <Route path="chat" element={<Chat />} />
         <Route path="review" element={<Review />} />
         <Route path="settings" element={<Settings />} />
         <Route path="test" element={<Test />} />

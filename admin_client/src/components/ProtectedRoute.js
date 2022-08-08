@@ -16,7 +16,7 @@ const ProtectedRoute = () => {
         setIsAuthenticated(true);
       })
       .catch(() => {
-        enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "success" });
+        enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "error" });
         navigate("/login", { replace: true });
       });
   }, []);

@@ -31,6 +31,7 @@ const BookingSchema = mongoose.Schema({
     ref: "Discount",
     default: null,
     unique: false,
+    required: false,
   },
   amount: { type: Number, required: true },
   payment_method: { type: String, required: true },

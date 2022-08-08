@@ -4,9 +4,13 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 import { existsSync, mkdirSync } from "fs";
 // custom
+import chatSocket from "./src/socket/chat.js";
+
 import userRoutes from "./src/routes/user.js";
 import adminRoutes from "./src/routes/admin.js";
 import hotelRoutes from "./src/routes/hotel.js";
@@ -33,6 +37,10 @@ const corsOptions = {
 };
 // express
 const app = express();
+const server = createServer(app);
+const socketio = new Server(server, {
+  cors: corsOptions,
+});
 // middleware
 app.use(express.json({ limit: "100mb" }));
 app.use(cors(corsOptions));
@@ -63,7 +71,6 @@ if (!existsSync("BACKUP")) mkdirSync("BACKUP");
 //Connect to DB
 const PORT = process.env.PORT;
 const CONNECTION_URL = "mongodb://127.0.0.1:27017/qq";
-// const CONNECTION_URL = process.env.CONNECTION_URL;
 
 mongoose
   .connect(CONNECTION_URL, {
@@ -71,8 +78,12 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() =>
-    app.listen(PORT, () =>
+    server.listen(PORT, () =>
       console.log(`Server is running on http://localhost:${PORT}`)
     )
   )
   .catch((error) => console.log(error.message));
+
+global.users = new Map();
+global.contacts = new Map();
+chatSocket(socketio);

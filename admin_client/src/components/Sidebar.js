@@ -128,6 +128,12 @@ const links = [
     isAdminRequired: true,
   },
   {
+    text: "Chat",
+    icon: "entypo:chat",
+    path: "/chat",
+    isAdminRequired: false,
+  },
+  {
     text: "Cài đặt",
     icon: "ci:settings-filled",
     path: "/settings",
