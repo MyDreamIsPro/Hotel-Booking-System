@@ -8,13 +8,13 @@ import {
   getInfo,
   changePassword,
   updateInfo,
+  searchUserForChat,
 } from "../controllers/admin.js";
 import { adminAuthMiddleware } from "../middlewares/auth.js";
 import { userUploader } from "../middlewares/uploader.js";
 
 const router = express.Router();
 
-// router.get("/:id", isLoggedIn, getUserInfo);
 router.get("/auth", adminAuthMiddleware, checkAuth);
 router.post("/login", login);
 router.post("/signup", signup);
@@ -30,5 +30,6 @@ router.post(
 
 // ADMIN
 router.get("/user/list/form", adminAuthMiddleware, getAllUserForForm);
+router.post("/user/search/chat", adminAuthMiddleware, searchUserForChat);
 
 export default router;

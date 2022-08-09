@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // UI lib
 import {
-  Button,
   Stack,
   Typography,
   Box,
   styled,
   TextField,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 // UI custom
-import Page from "../../../components/Page";
 import Contact from "./Contact";
+import SearchingContact from "./SearchingContact";
 // logic lib
+import { searchUserForChat } from "../../../api/user";
+// logic custom
+
+//#region CSS
 const RootContainer = styled(Box)((theme) => ({
   width: "25%",
   height: "100%",
@@ -37,18 +41,45 @@ const ListContact = styled(Box)({
     background: "#555",
   },
 });
-// logic custom
+
+//#endregion
 //----------------------------
 
 const ContactSection = ({ listContact, setCurrentContact }) => {
+  const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const handleOpenSearching = () => setSearching(true);
+  const handleQuitSearching = () => setSearching(false);
+  useEffect(() => {
+    setLoading(true);
+    const timeout_id = setTimeout(() => {
+      if (searchText !== "") {
+        searchUserForChat(searchText)
+          .then((res) => {
+            setLoading(false);
+            console.log(res.data);
+          })
+          .catch((err) => {
+            setLoading(false);
+            console.log(err);
+          });
+      }
+    }, [500]);
+    return () => clearTimeout(timeout_id);
+  }, [searchText]);
   return (
     <RootContainer>
       <Stack p={2} style={{ height: 90 }}>
         <TextField
           name="contact"
           placeholder="Tìm kiếm"
-          //   onFocus={() => console.log("focus ne")}
-          //   onBlur={() => console.log("lose focus ne")}
+          autoComplete="password"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onFocus={handleOpenSearching}
+          onBlur={handleQuitSearching}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -58,19 +89,39 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
           }}
         />
       </Stack>
-      <ListContact>
-        {listContact.length > 0 ? (
-          listContact.map((item, index) => (
-            <Contact
-              key={index}
-              data={item}
-              setCurrentContact={setCurrentContact}
-            />
-          ))
+      <ListContact
+      // style={{ display: searching ? "none" : "block" }}
+      >
+        {!searching ? (
+          listContact.length > 0 ? (
+            listContact.map((item, index) => (
+              <Contact
+                key={index}
+                data={item}
+                setCurrentContact={setCurrentContact}
+              />
+            ))
+          ) : (
+            <Typography textAlign="center" variant="body1" fontWeight="bold">
+              Chưa có ai
+            </Typography>
+          )
+        ) : !loading ? (
+          searchResult.length > 0 ? (
+            searchResult.map((item, index) => (
+              <SearchingContact
+                key={index}
+                data={item}
+                setCurrentContact={setCurrentContact}
+              />
+            ))
+          ) : (
+            <Typography textAlign="center" variant="body1" mx={1}>
+              Không tìm thấy liên hệ với từ khóa {searchText}
+            </Typography>
+          )
         ) : (
-          <Typography textAlign="center" variant="body1" fontWeight="bold">
-            Chưa có ai
-          </Typography>
+          <CircularProgress style={{ color: "#252525" }} />
         )}
       </ListContact>
     </RootContainer>

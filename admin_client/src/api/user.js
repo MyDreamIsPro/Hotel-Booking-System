@@ -15,3 +15,5 @@ export const getInfo = () => API.get("/admin");
 
 // management
 export const getAllUserForForm = () => API.get("/admin/user/list/form");
+export const searchUserForChat = (text) =>
+  API.post("/admin/user/search/chat", text);

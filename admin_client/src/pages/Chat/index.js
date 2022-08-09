@@ -48,11 +48,13 @@ const Chat = () => {
     });
 
     socketRef.current.on("add-user", (data) => {
-      setListContact((prevList) =>
-        prevList.length > 0
-          ? prevList.map((item) => (item._id === data._id ? data : item))
-          : [data]
-      );
+      setListContact((prevList) => {
+        if (prevList.some((item) => data._id === item._id)) {
+          return prevList.map((item) => (item._id === data._id ? data : item));
+        } else {
+          return [...prevList, data];
+        }
+      });
     });
 
     socketRef.current.on("receive-conversation", (data) => {
@@ -101,6 +103,7 @@ const Chat = () => {
       </Stack>
       <Typography variant="h4">SOCKET: {info?.socket_id}</Typography>
       <Typography variant="h4">MONGO: {info?._id}</Typography>
+      <Typography variant="h4">NAME: {info?.full_name}</Typography>
       <RootContainer boxShadow={3}>
         <ContactSection
           listContact={listContact}
