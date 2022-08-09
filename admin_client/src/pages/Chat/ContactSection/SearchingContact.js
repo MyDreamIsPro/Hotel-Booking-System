@@ -13,8 +13,11 @@ const RootContainer = styled("div")((theme) => ({
 // logic custom
 //----------------------------
 
-const SearchingContact = ({ data, setCurrentContact }) => {
-  const changeCurrentContact = () => setCurrentContact(data);
+const SearchingContact = ({ data, setCurrentContact, handleQuitSearching }) => {
+  const changeCurrentContact = () => {
+    setCurrentContact(data);
+    handleQuitSearching();
+  };
   return (
     <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
       <RootContainer>

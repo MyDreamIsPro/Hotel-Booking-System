@@ -4,7 +4,7 @@ import events from "./events.js";
 const chatSocket = (io) => {
   io.use(authMiddleware).on("connection", (socket) => {
     // pre-setup
-    console.log(socket.id + " has connect");
+    // console.log(socket.id + " has connect");
     global.users.set(socket.user._id.toString(), socket.id);
 
     socket.emit("get-info", { ...socket.user, socket_id: socket.id });
@@ -22,7 +22,7 @@ const chatSocket = (io) => {
     });
 
     socket.on("disconnect", () => {
-      console.log(socket.id + " has disconnected");
+      // console.log(socket.id + " has disconnected");
     });
 
     //events

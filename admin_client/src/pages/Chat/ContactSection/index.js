@@ -51,15 +51,18 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const handleOpenSearching = () => setSearching(true);
-  const handleQuitSearching = () => setSearching(false);
+  const handleQuitSearching = () => {
+    setSearchText("");
+    setSearching(false);
+  };
   useEffect(() => {
     setLoading(true);
     const timeout_id = setTimeout(() => {
       if (searchText !== "") {
-        searchUserForChat(searchText)
+        searchUserForChat({ name: searchText })
           .then((res) => {
             setLoading(false);
-            console.log(res.data);
+            setSearchResult(res.data);
           })
           .catch((err) => {
             setLoading(false);
@@ -79,7 +82,7 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onFocus={handleOpenSearching}
-          onBlur={handleQuitSearching}
+          // onBlur={handleQuitSearching}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -113,6 +116,7 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
                 key={index}
                 data={item}
                 setCurrentContact={setCurrentContact}
+                handleQuitSearching={handleQuitSearching}
               />
             ))
           ) : (
@@ -121,7 +125,9 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
             </Typography>
           )
         ) : (
-          <CircularProgress style={{ color: "#252525" }} />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress style={{ color: "#252525" }} />
+          </div>
         )}
       </ListContact>
     </RootContainer>
