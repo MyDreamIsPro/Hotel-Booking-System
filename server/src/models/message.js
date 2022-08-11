@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 
 const MessageSchema = mongoose.Schema({
-  sender: {
+  chat_group: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "ChatGroup",
     required: true,
-    unique: false,
   },
-  receiver: {
+  sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -18,10 +17,6 @@ const MessageSchema = mongoose.Schema({
     required: true,
   },
   created_date: {
-    type: Date,
-    default: new Date(),
-  },
-  modified_date: {
     type: Date,
     default: new Date(),
   },

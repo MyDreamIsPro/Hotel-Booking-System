@@ -12,6 +12,10 @@ const UserSchema = mongoose.Schema({
   },
   banned: { type: Boolean, default: false },
   role: { type: Number, default: INTEGER.CUSTOMER_ROLE },
+  chat_groups: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "ChatGroup" }],
+    default: [],
+  },
   created_date: { type: Date, default: new Date() },
   modified_date: { type: Date, default: new Date() },
 });

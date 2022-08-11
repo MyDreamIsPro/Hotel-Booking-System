@@ -38,6 +38,7 @@ export const authMiddleware = async (socket, next) => {
     _id: user._id.toString(),
     full_name: user.full_name,
     profile_image: user.profile_image,
+    chat_groups: user.chat_groups,
   };
   global.contacts.set(user._id.toString(), user);
   socket.user = user;

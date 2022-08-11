@@ -178,6 +178,7 @@ export const searchUserForChat = async (req, res) => {
       $and: [
         { role: { $ne: INTEGER.CUSTOMER_ROLE } },
         { full_name: { $regex: ".*" + data.name + ".*" } },
+        { _id: { $ne: req._id } },
       ],
     });
     res.status(200).json(user);
