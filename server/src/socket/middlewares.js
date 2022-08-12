@@ -27,20 +27,18 @@ export const authMiddleware = async (socket, next) => {
     process.env.ACCESS_TOKEN_SECRET_KEY
   );
 
-  let user = await User.findOne({ _id: decoded_data.id });
+  let user = await User.findOne({ _id: decoded_data.id }).populate(
+    "chat_groups",
+    "_id users"
+  );
 
   if (!user) {
     next(error);
     return;
   }
 
-  user = {
-    _id: user._id.toString(),
-    full_name: user.full_name,
-    profile_image: user.profile_image,
-    chat_groups: user.chat_groups,
-  };
-  global.contacts.set(user._id.toString(), user);
+  user._id = user._id.toString();
+  global.contacts.set(user._id, user);
   socket.user = user;
   next();
 };

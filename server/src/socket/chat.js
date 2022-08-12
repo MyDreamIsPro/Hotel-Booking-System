@@ -5,10 +5,14 @@ const chatSocket = (io) => {
   io.use(authMiddleware).on("connection", (socket) => {
     // pre-setup
     // console.log(socket.id + " has connect");
-    console.log(socket.user);
-    global.users.set(socket.user._id.toString(), socket.id);
+    global.users.set(socket.user._id, socket.id);
 
-    socket.emit("get-info", { ...socket.user, socket_id: socket.id });
+    socket.emit("get-info", {
+      _id: socket.user._id,
+      full_name: socket.user.full_name,
+      profile_image: socket.user.profile_image,
+      socket_id: socket.id,
+    });
     socket.emit("get-all-contact", socket.user.chat_groups);
 
     socket.on("disconnect", () => {

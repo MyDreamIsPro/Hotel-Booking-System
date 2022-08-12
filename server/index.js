@@ -41,7 +41,7 @@ const server = createServer(app);
 const socketio = new Server(server, {
   cors: corsOptions,
 });
-// middleware
+// middlewares
 app.use(express.json({ limit: "100mb" }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -86,4 +86,5 @@ mongoose
 
 global.users = new Map();
 global.contacts = new Map();
+global.rooms = new Map();
 chatSocket(socketio);

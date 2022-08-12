@@ -14,6 +14,10 @@ const ChatGroupSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  private: {
+    type: Boolean,
+    required: true,
+  },
   modified_date: { type: Date, default: new Date() },
   created_date: { type: Date, default: new Date() },
 });
