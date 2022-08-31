@@ -177,7 +177,7 @@ export const searchUserForChat = async (req, res) => {
     const user = await User.find({
       $and: [
         { role: { $ne: INTEGER.CUSTOMER_ROLE } },
-        { full_name: { $regex: ".*" + data.name + ".*" } },
+        { full_name: { $regex: ".*" + data.name + ".*", $options: "i" } },
         { _id: { $ne: req._id } },
       ],
     });

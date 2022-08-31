@@ -2,14 +2,15 @@ import Message from "../models/message.js";
 import User from "../models/user.js";
 import GroupChat from "../models/chat_group.js";
 
-const events = (socket) => {
+const events = (socket, io) => {
   const user = socket.user;
   socket.on("send-message", async (data) => {
     //check if exist a conversation between sender and receiver
     let found_group;
     let message;
+    let found = false;
+
     if (user.chat_groups.length > 0) {
-      let found = false;
       for (let group of user.chat_groups) {
         for (let user of group.users) {
           if (group.private && user === data.receiver) {
@@ -63,20 +64,35 @@ const events = (socket) => {
         },
         { new: true }
       );
+      await User.updateMany(
+        { $or: [{ _id: data.sender }, { _id: data.receiver }] },
+        {
+          $push: { chat_groups: found_group._id },
+        }
+      );
     }
 
-    //get receiver socket
+    // get receiver socket
+    // const receiver_socket = global.users.get(data.receiver);
+    // socket.join(found_group._id.toString());
+    // const returned_message = await Message.findOne({ _id: message._id })
+    //   .populate("sender", "_id full_name profile_image")
+    //   .populate("receiver", "_id full_name profile_image");
 
-    const receiver_socket = global.users.get(data.receiver);
-    if (receiver_socket) {
-      const message = new Message(data);
-      await message.save();
-      const returned_message = await Message.findOne({ _id: message._id })
-        .populate("sender", "_id full_name profile_image")
-        .populate("receiver", "_id full_name profile_image");
-      socket.to(receiver_socket).emit("receive-message", returned_message);
-      socket.emit("send-message-completed", returned_message);
-    }
+    // if (found) {
+    //   io.in(found_group._id.toString()).emit(
+    //     "receive-message-from-room",
+    //     returned_message
+    //   );
+    // } else {
+    //   // if receiver is online
+    //   if (receiver_socket) {
+    //     socket.to(receiver_socket).emit("receive-message", returned_message);
+    //     socket.emit("send-message-completed", returned_message);
+    //   } else {
+    //     socket.emit("send-message-completed", returned_message);
+    //   }
+    // }
   });
 };
 

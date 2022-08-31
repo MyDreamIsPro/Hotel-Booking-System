@@ -20,7 +20,7 @@ const chatSocket = (io) => {
     });
 
     //events
-    events(socket);
+    events(socket, io);
   });
 };
 

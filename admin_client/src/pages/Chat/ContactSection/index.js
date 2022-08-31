@@ -45,7 +45,7 @@ const ListContact = styled(Box)({
 //#endregion
 //----------------------------
 
-const ContactSection = ({ listContact, setCurrentContact }) => {
+const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -58,7 +58,7 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
   useEffect(() => {
     setLoading(true);
     const timeout_id = setTimeout(() => {
-      if (searchText !== "") {
+      if (searchText.trim() !== "") {
         searchUserForChat({ name: searchText })
           .then((res) => {
             setLoading(false);
@@ -68,6 +68,9 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
             setLoading(false);
             console.log(err);
           });
+      } else {
+        setLoading(false);
+        setSearchResult([]);
       }
     }, [500]);
     return () => clearTimeout(timeout_id);
@@ -99,6 +102,7 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
           listContact.length > 0 ? (
             listContact.map((item, index) => (
               <Contact
+                user_id={user_id}
                 key={index}
                 data={item}
                 setCurrentContact={setCurrentContact}
@@ -121,7 +125,7 @@ const ContactSection = ({ listContact, setCurrentContact }) => {
             ))
           ) : (
             <Typography textAlign="center" variant="body1" mx={1}>
-              Không tìm thấy liên hệ với từ khóa {searchText}
+              Không tìm thấy liên hệ với từ khóa "{searchText}"
             </Typography>
           )
         ) : (

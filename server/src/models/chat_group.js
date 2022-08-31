@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const ChatGroupSchema = mongoose.Schema({
-  name: { type: String, trim: true, required: true },
+  name: { type: String, trim: true, default: "" },
   users: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     default: [],

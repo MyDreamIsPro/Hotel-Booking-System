@@ -45,6 +45,7 @@ const Chat = () => {
 
     socketRef.current.on("get-all-contact", (data) => {
       setListContact(data);
+      console.log(data);
     });
 
     socketRef.current.on("add-user", (data) => {
@@ -59,6 +60,10 @@ const Chat = () => {
 
     socketRef.current.on("receive-conversation", (data) => {
       setListMessage(data);
+    });
+
+    socketRef.current.on("receive-message-from-room", (data) => {
+      setListMessage((prevList) => [...prevList, data]);
     });
 
     socketRef.current.on("send-message-completed", (data) => {
@@ -106,6 +111,7 @@ const Chat = () => {
       <Typography variant="h4">NAME: {info?.full_name}</Typography>
       <RootContainer boxShadow={3}>
         <ContactSection
+          user_id={info?._id}
           listContact={listContact}
           setCurrentContact={setCurrentContact}
         />

@@ -21,19 +21,40 @@ const AvatarSection = styled("div")((theme) => ({
 // logic custom
 //----------------------------
 
-const Contact = ({ data, setCurrentContact }) => {
+const Contact = ({ user_id, data, setCurrentContact }) => {
   const changeCurrentContact = () => setCurrentContact(data);
+  const getConversationImage = () => {
+    return data.users[0]._id === user_id
+      ? {
+          name: data.users[1].full_name,
+          profile_image: data.users[1].profile_image,
+        }
+      : {
+          name: data.users[0].full_name,
+          profile_image: data.users[0].profile_image,
+        };
+  };
+  const room_info = data.private
+    ? getConversationImage()
+    : {
+        name: data.name,
+        profile_image: "/static/message.png",
+      };
+
   return (
     <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
       <RootContainer>
         <AvatarSection>
           <img
-            src={data.profile_image}
+            // src={data.profile_image}
+            src={room_info.profile_image}
             alt="contact image"
             style={{
-              width: "95%",
+              // width: "95%",
+              height: 50,
+              width: 50,
               borderRadius: "50%",
-              objectFit: "cover",
+              objectFit: "contain",
               backgroundColor: "gray",
             }}
           />
@@ -47,7 +68,7 @@ const Contact = ({ data, setCurrentContact }) => {
             }}
           >
             <Typography variant="body1" fontWeight="bold">
-              {data.full_name}
+              {room_info.name}
             </Typography>
             <Typography variant="caption">21:01</Typography>
           </div>
@@ -58,9 +79,9 @@ const Contact = ({ data, setCurrentContact }) => {
               width: "100%",
             }}
           >
-            <Typography noWrap variant="body2">
-              Hi Xoxo [ 5483233192 ], you will be muted until you read the rules
-              to the end!
+            <Typography textAlign="left" noWrap variant="body2">
+              {user_id === data.last_user._id && "Bạn: "}
+              {data.last_message.content}
             </Typography>
           </div>
         </div>
