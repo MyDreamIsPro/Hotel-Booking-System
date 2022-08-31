@@ -1,6 +1,11 @@
+// UI lib
 import { ButtonBase, Stack, styled, Typography } from "@mui/material";
-
+// UI custom
 // logic lib
+// logic custom
+import { formatDateForChat } from "../../../utils/date";
+
+//#region CSS
 const RootContainer = styled("div")((theme) => ({
   width: "100%",
   backgroundColor: "#FFF",
@@ -18,7 +23,7 @@ const AvatarSection = styled("div")((theme) => ({
   alignItems: "center",
   // backgroundColor: "gray",
 }));
-// logic custom
+//#endregion
 //----------------------------
 
 const Contact = ({ user_id, data, setCurrentContact }) => {
@@ -70,7 +75,9 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
             <Typography variant="body1" fontWeight="bold">
               {room_info.name}
             </Typography>
-            <Typography variant="caption">21:01</Typography>
+            <Typography variant="caption">
+              {formatDateForChat(data.last_message.created_date)}
+            </Typography>
           </div>
           <div
             style={{

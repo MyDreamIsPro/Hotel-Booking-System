@@ -81,7 +81,7 @@ const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
         <TextField
           name="contact"
           placeholder="Tìm kiếm"
-          autoComplete="password"
+          autoComplete="off"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onFocus={handleOpenSearching}

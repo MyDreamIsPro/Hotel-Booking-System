@@ -27,3 +27,8 @@ export const formatDateWithHour = (date, symbol = "/") => {
     d.getFullYear()
   );
 };
+
+export const formatDateForChat = (date) => {
+  const d = new Date(date);
+  return convertDate(d.getHours()) + ":" + convertDate(d.getMinutes());
+};
