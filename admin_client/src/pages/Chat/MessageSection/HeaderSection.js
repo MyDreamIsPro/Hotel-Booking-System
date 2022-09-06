@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import React from "react";
 import { INTEGER } from "../../../constants";
-const MessageHeader = ({ data }) => {
+const HeaderSection = ({ data }) => {
   return (
     <div
       style={{
@@ -26,7 +26,7 @@ const MessageHeader = ({ data }) => {
             }}
           />
           <Typography variant="body1" fontWeight="bold">
-            {data.full_name}
+            {data.name}
           </Typography>
         </div>
       )}
@@ -34,4 +34,4 @@ const MessageHeader = ({ data }) => {
   );
 };
 
-export default MessageHeader;
+export default HeaderSection;

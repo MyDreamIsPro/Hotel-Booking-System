@@ -1,8 +1,8 @@
-import React from "react";
 import Typography from "@mui/material/Typography";
+import { formatDateForChat } from "../../../utils/date";
 
-const TEXT = "Reprehenderit ut voluptas sapiente ratione nostrum est.";
 const Message = ({ type = "left", data }) => {
+  const date = formatDateForChat(data.created_date);
   if (type === "right")
     return (
       <div
@@ -14,7 +14,7 @@ const Message = ({ type = "left", data }) => {
           marginBottom: 5,
         }}
       >
-        <Typography variant="body2">09:12</Typography>
+        <Typography variant="body2">{date}</Typography>
         <div
           style={{
             backgroundColor: "#a9c9fc",
@@ -59,7 +59,7 @@ const Message = ({ type = "left", data }) => {
           >
             {data.content}
           </div>
-          <Typography variant="body2">09:12</Typography>
+          <Typography variant="body2">{date}</Typography>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
-// UI lib
-import { ButtonBase, Stack, styled, Typography } from "@mui/material";
-// UI custom
+import { ButtonBase, styled, Typography } from "@mui/material";
+
 // logic lib
 // logic custom
 import { formatDateForChat } from "../../../utils/date";
@@ -27,14 +26,15 @@ const AvatarSection = styled("div")((theme) => ({
 //----------------------------
 
 const Contact = ({ user_id, data, setCurrentContact }) => {
-  const changeCurrentContact = () => setCurrentContact(data);
   const getConversationImage = () => {
     return data.users[0]._id === user_id
       ? {
+          id: data._id,
           name: data.users[1].full_name,
           profile_image: data.users[1].profile_image,
         }
       : {
+          id: data._id,
           name: data.users[0].full_name,
           profile_image: data.users[0].profile_image,
         };
@@ -42,9 +42,11 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
   const room_info = data.private
     ? getConversationImage()
     : {
+        id: data._id,
         name: data.name,
         profile_image: "/static/message.png",
       };
+  const changeCurrentContact = () => setCurrentContact(room_info);
 
   return (
     <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
@@ -53,7 +55,7 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
           <img
             // src={data.profile_image}
             src={room_info.profile_image}
-            alt="contact image"
+            alt="contact"
             style={{
               // width: "95%",
               height: 50,

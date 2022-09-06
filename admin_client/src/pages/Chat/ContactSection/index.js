@@ -8,11 +8,13 @@ import {
   TextField,
   InputAdornment,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 // UI custom
 import Contact from "./Contact";
 import SearchingContact from "./SearchingContact";
+import Iconify from "../../../components/Iconify";
 // logic lib
 import { searchUserForChat } from "../../../api/user";
 // logic custom
@@ -77,7 +79,19 @@ const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
   }, [searchText]);
   return (
     <RootContainer>
-      <Stack p={2} style={{ height: 90 }}>
+      <Stack
+        p={2}
+        style={{ height: 90 }}
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <IconButton
+          onClick={handleQuitSearching}
+          style={{ marginRight: 10, height: 50, width: 50 }}
+        >
+          <Iconify icon="ep:close-bold" />
+        </IconButton>
         <TextField
           name="contact"
           placeholder="Tìm kiếm"
@@ -85,7 +99,7 @@ const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onFocus={handleOpenSearching}
-          // onBlur={handleQuitSearching}
+          fullWidth
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

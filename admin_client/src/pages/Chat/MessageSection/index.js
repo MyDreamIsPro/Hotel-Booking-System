@@ -4,7 +4,7 @@ import { Box, styled } from "@mui/material";
 // UI custom
 import ListMessage from "./ListMessage";
 import ActionSection from "./ActionSection";
-import MessageHeader from "./MessageHeader";
+import HeaderSection from "./HeaderSection";
 // logic lib
 const RootContainer = styled(Box)((theme) => ({
   width: "75%",
@@ -16,7 +16,7 @@ const RootContainer = styled(Box)((theme) => ({
 const MessageSection = ({ listMessage, currentContact, sender, socket }) => {
   return (
     <RootContainer>
-      <MessageHeader data={currentContact} />
+      <HeaderSection data={currentContact} />
       <ListMessage listMessage={listMessage} sender={sender} />
       <ActionSection
         socket={socket}

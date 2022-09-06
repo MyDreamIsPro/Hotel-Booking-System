@@ -31,7 +31,7 @@ const ListMessage = ({ listMessage, sender }) => {
     <RootContainer>
       {listMessage.map((item, index) => (
         <Message
-          key={index}
+          key={item._id}
           data={item}
           type={item.sender._id === sender ? "right" : "left"}
         />
