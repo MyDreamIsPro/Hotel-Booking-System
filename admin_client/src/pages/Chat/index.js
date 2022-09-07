@@ -40,12 +40,14 @@ const Chat = () => {
       query: "role=admin",
     });
 
-    socketRef.current.on("get-info", (data) => {
-      setInfo(data);
-    });
-
-    socketRef.current.on("get-all-contact", (data) => {
-      setListMessage(data.filter((item) => !item.isEmpty));
+    socketRef.current.on("get-initial-data", (data) => {
+      setInfo({
+        _id: data._id,
+        full_name: data.full_name,
+        profile_image: data.profile_image,
+        socket_id: data.socket_id,
+      });
+      setListContact(data.chat_groups.filter((item) => !item.isEmpty));
     });
 
     socketRef.current.on("add-user", (data) => {
@@ -103,6 +105,7 @@ const Chat = () => {
           user_id={info?._id}
           listContact={listContact}
           setCurrentContact={setCurrentContact}
+          socket={socketRef.current}
         />
         <MessageSection
           listMessage={listMessage}

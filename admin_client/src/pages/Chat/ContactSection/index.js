@@ -47,7 +47,12 @@ const ListContact = styled(Box)({
 //#endregion
 //----------------------------
 
-const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
+const ContactSection = ({
+  socket,
+  user_id,
+  listContact,
+  setCurrentContact,
+}) => {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -131,6 +136,7 @@ const ContactSection = ({ user_id, listContact, setCurrentContact }) => {
           searchResult.length > 0 ? (
             searchResult.map((item, index) => (
               <SearchingContact
+                socket={socket}
                 key={index}
                 data={item}
                 setCurrentContact={setCurrentContact}

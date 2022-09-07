@@ -21,7 +21,7 @@ const MessageSection = ({ listMessage, currentContact, sender, socket }) => {
       <ActionSection
         socket={socket}
         sender={sender}
-        receiver={currentContact?._id}
+        group={currentContact?.id}
       />
     </RootContainer>
   );

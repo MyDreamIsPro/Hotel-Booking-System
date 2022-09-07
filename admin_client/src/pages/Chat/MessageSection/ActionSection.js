@@ -3,16 +3,16 @@ import { IconButton } from "@mui/material";
 import Iconify from "../../../components/Iconify";
 import { INTEGER } from "../../../constants";
 
-const ActionSection = ({ socket, sender, receiver }) => {
+const ActionSection = ({ socket, sender, group }) => {
   const [message, setMessage] = useState("");
   const handleSendMessage = () => {
     if (message === "") return;
-    if (!receiver) return alert("Vui lòng chọn người gửi");
+    if (!group) return alert("Vui lòng chọn người gửi");
 
     const message_package = {
       sender: sender,
-      receiver: receiver,
-      content: message,
+      group: group,
+      content: message.trim(),
       created_date: new Date(),
     };
 

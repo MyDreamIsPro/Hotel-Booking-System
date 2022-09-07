@@ -86,7 +86,5 @@ mongoose
   )
   .catch((error) => console.log(error.message));
 
-global.users = new Map();
-global.contacts = new Map();
-global.rooms = new Map();
+global.mongo_to_socket = new Map();
 chatSocket(socketio);

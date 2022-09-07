@@ -1,4 +1,1 @@
-- Send message to an existed contact
-- Process after click on a searching contact
-    + Create a group between two or more paticipants with an empty flag
-    + Send first message
+- Send message to all socket instead of to room

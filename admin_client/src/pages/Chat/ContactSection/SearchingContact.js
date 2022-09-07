@@ -14,8 +14,12 @@ const RootContainer = styled("div")((theme) => ({
 // logic custom
 //----------------------------
 
-const SearchingContact = ({ data, setCurrentContact, handleQuitSearching }) => {
-  console.log(data);
+const SearchingContact = ({
+  socket,
+  data,
+  setCurrentContact,
+  handleQuitSearching,
+}) => {
   const changeCurrentContact = () => {
     searchChatGroup(data._id)
       .then((res) => {
@@ -24,6 +28,7 @@ const SearchingContact = ({ data, setCurrentContact, handleQuitSearching }) => {
           name: data.full_name,
           profile_image: data.profile_image,
         });
+        socket.emit("join", res.data);
         handleQuitSearching();
       })
       .catch((err) => {
