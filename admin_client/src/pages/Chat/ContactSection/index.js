@@ -16,7 +16,7 @@ import Contact from "./Contact";
 import SearchingContact from "./SearchingContact";
 import Iconify from "../../../components/Iconify";
 // logic lib
-import { searchUserForChat } from "../../../api/user";
+import { searchUserForChat } from "../../../api/chat";
 // logic custom
 
 //#region CSS

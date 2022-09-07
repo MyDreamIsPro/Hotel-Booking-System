@@ -6,7 +6,9 @@ const chatSocket = (io) => {
     // pre-setup
     // console.log(socket.id + " has connect");
     global.users.set(socket.user._id, socket.id);
-
+    for (let group of socket.user.chat_groups) {
+      socket.join(group._id.toString());
+    }
     socket.emit("get-info", {
       _id: socket.user._id,
       full_name: socket.user.full_name,

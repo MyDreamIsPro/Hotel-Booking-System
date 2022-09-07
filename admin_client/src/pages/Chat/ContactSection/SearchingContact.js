@@ -1,4 +1,5 @@
 import { ButtonBase, styled, Typography } from "@mui/material";
+import { searchChatGroup } from "../../../api/chat";
 
 // logic lib
 const RootContainer = styled("div")((theme) => ({
@@ -14,9 +15,21 @@ const RootContainer = styled("div")((theme) => ({
 //----------------------------
 
 const SearchingContact = ({ data, setCurrentContact, handleQuitSearching }) => {
+  console.log(data);
   const changeCurrentContact = () => {
-    setCurrentContact(data);
-    handleQuitSearching();
+    searchChatGroup(data._id)
+      .then((res) => {
+        setCurrentContact({
+          id: res.data,
+          name: data.full_name,
+          profile_image: data.profile_image,
+        });
+        handleQuitSearching();
+      })
+      .catch((err) => {
+        console.log(err);
+        handleQuitSearching();
+      });
   };
   return (
     <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>

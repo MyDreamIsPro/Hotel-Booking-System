@@ -18,6 +18,10 @@ const ChatGroupSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  isEmpty: {
+    type: Boolean,
+    default: true,
+  },
   modified_date: { type: Date, default: new Date() },
   created_date: { type: Date, default: new Date() },
 });

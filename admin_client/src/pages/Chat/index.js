@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { io } from "socket.io-client";
 // logic custom
-import { getGroupMessages } from "../../api/message";
+import { getListMessage } from "../../api/chat";
 import { STRING } from "../../constants";
 //#region CSS
 const RootContainer = styled(Box)((theme) => ({
@@ -45,7 +45,7 @@ const Chat = () => {
     });
 
     socketRef.current.on("get-all-contact", (data) => {
-      setListContact(data);
+      setListMessage(data.filter((item) => !item.isEmpty));
     });
 
     socketRef.current.on("add-user", (data) => {
@@ -56,10 +56,6 @@ const Chat = () => {
           return [...prevList, data];
         }
       });
-    });
-
-    socketRef.current.on("receive-conversation", (data) => {
-      setListMessage(data);
     });
 
     socketRef.current.on("receive-message-from-room", (data) => {
@@ -84,7 +80,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (currentContact) {
-      getGroupMessages(currentContact.id)
+      getListMessage(currentContact.id)
         .then((res) => setListMessage(res.data))
         .catch((err) => console.log(err));
     }

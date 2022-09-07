@@ -8,7 +8,6 @@ import {
   getInfo,
   changePassword,
   updateInfo,
-  searchUserForChat,
 } from "../controllers/admin.js";
 import { adminAuthMiddleware } from "../middlewares/auth.js";
 import { userUploader } from "../middlewares/uploader.js";
@@ -30,6 +29,5 @@ router.post(
 
 // ADMIN
 router.get("/user/list/form", adminAuthMiddleware, getAllUserForForm);
-router.post("/user/search/chat", adminAuthMiddleware, searchUserForChat);
 
 export default router;

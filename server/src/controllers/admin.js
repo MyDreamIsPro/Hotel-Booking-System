@@ -170,20 +170,3 @@ export const getAllUserForForm = async (req, res) => {
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
-
-export const searchUserForChat = async (req, res) => {
-  const data = req.body;
-  try {
-    const user = await User.find({
-      $and: [
-        { role: { $ne: INTEGER.CUSTOMER_ROLE } },
-        { full_name: { $regex: ".*" + data.name + ".*", $options: "i" } },
-        { _id: { $ne: req._id } },
-      ],
-    });
-    res.status(200).json(user);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
-  }
-};
