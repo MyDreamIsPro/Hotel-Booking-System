@@ -6,6 +6,7 @@ const chatSocket = (io) => {
     // pre-setup
     // console.log(socket.id + " has connect");
     global.mongo_to_socket.set(socket.user._id, socket.id);
+    socket.join(socket.user._id);
     for (let group of socket.user.chat_groups) {
       socket.join(group._id.toString());
     }

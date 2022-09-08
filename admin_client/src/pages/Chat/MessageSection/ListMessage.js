@@ -29,7 +29,7 @@ const ListMessage = ({ listMessage, sender }) => {
   }, [listMessage]);
   return (
     <RootContainer>
-      {listMessage.map((item, index) => (
+      {listMessage.map((item) => (
         <Message
           key={item._id}
           data={item}

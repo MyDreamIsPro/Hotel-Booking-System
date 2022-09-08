@@ -60,14 +60,6 @@ const Chat = () => {
       });
     });
 
-    socketRef.current.on("receive-message-from-room", (data) => {
-      setListMessage((prevList) => [...prevList, data]);
-    });
-
-    socketRef.current.on("send-message-completed", (data) => {
-      setListMessage((prevList) => [...prevList, data]);
-    });
-
     socketRef.current.on("connect_error", (err) => {
       if (err.data && err.data === 401) {
         enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "error" });
@@ -86,6 +78,23 @@ const Chat = () => {
         .then((res) => setListMessage(res.data))
         .catch((err) => console.log(err));
     }
+
+    socketRef.current.on("receive-message", (data) => {
+      if (currentContact?.id === data.chat_group) {
+        setListMessage((prevList) => [...prevList, data]);
+      }
+    });
+
+    socketRef.current.on("send-message-completed", (data) => {
+      if (currentContact?.id === data.chat_group) {
+        setListMessage((prevList) => [...prevList, data]);
+      }
+    });
+
+    return () => {
+      socketRef.current.off("receive-message");
+      socketRef.current.off("send-message-completed");
+    };
   }, [currentContact]);
   return (
     <Page title="Chat">

@@ -3,7 +3,6 @@ import User from "../models/user.js";
 import GroupChat from "../models/chat_group.js";
 
 const events = (socket, io) => {
-  const user = socket.user;
   socket.on("send-message", async (data) => {
     const message = new Message({
       chat_group: data.group,
@@ -13,20 +12,29 @@ const events = (socket, io) => {
     });
     await message.save();
     const group = await GroupChat.findByIdAndUpdate(
-      found_group._id,
+      data.group,
       {
         last_message: message._id,
         last_user: data.sender,
         modified_date: data.created_date,
+        isEmpty: false,
       },
       { new: true }
-    );
+    ).populate("last_user", ["_id", "full_name", "profile_image"]);
 
-    // for(let )
+    message.sender = group.last_user;
+
+    let room;
+    for (let user of group.users) {
+      room = user.toString();
+      if (room !== data.sender) {
+        io.in(room).emit("receive-message", message);
+      }
+    }
+    socket.emit("send-message-completed", message);
   });
   socket.on("join", (room) => {
     socket.join(room);
-    console.log(socket.id + " joined " + room);
   });
 };
 
