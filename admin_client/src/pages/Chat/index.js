@@ -79,21 +79,19 @@ const Chat = () => {
         .catch((err) => console.log(err));
     }
 
-    socketRef.current.on("receive-message", (data) => {
-      if (currentContact?.id === data.chat_group) {
-        setListMessage((prevList) => [...prevList, data]);
-      }
-    });
-
-    socketRef.current.on("send-message-completed", (data) => {
-      if (currentContact?.id === data.chat_group) {
-        setListMessage((prevList) => [...prevList, data]);
+    socketRef.current.on("new-message", (group) => {
+      setListContact((prevList) => {
+        const temp = prevList.filter((item) => item._id !== group._id);
+        return [group, ...temp];
+      });
+      console.log(group);
+      if (currentContact?.id === group?._id) {
+        setListMessage((prevList) => [...prevList, group.last_message]);
       }
     });
 
     return () => {
-      socketRef.current.off("receive-message");
-      socketRef.current.off("send-message-completed");
+      socketRef.current.off("new-message");
     };
   }, [currentContact]);
   return (

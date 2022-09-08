@@ -6,7 +6,10 @@ import { INTEGER } from "../../../constants";
 const ActionSection = ({ socket, sender, group }) => {
   const [message, setMessage] = useState("");
   const handleSendMessage = () => {
-    if (message === "") return;
+    if (message.trim() === "") {
+      setMessage("");
+      return;
+    }
     if (!group) return alert("Vui lòng chọn người gửi");
 
     const message_package = {

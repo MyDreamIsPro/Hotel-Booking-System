@@ -1,5 +1,4 @@
 import Message from "../models/message.js";
-import User from "../models/user.js";
 import GroupChat from "../models/chat_group.js";
 
 const events = (socket, io) => {
@@ -20,18 +19,23 @@ const events = (socket, io) => {
         isEmpty: false,
       },
       { new: true }
-    ).populate("last_user", ["_id", "full_name", "profile_image"]);
-
-    message.sender = group.last_user;
+    )
+      .populate({
+        path: "last_message",
+        populate: [
+          {
+            path: "sender",
+            model: "User",
+          },
+        ],
+      })
+      .populate("users");
 
     let room;
     for (let user of group.users) {
-      room = user.toString();
-      if (room !== data.sender) {
-        io.in(room).emit("receive-message", message);
-      }
+      room = user._id.toString();
+      io.in(room).emit("new-message", group);
     }
-    socket.emit("send-message-completed", message);
   });
   socket.on("join", (room) => {
     socket.join(room);

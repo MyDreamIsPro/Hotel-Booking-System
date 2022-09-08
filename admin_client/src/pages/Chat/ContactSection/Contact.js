@@ -89,7 +89,7 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
             }}
           >
             <Typography textAlign="left" noWrap variant="body2">
-              {user_id === data.last_user._id && "Bạn: "}
+              {user_id === data.last_user && "Bạn: "}
               {data.last_message.content}
             </Typography>
           </div>

@@ -30,6 +30,7 @@ export const authMiddleware = async (socket, next) => {
   let user = await User.findOne({ _id: decoded_data.id })
     .populate({
       path: "chat_groups",
+      options: { sort: { modified_date: -1 } },
       populate: [
         {
           path: "users",
@@ -38,10 +39,6 @@ export const authMiddleware = async (socket, next) => {
         {
           path: "last_message",
           model: "Message",
-        },
-        {
-          path: "last_user",
-          model: "User",
         },
       ],
     })
