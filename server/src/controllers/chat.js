@@ -7,18 +7,25 @@ import { STRING, INTEGER } from "../constants/constants.js";
 export const getListMessage = async (req, res) => {
   const { group_id } = req.params;
   try {
-    const data = await Message.find({ chat_group: group_id })
+    const group = await GroupChat.findOne({ _id: group_id }).populate("users");
+
+    if (!group) return res.status(404).send(STRING.GROUP_NOT_FOUND);
+
+    const list_message = await Message.find({ chat_group: group_id })
       .populate("sender")
       .lean();
-    for (let message of data) {
+    for (let message of list_message) {
       message.sender._id = message.sender._id.toString();
     }
     // setTimeout(() => {
-    res.status(202).send(data);
+    res.status(202).json({
+      group: group,
+      list_message: list_message,
+    });
     // }, 1000);
   } catch (error) {
     console.log(error);
-    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+    res.status(500).send(STRING.GROUP_NOT_FOUND);
   }
 };
 

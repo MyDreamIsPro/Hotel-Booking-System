@@ -54,6 +54,7 @@ export const STRING = {
   OLD_PASSWORD_WRONG: "Mật khẩu cũ không chính xác",
   PERMISSION_DENIED: "Tài khoản này không được cấp quyền truy cập",
   DELETE_RELATED_RECORD: "Không thể xóa do có bản ghi liên quan",
+  GROUP_NOT_FOUND: "Cuộc trò chuyện không tồn tại",
 
   AUTHENTICATION_FAILED:
     "Qúy khách vui lòng đăng nhập để thực hiện chức năng này",

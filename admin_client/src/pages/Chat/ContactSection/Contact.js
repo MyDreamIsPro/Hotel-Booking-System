@@ -25,7 +25,7 @@ const AvatarSection = styled("div")((theme) => ({
 //#endregion
 //----------------------------
 
-const Contact = ({ user_id, data, setCurrentContact }) => {
+const Contact = ({ user_id, data, setCurrentContact, setSearchParams }) => {
   const getConversationImage = () => {
     return data.users[0]._id === user_id
       ? {
@@ -46,7 +46,9 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
         name: data.name,
         profile_image: "/static/message.png",
       };
-  const changeCurrentContact = () => setCurrentContact(room_info);
+  const changeCurrentContact = () => {
+    setSearchParams({ t: data._id });
+  };
 
   return (
     <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
@@ -61,7 +63,7 @@ const Contact = ({ user_id, data, setCurrentContact }) => {
               height: 50,
               width: 50,
               borderRadius: "50%",
-              objectFit: "contain",
+              objectFit: "cover",
               backgroundColor: "gray",
             }}
           />

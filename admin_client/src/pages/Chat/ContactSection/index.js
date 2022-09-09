@@ -52,6 +52,7 @@ const ContactSection = ({
   user_id,
   listContact,
   setCurrentContact,
+  setSearchParams,
 }) => {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -125,6 +126,7 @@ const ContactSection = ({
                 key={index}
                 data={item}
                 setCurrentContact={setCurrentContact}
+                setSearchParams={setSearchParams}
               />
             ))
           ) : (
@@ -141,6 +143,7 @@ const ContactSection = ({
                 data={item}
                 setCurrentContact={setCurrentContact}
                 handleQuitSearching={handleQuitSearching}
+                setSearchParams={setSearchParams}
               />
             ))
           ) : (

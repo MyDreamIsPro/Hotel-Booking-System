@@ -6,7 +6,7 @@ import Page from "../../components/Page";
 import ContactSection from "./ContactSection";
 import MessageSection from "./MessageSection";
 // logic lib
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { io } from "socket.io-client";
 // logic custom
@@ -15,7 +15,7 @@ import { STRING } from "../../constants";
 //#region CSS
 const RootContainer = styled(Box)((theme) => ({
   width: "100%",
-  height: 600,
+  height: 540,
   borderRadius: 8,
   display: "flex",
   overflow: "hidden",
@@ -29,10 +29,13 @@ const Chat = () => {
   const navigate = useNavigate();
   const socketRef = useRef();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [listMessage, setListMessage] = useState([]);
   const [listContact, setListContact] = useState([]);
   const [currentContact, setCurrentContact] = useState();
   const [info, setInfo] = useState();
+
+  // console.log(searchParams.get("t"));
 
   useEffect(() => {
     socketRef.current = io(STRING.SERVER_URL, {
@@ -73,18 +76,42 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    if (currentContact) {
-      getListMessage(currentContact.id)
-        .then((res) => setListMessage(res.data))
-        .catch((err) => console.log(err));
+    if (searchParams.get("t") && info) {
+      getListMessage(searchParams.get("t"))
+        .then((res) => {
+          const group = res.data.group;
+          const room_info = group.private
+            ? group.users[0]._id === info._id
+              ? {
+                  id: group._id,
+                  name: group.users[1].full_name,
+                  profile_image: group.users[1].profile_image,
+                }
+              : {
+                  id: group._id,
+                  name: group.users[0].full_name,
+                  profile_image: group.users[0].profile_image,
+                }
+            : {
+                id: group._id,
+                name: group.name,
+                profile_image: "/static/message.png",
+              };
+          setCurrentContact(room_info);
+          setListMessage(res.data.list_message);
+        })
+        .catch((err) => {
+          enqueueSnackbar(err.response.data, { variant: "error" });
+        });
     }
+  }, [searchParams, info]);
 
+  useEffect(() => {
     socketRef.current.on("new-message", (group) => {
       setListContact((prevList) => {
         const temp = prevList.filter((item) => item._id !== group._id);
         return [group, ...temp];
       });
-      console.log(group);
       if (currentContact?.id === group?._id) {
         setListMessage((prevList) => [...prevList, group.last_message]);
       }
@@ -113,6 +140,7 @@ const Chat = () => {
           listContact={listContact}
           setCurrentContact={setCurrentContact}
           socket={socketRef.current}
+          setSearchParams={setSearchParams}
         />
         <MessageSection
           listMessage={listMessage}
