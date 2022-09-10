@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CreateIcon from "@mui/icons-material/Create";
 // UI custom
 import Contact from "./Contact";
 import SearchingContact from "./SearchingContact";
@@ -20,10 +21,11 @@ import { searchUserForChat } from "../../../api/chat";
 // logic custom
 
 //#region CSS
-const RootContainer = styled(Box)((theme) => ({
+const RootContainer = styled(Box)(({ theme }) => ({
   width: "25%",
   height: "100%",
   borderRight: "2px solid #637381",
+  position: "relative",
 }));
 
 const ListContact = styled(Box)({
@@ -42,16 +44,16 @@ const ListContact = styled(Box)({
   "&::-webkit-scrollbar-thumb:hover": {
     background: "#555",
   },
+  margin: "0 5px",
 });
 
 //#endregion
 //----------------------------
 
 const ContactSection = ({
-  socket,
   user_id,
+  currentContactId,
   listContact,
-  setCurrentContact,
   setSearchParams,
 }) => {
   const [searching, setSearching] = useState(false);
@@ -94,7 +96,11 @@ const ContactSection = ({
       >
         <IconButton
           onClick={handleQuitSearching}
-          style={{ marginRight: 10, height: 50, width: 50 }}
+          style={{
+            marginRight: 10,
+            height: 50,
+            width: 50,
+          }}
         >
           <Iconify icon="ep:close-bold" />
         </IconButton>
@@ -115,9 +121,7 @@ const ContactSection = ({
           }}
         />
       </Stack>
-      <ListContact
-      // style={{ display: searching ? "none" : "block" }}
-      >
+      <ListContact>
         {!searching ? (
           listContact.length > 0 ? (
             listContact.map((item, index) => (
@@ -125,8 +129,8 @@ const ContactSection = ({
                 user_id={user_id}
                 key={index}
                 data={item}
-                setCurrentContact={setCurrentContact}
                 setSearchParams={setSearchParams}
+                currentContactId={currentContactId}
               />
             ))
           ) : (
@@ -138,10 +142,8 @@ const ContactSection = ({
           searchResult.length > 0 ? (
             searchResult.map((item, index) => (
               <SearchingContact
-                socket={socket}
                 key={index}
                 data={item}
-                setCurrentContact={setCurrentContact}
                 handleQuitSearching={handleQuitSearching}
                 setSearchParams={setSearchParams}
               />
@@ -157,6 +159,25 @@ const ContactSection = ({
           </div>
         )}
       </ListContact>
+      {/* <IconButton
+        sx={{
+          width: 50,
+          height: 50,
+          backgroundColor: "primary.main",
+          position: "absolute",
+          right: 10,
+          bottom: 10,
+          "&:hover": {
+            backgroundColor: "primary.light",
+          },
+        }}
+      >
+        <CreateIcon
+          style={{
+            color: "#FFF",
+          }}
+        />
+      </IconButton> */}
     </RootContainer>
   );
 };

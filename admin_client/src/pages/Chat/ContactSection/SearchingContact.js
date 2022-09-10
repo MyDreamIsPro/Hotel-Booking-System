@@ -14,21 +14,11 @@ const RootContainer = styled("div")((theme) => ({
 // logic custom
 //----------------------------
 
-const SearchingContact = ({
-  socket,
-  data,
-  setCurrentContact,
-  handleQuitSearching,
-}) => {
+const SearchingContact = ({ data, setSearchParams, handleQuitSearching }) => {
   const changeCurrentContact = () => {
     searchChatGroup(data._id)
       .then((res) => {
-        setCurrentContact({
-          id: res.data,
-          name: data.full_name,
-          profile_image: data.profile_image,
-        });
-        socket.emit("join", res.data);
+        setSearchParams({ t: res.data });
         handleQuitSearching();
       })
       .catch((err) => {
@@ -37,7 +27,10 @@ const SearchingContact = ({
       });
   };
   return (
-    <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
+    <ButtonBase
+      style={{ width: "100%", borderRadius: 5 }}
+      onClick={changeCurrentContact}
+    >
       <RootContainer>
         <img
           src={data.profile_image}

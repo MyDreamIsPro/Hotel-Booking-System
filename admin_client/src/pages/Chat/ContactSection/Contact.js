@@ -1,17 +1,18 @@
+// UI lib
 import { ButtonBase, styled, Typography } from "@mui/material";
-
+// UI custom
 // logic lib
-// logic custom
 import { formatDateForChat } from "../../../utils/date";
-
+// logic custom
 //#region CSS
-const RootContainer = styled("div")((theme) => ({
+const RootContainer = styled("div")(({ theme }) => ({
   width: "100%",
   backgroundColor: "#FFF",
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
+  borderRadius: 5,
   padding: 10,
 }));
 const AvatarSection = styled("div")((theme) => ({
@@ -20,12 +21,10 @@ const AvatarSection = styled("div")((theme) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  // backgroundColor: "gray",
 }));
 //#endregion
 //----------------------------
-
-const Contact = ({ user_id, data, setCurrentContact, setSearchParams }) => {
+const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
   const getConversationImage = () => {
     return data.users[0]._id === user_id
       ? {
@@ -50,9 +49,28 @@ const Contact = ({ user_id, data, setCurrentContact, setSearchParams }) => {
     setSearchParams({ t: data._id });
   };
 
+  const handleRightClick = (e) => {
+    e.preventDefault();
+    alert("right click");
+    const xPos = e.pageX + "px";
+    const yPos = e.pageY + "px";
+    console.log(xPos, yPos);
+  };
+
   return (
-    <ButtonBase style={{ width: "100%" }} onClick={changeCurrentContact}>
-      <RootContainer>
+    <ButtonBase
+      style={{ width: "100%", borderRadius: 5 }}
+      onClick={changeCurrentContact}
+      onContextMenu={handleRightClick}
+    >
+      <RootContainer
+        sx={
+          currentContactId === data._id && {
+            bgcolor: "primary.main",
+            color: "#FFF",
+          }
+        }
+      >
         <AvatarSection>
           <img
             // src={data.profile_image}
@@ -64,7 +82,7 @@ const Contact = ({ user_id, data, setCurrentContact, setSearchParams }) => {
               width: 50,
               borderRadius: "50%",
               objectFit: "cover",
-              backgroundColor: "gray",
+              // backgroundColor: "gray",
             }}
           />
         </AvatarSection>

@@ -2,7 +2,6 @@ import Typography from "@mui/material/Typography";
 import { formatDateForChat } from "../../../utils/date";
 
 const Message = ({ type = "left", data }) => {
-  console.log(new Date(data.created_date));
   const date = formatDateForChat(data.created_date);
   if (type === "right")
     return (

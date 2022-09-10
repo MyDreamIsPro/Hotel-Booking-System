@@ -13,9 +13,9 @@ import { io } from "socket.io-client";
 import { getListMessage } from "../../api/chat";
 import { STRING } from "../../constants";
 //#region CSS
-const RootContainer = styled(Box)((theme) => ({
+const RootContainer = styled(Box)(({ theme }) => ({
   width: "100%",
-  height: 540,
+  height: 500,
   borderRadius: 8,
   display: "flex",
   overflow: "hidden",
@@ -138,8 +138,7 @@ const Chat = () => {
         <ContactSection
           user_id={info?._id}
           listContact={listContact}
-          setCurrentContact={setCurrentContact}
-          socket={socketRef.current}
+          currentContactId={currentContact?.id}
           setSearchParams={setSearchParams}
         />
         <MessageSection
