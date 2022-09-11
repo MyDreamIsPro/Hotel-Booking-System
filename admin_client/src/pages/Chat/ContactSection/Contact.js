@@ -2,7 +2,7 @@
 import { ButtonBase, styled, Typography } from "@mui/material";
 // UI custom
 // logic lib
-import { formatDateForChat } from "../../../utils/date";
+import { convertContactTime } from "../../../utils/date";
 // logic custom
 //#region CSS
 const RootContainer = styled("div")(({ theme }) => ({
@@ -98,7 +98,7 @@ const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
               {room_info.name}
             </Typography>
             <Typography variant="caption">
-              {formatDateForChat(data.last_message.created_date)}
+              {convertContactTime(data.last_message.created_date)}
             </Typography>
           </div>
           <div

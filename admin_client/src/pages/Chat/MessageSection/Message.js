@@ -1,8 +1,8 @@
 import Typography from "@mui/material/Typography";
-import { formatDateForChat } from "../../../utils/date";
+import { convertChatMessageTime } from "../../../utils/date";
 
 const Message = ({ type = "left", data }) => {
-  const date = formatDateForChat(data.created_date);
+  const date = convertChatMessageTime(data.created_date);
   if (type === "right")
     return (
       <div
