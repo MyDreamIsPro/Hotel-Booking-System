@@ -11,11 +11,12 @@ import {
   IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import CreateIcon from "@mui/icons-material/Create";
+import AddIcon from "@mui/icons-material/Add";
 // UI custom
 import Contact from "./Contact";
 import SearchingContact from "./SearchingContact";
 import Iconify from "../../../components/Iconify";
+import CreateGroupDialog from "./CreateGroupDialog";
 // logic lib
 import { searchUserForChat } from "../../../api/chat";
 // logic custom
@@ -56,6 +57,7 @@ const ContactSection = ({
   listContact,
   setSearchParams,
 }) => {
+  const [openCreateGroupDialog, setOpenCreateGroupDialog] = useState(false);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -159,7 +161,7 @@ const ContactSection = ({
           </div>
         )}
       </ListContact>
-      {/* <IconButton
+      <IconButton
         sx={{
           width: 50,
           height: 50,
@@ -167,17 +169,26 @@ const ContactSection = ({
           position: "absolute",
           right: 10,
           bottom: 10,
+          transition: "transform .15s ease",
           "&:hover": {
             backgroundColor: "primary.light",
           },
+          "&:active": {
+            transform: "scale(0.9)",
+          },
         }}
+        onClick={() => setOpenCreateGroupDialog(true)}
       >
-        <CreateIcon
+        <AddIcon
           style={{
             color: "#FFF",
           }}
         />
-      </IconButton> */}
+      </IconButton>
+      <CreateGroupDialog
+        open={openCreateGroupDialog}
+        setOpen={setOpenCreateGroupDialog}
+      />
     </RootContainer>
   );
 };
