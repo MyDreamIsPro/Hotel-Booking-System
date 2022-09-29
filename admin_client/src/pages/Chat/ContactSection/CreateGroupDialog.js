@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
+  Box,
   Button,
   ButtonBase,
   CircularProgress,
@@ -12,8 +13,9 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import SlideTransition from "../../../components/SlideTransition";
-import { searchUserForChat } from "../../../api/chat";
+import { searchUserForChat, createGroupChat } from "../../../api/chat";
 
 const getLastName = (full_name) => {
   const arr = full_name.split(" ");
@@ -112,12 +114,22 @@ const SearchItem = ({ data, setChosenList, setSearchResult }) => {
   );
 };
 
-const CreateGroupDialog = ({ open, setOpen }) => {
+const CreateGroupDialog = ({
+  open,
+  setOpen,
+  setSearchParams,
+  enqueueSnackbar,
+  navigate,
+}) => {
+  const inputFile = useRef(null);
+
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [searchText, setSearchText] = useState("");
   const [chosenList, setChosenList] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
+  const [avatar, setAvatar] = useState();
+  const [preview, setPreview] = useState();
 
   const handleClose = () => {
     setLoading(false);
@@ -125,7 +137,14 @@ const CreateGroupDialog = ({ open, setOpen }) => {
     setSearchText("");
     setChosenList([]);
     setSearchResult([]);
+    setAvatar();
+    setPreview();
     setOpen(false);
+  };
+
+  const handleChangeAvatar = (image) => {
+    setAvatar(image);
+    setPreview(URL.createObjectURL(image));
   };
 
   useEffect(() => {
@@ -139,7 +158,17 @@ const CreateGroupDialog = ({ open, setOpen }) => {
           })
           .catch((err) => {
             setLoading(false);
-            console.log(err);
+            if (!err.response || err.response.status !== 401) {
+              enqueueSnackbar(
+                "Đã có lỗi xảy ra, quý khách vui lòng thử lại sau",
+                { variant: "error" }
+              );
+            } else {
+              enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "error" });
+              navigate("/login", {
+                state: { returnUrl: "/chat" },
+              });
+            }
           });
       } else {
         setLoading(false);
@@ -149,6 +178,10 @@ const CreateGroupDialog = ({ open, setOpen }) => {
 
     return () => clearTimeout(timeout_id);
   }, [searchText]);
+
+  useEffect(() => {
+    return () => URL.revokeObjectURL(preview);
+  }, [preview]);
 
   return (
     <Dialog
@@ -164,6 +197,49 @@ const CreateGroupDialog = ({ open, setOpen }) => {
         THÊM MỚI GROUP CHAT
       </DialogTitle>
       <DialogContent>
+        <Box
+          sx={{
+            margin: "0 auto",
+            height: 100,
+            width: 100,
+            borderRadius: 50,
+            backgroundColor: "#F4F4F4",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+            transition: "background-color .3s ease",
+            position: "relative",
+            "&:hover": {
+              backgroundColor: "#d9d9d9",
+            },
+          }}
+          onClick={() => inputFile.current.click()}
+        >
+          <input
+            type="file"
+            hidden
+            accept="image/*"
+            ref={inputFile}
+            onChange={(e) => handleChangeAvatar(e.target.files[0])}
+          />
+          <CameraAltIcon />
+          {preview && (
+            <img
+              src={preview}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
+            />
+          )}
+        </Box>
         <TextField
           fullWidth
           label="Tên"
@@ -241,7 +317,22 @@ const CreateGroupDialog = ({ open, setOpen }) => {
           <Button variant="outlined" onClick={handleClose}>
             HỦY
           </Button>
-          <Button variant="contained" style={{ marginLeft: 10 }}>
+          <Button
+            variant="contained"
+            style={{ marginLeft: 10 }}
+            onClick={() => {
+              const formData = new FormData();
+              formData.append("name", name);
+              formData.append("members", JSON.stringify(chosenList));
+              formData.append("profile_image", avatar);
+              createGroupChat(formData)
+                .then((res) => {
+                  handleClose();
+                  setSearchParams({ t: res.data });
+                })
+                .catch((err) => console.log(err));
+            }}
+          >
             THÊM
           </Button>
         </Stack>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import Message from "./Message";
 import { Stack, styled, Divider, Typography } from "@mui/material";
 import { INTEGER } from "../../../constants";
@@ -65,14 +65,13 @@ const ListMessage = ({ listMessage, sender }) => {
           !isSameDay(item.created_date, listMessage[index - 1].created_date)
         ) {
           return (
-            <>
-              <TimePoint key={index} data={item.created_date} />
+            <Fragment key={item._id}>
+              <TimePoint data={item.created_date} />
               <Message
-                key={item._id}
                 data={item}
                 type={item.sender._id === sender ? "right" : "left"}
               />
-            </>
+            </Fragment>
           );
         } else {
           return (

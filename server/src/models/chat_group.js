@@ -14,6 +14,10 @@ const ChatGroupSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  profile_image: {
+    type: String,
+    default: "",
+  },
   private: {
     type: Boolean,
     required: true,
@@ -21,6 +25,10 @@ const ChatGroupSchema = mongoose.Schema({
   isEmpty: {
     type: Boolean,
     default: true,
+  },
+  admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   modified_date: { type: Date, default: new Date() },
   created_date: { type: Date, default: new Date() },

@@ -1,1 +1,1 @@
-- Update contact to top if "new-message" or "send-message-completed" occur
+Display group chat with same name in contact search section

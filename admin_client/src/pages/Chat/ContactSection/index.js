@@ -18,8 +18,9 @@ import SearchingContact from "./SearchingContact";
 import Iconify from "../../../components/Iconify";
 import CreateGroupDialog from "./CreateGroupDialog";
 // logic lib
-import { searchUserForChat } from "../../../api/chat";
+import { useNavigate } from "react-router-dom";
 // logic custom
+import { searchUserForChat } from "../../../api/chat";
 
 //#region CSS
 const RootContainer = styled(Box)(({ theme }) => ({
@@ -56,7 +57,9 @@ const ContactSection = ({
   currentContactId,
   listContact,
   setSearchParams,
+  enqueueSnackbar,
 }) => {
+  const navigate = useNavigate();
   const [openCreateGroupDialog, setOpenCreateGroupDialog] = useState(false);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -76,9 +79,19 @@ const ContactSection = ({
             setLoading(false);
             setSearchResult(res.data);
           })
-          .catch((err) => {
+          .catch((error) => {
             setLoading(false);
-            console.log(err);
+            if (!error.response || error.response.status !== 401) {
+              enqueueSnackbar(
+                "Đã có lỗi xảy ra, quý khách vui lòng thử lại sau",
+                { variant: "error" }
+              );
+            } else {
+              enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "error" });
+              navigate("/login", {
+                state: { returnUrl: "/chat" },
+              });
+            }
           });
       } else {
         setLoading(false);
@@ -188,6 +201,9 @@ const ContactSection = ({
       <CreateGroupDialog
         open={openCreateGroupDialog}
         setOpen={setOpenCreateGroupDialog}
+        setSearchParams={setSearchParams}
+        enqueueSnackbar={enqueueSnackbar}
+        navigate={navigate}
       />
     </RootContainer>
   );

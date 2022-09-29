@@ -53,6 +53,23 @@ const roomTypeStorage = multer.diskStorage({
   },
 });
 
+const groupChatStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "STATIC/group_chat");
+  },
+  filename: (req, file, cb) => {
+    const fileName = Date.now() + path.extname(file.originalname);
+
+    const REQUIRED_PATH = path.join("STATIC", "group_chat");
+    if (!existsSync(REQUIRED_PATH))
+      mkdirSync(REQUIRED_PATH, { recursive: true });
+
+    req.body.profile_image = `${STRING.SERVER_URL}/group_chat/${fileName}`;
+    cb(null, fileName);
+  },
+});
+
 export const userUploader = multer({ storage: userStorage });
 export const hotelUploader = multer({ storage: hotelStorage });
 export const roomTypeUploader = multer({ storage: roomTypeStorage });
+export const groupChatUploader = multer({ storage: groupChatStorage });

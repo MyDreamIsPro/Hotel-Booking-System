@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 // UI lib
-import { Button, Stack, Typography, Box, styled } from "@mui/material";
+import { Stack, Typography, Box, styled } from "@mui/material";
 // UI custom
 import Page from "../../components/Page";
 import ContactSection from "./ContactSection";
@@ -13,14 +13,14 @@ import { io } from "socket.io-client";
 import { getListMessage } from "../../api/chat";
 import { STRING } from "../../constants";
 //#region CSS
-const RootContainer = styled(Box)(({ theme }) => ({
+const RootContainer = styled(Box)({
   width: "100%",
-  height: 500,
+  height: "calc(100vh - 220px)",
   borderRadius: 8,
   display: "flex",
   overflow: "hidden",
   backgroundColor: "#FFF",
-}));
+});
 //#endregion
 //----------------------------
 
@@ -34,8 +34,6 @@ const Chat = () => {
   const [listContact, setListContact] = useState([]);
   const [currentContact, setCurrentContact] = useState();
   const [info, setInfo] = useState();
-
-  // console.log(searchParams.get("t"));
 
   useEffect(() => {
     socketRef.current = io(STRING.SERVER_URL, {
@@ -51,16 +49,6 @@ const Chat = () => {
         socket_id: data.socket_id,
       });
       setListContact(data.chat_groups.filter((item) => !item.isEmpty));
-    });
-
-    socketRef.current.on("add-user", (data) => {
-      setListContact((prevList) => {
-        if (prevList.some((item) => data._id === item._id)) {
-          return prevList.map((item) => (item._id === data._id ? data : item));
-        } else {
-          return [...prevList, data];
-        }
-      });
     });
 
     socketRef.current.on("connect_error", (err) => {
@@ -95,7 +83,7 @@ const Chat = () => {
             : {
                 id: group._id,
                 name: group.name,
-                profile_image: "/static/message.png",
+                profile_image: group.profile_image,
               };
           setCurrentContact(room_info);
           setListMessage(res.data.list_message);
@@ -131,15 +119,17 @@ const Chat = () => {
       >
         <Typography variant="h4">CHAT</Typography>
       </Stack>
-      <Typography variant="h4">SOCKET: {info?.socket_id}</Typography>
+      {/* <Typography variant="h4">SOCKET: {info?.socket_id}</Typography>
       <Typography variant="h4">MONGO: {info?._id}</Typography>
-      <Typography variant="h4">NAME: {info?.full_name}</Typography>
+      <Typography variant="h4">NAME: {info?.full_name}</Typography> */}
+
       <RootContainer boxShadow={3}>
         <ContactSection
           user_id={info?._id}
           listContact={listContact}
           currentContactId={currentContact?.id}
           setSearchParams={setSearchParams}
+          enqueueSnackbar={enqueueSnackbar}
         />
         <MessageSection
           listMessage={listMessage}

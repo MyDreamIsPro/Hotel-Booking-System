@@ -43,7 +43,7 @@ const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
     : {
         id: data._id,
         name: data.name,
-        profile_image: "/static/message.png",
+        profile_image: data.profile_image,
       };
   const changeCurrentContact = () => {
     setSearchParams({ t: data._id });
@@ -97,22 +97,26 @@ const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
             <Typography variant="body1" fontWeight="bold">
               {room_info.name}
             </Typography>
-            <Typography variant="caption">
-              {convertContactTime(data.last_message.created_date)}
-            </Typography>
+            {data.last_message && (
+              <Typography variant="caption">
+                {convertContactTime(data.last_message.created_date)}
+              </Typography>
+            )}
           </div>
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              width: "100%",
-            }}
-          >
-            <Typography textAlign="left" noWrap variant="body2">
-              {user_id === data.last_user && "Bạn: "}
-              {data.last_message.content}
-            </Typography>
-          </div>
+          {data.last_message && (
+            <div
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                width: "100%",
+              }}
+            >
+              <Typography textAlign="left" noWrap variant="body2">
+                {user_id === data.last_user && "Bạn: "}
+                {data.last_message.content}
+              </Typography>
+            </div>
+          )}
         </div>
       </RootContainer>
     </ButtonBase>
