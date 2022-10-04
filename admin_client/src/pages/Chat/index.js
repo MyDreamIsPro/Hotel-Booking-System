@@ -89,7 +89,15 @@ const Chat = () => {
           setListMessage(res.data.list_message);
         })
         .catch((err) => {
-          enqueueSnackbar(err.response.data, { variant: "error" });
+          if (!err.response || err.response.status !== 401) {
+            enqueueSnackbar(err.response.data, { variant: "error" });
+          } else {
+            enqueueSnackbar("Phiên đăng nhập hết hạn", { variant: "error" });
+            navigate("/login", {
+              replace: true,
+              state: { returnUrl: `/chat?t=${searchParams.get("t")}` },
+            });
+          }
         });
     }
   }, [searchParams, info]);

@@ -30,18 +30,46 @@ export const getListMessage = async (req, res) => {
 
 export const searchUserForChat = async (req, res) => {
   const data = req.body;
+  const searchText = data.name;
   try {
     const user = await User.find(
       {
         $and: [
           { role: { $ne: INTEGER.CUSTOMER_ROLE } },
-          { full_name: { $regex: ".*" + data.name + ".*", $options: "i" } },
+          { full_name: { $regex: ".*" + searchText + ".*", $options: "i" } },
           { _id: { $ne: req._id } },
         ],
       },
       "_id full_name profile_image"
     );
     res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
+};
+
+export const searchContact = async (req, res) => {
+  const data = req.body;
+  const searchText = data.name;
+  try {
+    const users = await User.find(
+      {
+        $and: [
+          { role: { $ne: INTEGER.CUSTOMER_ROLE } },
+          { full_name: { $regex: ".*" + searchText + ".*", $options: "i" } },
+          { _id: { $ne: req._id } },
+        ],
+      },
+      "_id full_name profile_image"
+    );
+    const groups = await GroupChat.find(
+      {
+        name: { $regex: ".*" + searchText + ".*", $options: "i" },
+      },
+      "_id name profile_image"
+    );
+    res.status(200).json({ users: users, groups: groups });
   } catch (error) {
     console.log(error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);

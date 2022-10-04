@@ -9,6 +9,7 @@ import {
   InputAdornment,
   CircularProgress,
   IconButton,
+  ClickAwayListener,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,7 +21,7 @@ import CreateGroupDialog from "./CreateGroupDialog";
 // logic lib
 import { useNavigate } from "react-router-dom";
 // logic custom
-import { searchUserForChat } from "../../../api/chat";
+import { searchContact } from "../../../api/chat";
 
 //#region CSS
 const RootContainer = styled(Box)(({ theme }) => ({
@@ -46,7 +47,7 @@ const ListContact = styled(Box)({
   "&::-webkit-scrollbar-thumb:hover": {
     background: "#555",
   },
-  margin: "0 5px",
+  margin: "0 9px",
 });
 
 //#endregion
@@ -64,20 +65,25 @@ const ContactSection = ({
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchUserResult, setSearchUserResult] = useState([]);
+  const [searchGroupResult, setSearchGroupResult] = useState([]);
+
   const handleOpenSearching = () => setSearching(true);
+
   const handleQuitSearching = () => {
     setSearchText("");
     setSearching(false);
   };
+
   useEffect(() => {
     setLoading(true);
     const timeout_id = setTimeout(() => {
       if (searchText.trim() !== "") {
-        searchUserForChat({ name: searchText })
+        searchContact({ name: searchText })
           .then((res) => {
             setLoading(false);
-            setSearchResult(res.data);
+            setSearchGroupResult(res.data.groups);
+            setSearchUserResult(res.data.users);
           })
           .catch((error) => {
             setLoading(false);
@@ -95,47 +101,34 @@ const ContactSection = ({
           });
       } else {
         setLoading(false);
-        setSearchResult([]);
+        setSearchGroupResult([]);
+        setSearchUserResult([]);
       }
     }, [500]);
     return () => clearTimeout(timeout_id);
   }, [searchText]);
   return (
     <RootContainer>
-      <Stack
-        p={2}
-        style={{ height: 90 }}
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <IconButton
-          onClick={handleQuitSearching}
-          style={{
-            marginRight: 10,
-            height: 50,
-            width: 50,
-          }}
-        >
-          <Iconify icon="ep:close-bold" />
-        </IconButton>
-        <TextField
-          name="contact"
-          placeholder="Tìm kiếm"
-          autoComplete="off"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onFocus={handleOpenSearching}
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="medium" />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
+      <div style={{ height: 90, padding: 9 }}>
+        <ClickAwayListener onClickAway={handleQuitSearching}>
+          <TextField
+            name="contact"
+            placeholder="Tìm kiếm"
+            autoComplete="off"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onFocus={handleOpenSearching}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="medium" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </ClickAwayListener>
+      </div>
       <ListContact>
         {!searching ? (
           listContact.length > 0 ? (
@@ -149,20 +142,50 @@ const ContactSection = ({
               />
             ))
           ) : (
-            <Typography textAlign="center" variant="body1" fontWeight="bold">
-              Chưa có ai
+            <Typography
+              textAlign="center"
+              variant="body1"
+              fontWeight="bold"
+              style={{ color: "gray" }}
+            >
+              Chưa có liên hệ
             </Typography>
           )
         ) : !loading ? (
-          searchResult.length > 0 ? (
-            searchResult.map((item, index) => (
-              <SearchingContact
-                key={index}
-                data={item}
-                handleQuitSearching={handleQuitSearching}
-                setSearchParams={setSearchParams}
-              />
-            ))
+          searchGroupResult.length > 0 || searchUserResult.length > 0 ? (
+            <>
+              {searchGroupResult.length > 0 && (
+                <Typography fontWeight="bold" style={{ color: "gray" }} mb={1}>
+                  Group
+                </Typography>
+              )}
+              {searchGroupResult.map((item, index) => (
+                <SearchingContact
+                  key={index}
+                  data={item}
+                  handleQuitSearching={handleQuitSearching}
+                  setSearchParams={setSearchParams}
+                />
+              ))}
+              {searchUserResult.length > 0 && (
+                <Typography
+                  fontWeight="bold"
+                  style={{ color: "gray" }}
+                  mt={2}
+                  mb={1}
+                >
+                  User
+                </Typography>
+              )}
+              {searchUserResult.map((item, index) => (
+                <SearchingContact
+                  key={index}
+                  data={item}
+                  handleQuitSearching={handleQuitSearching}
+                  setSearchParams={setSearchParams}
+                />
+              ))}
+            </>
           ) : (
             <Typography textAlign="center" variant="body1" mx={1}>
               Không tìm thấy liên hệ với từ khóa "{searchText}"

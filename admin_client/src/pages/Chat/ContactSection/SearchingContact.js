@@ -14,17 +14,19 @@ const RootContainer = styled("div")((theme) => ({
 // logic custom
 //----------------------------
 
-const SearchingContact = ({ data, setSearchParams, handleQuitSearching }) => {
+const SearchingContact = ({ data, setSearchParams }) => {
   const changeCurrentContact = () => {
-    searchChatGroup(data._id)
-      .then((res) => {
-        setSearchParams({ t: res.data });
-        handleQuitSearching();
-      })
-      .catch((err) => {
-        console.log(err);
-        handleQuitSearching();
-      });
+    if (data.name) {
+      setSearchParams({ t: data._id });
+    } else {
+      searchChatGroup(data._id)
+        .then((res) => {
+          setSearchParams({ t: res.data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   return (
     <ButtonBase
@@ -45,7 +47,7 @@ const SearchingContact = ({ data, setSearchParams, handleQuitSearching }) => {
         />
         <div style={{ width: "80%", marginLeft: 15 }}>
           <Typography variant="body1" textAlign="left" fontWeight="bold">
-            {data.full_name}
+            {data.name ? data.name : data.full_name}
           </Typography>
         </div>
       </RootContainer>

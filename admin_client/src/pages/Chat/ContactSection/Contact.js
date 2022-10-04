@@ -49,19 +49,10 @@ const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
     setSearchParams({ t: data._id });
   };
 
-  const handleRightClick = (e) => {
-    e.preventDefault();
-    alert("right click");
-    const xPos = e.pageX + "px";
-    const yPos = e.pageY + "px";
-    console.log(xPos, yPos);
-  };
-
   return (
     <ButtonBase
       style={{ width: "100%", borderRadius: 5 }}
       onClick={changeCurrentContact}
-      onContextMenu={handleRightClick}
     >
       <RootContainer
         sx={
