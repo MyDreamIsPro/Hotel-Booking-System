@@ -1,1 +1,0 @@
-Display group chat with same name in contact search section

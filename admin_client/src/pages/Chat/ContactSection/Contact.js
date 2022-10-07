@@ -69,8 +69,8 @@ const Contact = ({ user_id, data, currentContactId, setSearchParams }) => {
             alt="contact"
             style={{
               // width: "95%",
-              height: 50,
-              width: 50,
+              height: 45,
+              width: 45,
               borderRadius: "50%",
               objectFit: "cover",
               // backgroundColor: "gray",

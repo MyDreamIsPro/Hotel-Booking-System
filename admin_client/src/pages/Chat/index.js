@@ -15,7 +15,7 @@ import { STRING } from "../../constants";
 //#region CSS
 const RootContainer = styled(Box)({
   width: "100%",
-  height: "calc(100vh - 220px)",
+  height: "calc(100vh - 210px)",
   borderRadius: 8,
   display: "flex",
   overflow: "hidden",

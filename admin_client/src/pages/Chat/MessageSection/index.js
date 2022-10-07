@@ -6,9 +6,12 @@ import ListMessage from "./ListMessage";
 import ActionSection from "./ActionSection";
 import HeaderSection from "./HeaderSection";
 // logic lib
-const RootContainer = styled(Box)((theme) => ({
-  width: "75%",
+const RootContainer = styled(Box)(({ theme }) => ({
+  width: "70%",
   height: "100%",
+  [theme.breakpoints.down(940)]: {
+    width: "100%",
+  },
 }));
 // logic custom
 //----------------------------

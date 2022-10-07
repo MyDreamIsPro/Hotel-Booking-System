@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 // UI lib
 import {
-  Stack,
   Typography,
   Box,
   styled,
@@ -25,10 +24,13 @@ import { searchContact } from "../../../api/chat";
 
 //#region CSS
 const RootContainer = styled(Box)(({ theme }) => ({
-  width: "25%",
+  width: "30%",
   height: "100%",
   borderRight: "2px solid #637381",
   position: "relative",
+  [theme.breakpoints.down(940)]: {
+    display: "none",
+  },
 }));
 
 const ListContact = styled(Box)({
@@ -109,7 +111,8 @@ const ContactSection = ({
   }, [searchText]);
   return (
     <RootContainer>
-      <div style={{ height: 90, padding: 9 }}>
+      {/* <Drawer variant="persistent" anchor="left" open={true}> */}
+      <div style={{ padding: 9, marginBottom: 7 }}>
         <ClickAwayListener onClickAway={handleQuitSearching}>
           <TextField
             name="contact"
@@ -228,6 +231,7 @@ const ContactSection = ({
         enqueueSnackbar={enqueueSnackbar}
         navigate={navigate}
       />
+      {/* </Drawer> */}
     </RootContainer>
   );
 };
