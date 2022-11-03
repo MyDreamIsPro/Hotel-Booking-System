@@ -29,6 +29,7 @@ import discountRoutes from "./src/routes/discount.js";
 import comboRoutes from "./src/routes/combo.js";
 import peakDayRoutes from "./src/routes/peak_day.js";
 import chatRoutes from "./src/routes/chat.js";
+import eventRoutes from "./src/routes/event.js";
 
 // pre-config
 dotenv.config();
@@ -66,6 +67,7 @@ app.use("/discount", discountRoutes);
 app.use("/combo", comboRoutes);
 app.use("/peak_day", peakDayRoutes);
 app.use("/chat", chatRoutes);
+app.use("/event", eventRoutes);
 
 // Pre-create required folder
 if (!existsSync("BACKUP")) mkdirSync("BACKUP");

@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 // UI lib
-import { Stack, Typography, Box, styled } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  Box,
+  styled,
+  ButtonBase,
+  Drawer,
+} from "@mui/material";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 // UI custom
 import Page from "../../components/Page";
 import ContactSection from "./ContactSection";
@@ -20,7 +28,22 @@ const RootContainer = styled(Box)({
   display: "flex",
   overflow: "hidden",
   backgroundColor: "#FFF",
+  position: "relative",
 });
+const ChatSideBarButton = styled(ButtonBase)(({ theme }) => ({
+  position: "absolute",
+  top: 100,
+  left: 0,
+  backgroundColor: theme.palette.primary.main,
+  width: 40,
+  height: 40,
+  borderTopRightRadius: 10,
+  borderBottomRightRadius: 10,
+  color: "#FFF",
+  [theme.breakpoints.up(940)]: {
+    display: "none",
+  },
+}));
 //#endregion
 //----------------------------
 
@@ -34,6 +57,9 @@ const Chat = () => {
   const [listContact, setListContact] = useState([]);
   const [currentContact, setCurrentContact] = useState();
   const [info, setInfo] = useState();
+  const [openContactSection, setOpenContactSection] = useState(false);
+
+  const handleOpenContactSection = () => setOpenContactSection(true);
 
   useEffect(() => {
     socketRef.current = io(STRING.SERVER_URL, {
@@ -132,12 +158,31 @@ const Chat = () => {
       <Typography variant="h4">NAME: {info?.full_name}</Typography> */}
 
       <RootContainer boxShadow={3}>
+        <Drawer
+          variant="temporary"
+          open={openContactSection}
+          anchor="left"
+          onClose={() => setOpenContactSection(false)}
+        >
+          <ContactSection
+            user_id={info?._id}
+            listContact={listContact}
+            currentContactId={currentContact?.id}
+            setSearchParams={setSearchParams}
+            enqueueSnackbar={enqueueSnackbar}
+            open={openContactSection}
+            setOpen={setOpenContactSection}
+          />
+          <Typography>ALOAOSDAOSDAOSDO</Typography>
+        </Drawer>
         <ContactSection
           user_id={info?._id}
           listContact={listContact}
           currentContactId={currentContact?.id}
           setSearchParams={setSearchParams}
           enqueueSnackbar={enqueueSnackbar}
+          open={openContactSection}
+          setOpen={setOpenContactSection}
         />
         <MessageSection
           listMessage={listMessage}
@@ -145,6 +190,9 @@ const Chat = () => {
           sender={info?._id}
           socket={socketRef.current}
         />
+        <ChatSideBarButton onClick={handleOpenContactSection}>
+          <PermContactCalendarIcon />
+        </ChatSideBarButton>
       </RootContainer>
     </Page>
   );

@@ -2,7 +2,7 @@ import { ButtonBase, styled, Typography } from "@mui/material";
 import { searchChatGroup } from "../../../api/chat";
 
 // logic lib
-const RootContainer = styled("div")((theme) => ({
+const RootContainer = styled("div")(({ theme }) => ({
   width: "100%",
   backgroundColor: "#FFF",
   display: "flex",

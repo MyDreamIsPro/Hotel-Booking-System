@@ -1,0 +1,9 @@
+.fc-event {
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.fc-event:hover {
+  filter: brightness(90%);
+}

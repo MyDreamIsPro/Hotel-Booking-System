@@ -15,7 +15,6 @@ import AddIcon from "@mui/icons-material/Add";
 // UI custom
 import Contact from "./Contact";
 import SearchingContact from "./SearchingContact";
-import Iconify from "../../../components/Iconify";
 import CreateGroupDialog from "./CreateGroupDialog";
 // logic lib
 import { useNavigate } from "react-router-dom";
@@ -61,6 +60,7 @@ const ContactSection = ({
   listContact,
   setSearchParams,
   enqueueSnackbar,
+  insideDrawer = false,
 }) => {
   const navigate = useNavigate();
   const [openCreateGroupDialog, setOpenCreateGroupDialog] = useState(false);
@@ -111,7 +111,6 @@ const ContactSection = ({
   }, [searchText]);
   return (
     <RootContainer>
-      {/* <Drawer variant="persistent" anchor="left" open={true}> */}
       <div style={{ padding: 9, marginBottom: 7 }}>
         <ClickAwayListener onClickAway={handleQuitSearching}>
           <TextField
@@ -231,7 +230,6 @@ const ContactSection = ({
         enqueueSnackbar={enqueueSnackbar}
         navigate={navigate}
       />
-      {/* </Drawer> */}
     </RootContainer>
   );
 };

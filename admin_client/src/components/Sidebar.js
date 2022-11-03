@@ -134,6 +134,12 @@ const links = [
     isAdminRequired: false,
   },
   {
+    text: "Lịch",
+    icon: "fa-regular:calendar-alt",
+    path: "/schedule",
+    isAdminRequired: false,
+  },
+  {
     text: "Cài đặt",
     icon: "ci:settings-filled",
     path: "/settings",

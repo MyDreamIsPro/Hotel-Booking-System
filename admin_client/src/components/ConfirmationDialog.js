@@ -22,6 +22,7 @@ import { deleteExpense } from "../redux/actions/expense";
 import { deleteDiscount } from "../redux/actions/discount";
 import { deleteCombo } from "../redux/actions/combo";
 import { deletePeakDay } from "../redux/actions/peak_day";
+import { deleteEvent } from "../redux/actions/event";
 
 // ----------------------------
 const ConfirmationDialog = ({
@@ -31,11 +32,20 @@ const ConfirmationDialog = ({
   id,
   setId,
   deleteType,
+  performSuccess = () => {},
+  performCancel = () => {},
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [doing, setDoing] = useState(false);
+
+  const handleCancel = () => {
+    if (doing) return;
+    setId();
+    performCancel();
+    setOpen(false);
+  };
 
   const handleClose = () => {
     if (doing) return;
@@ -46,6 +56,7 @@ const ConfirmationDialog = ({
   const handleSuccess = () => {
     enqueueSnackbar("Xóa thành công", { variant: "success" });
     setDoing(false);
+    performSuccess();
     handleClose();
   };
 
@@ -86,6 +97,9 @@ const ConfirmationDialog = ({
       case "PEAK_DAY":
         dispatch(deletePeakDay(id, handleSuccess, handleFailure));
         break;
+      case "EVENT":
+        dispatch(deleteEvent(id, handleSuccess, handleFailure));
+        break;
       default:
         alert("Đã xảy ra lỗi, quý khách vui lòng thử lại sau");
         break;
@@ -108,7 +122,7 @@ const ConfirmationDialog = ({
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={handleClose}
+          onClick={handleCancel}
           color="primary"
           variant="outlined"
           style={{ height: 50 }}

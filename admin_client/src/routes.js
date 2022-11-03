@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import PeakDay from "./pages/PeakDay";
 import Chat from "./pages/Chat";
+import Schedule from "./pages/Schedule";
 // ----------------------------------------------------------------------
 
 export default function AppRoutes() {
@@ -50,6 +51,7 @@ export default function AppRoutes() {
         <Route path="backup-restore" element={<BackupRestore />} />
         <Route path="log" element={<Log />} />
         <Route path="chat" element={<Chat />} />
+        <Route path="schedule" element={<Schedule />} />
         <Route path="review" element={<Review />} />
         <Route path="settings" element={<Settings />} />
         <Route path="test" element={<Test />} />
