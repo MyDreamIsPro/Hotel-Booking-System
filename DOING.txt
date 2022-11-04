@@ -3,3 +3,4 @@ For built-in css customization: https://fullcalendar.io/docs/event-display
 Date click: https://fullcalendar.io/docs/date-clicking-selecting
 Event click: https://fullcalendar.io/docs/eventClick
 Change view: https://fullcalendar.io/docs/Calendar-changeView
+Date navigation: https://fullcalendar.io/docs/Calendar-next
