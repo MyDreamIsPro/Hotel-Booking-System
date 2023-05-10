@@ -39,3 +39,6 @@
                     generate the new one
         invalid
             return 401
+
+@SlateJS tutorial
+    https://sushilkbansal.medium.com/customising-slate-js-part-1-adding-material-ui-c98568951258
