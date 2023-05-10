@@ -1,19 +1,11 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/user.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  revokeRefreshToken,
+} from "../utils/token.js";
 import { STRING, INTEGER } from "../constants/constants.js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const COOKIES_EXPIRATION_TIME = 3600000; //ms
-const ACCESS_TOKEN_EXPIRATION_TIME = "1d";
-
-const generateToken = (_id) => {
-  return jwt.sign({ id: _id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
-    expiresIn: ACCESS_TOKEN_EXPIRATION_TIME,
-  });
-};
 
 export const checkAuth = async (req, res) => {
   try {
@@ -96,12 +88,21 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
 
-    const token = generateToken(existedUser._id);
+    const refresh_token = await generateRefreshToken(existedUser._id);
+    const access_token = generateAccessToken(existedUser._id);
 
+    const cookies_expiration = new Date(
+      Date.now() + INTEGER.COOKIES_EXPIRATION_TIME
+    );
     return res
       .status(200)
-      .cookie("admin", token, {
-        expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
+      .cookie("admin_refresh_token", refresh_token, {
+        expires: cookies_expiration,
+        httpOnly: true,
+        secure: false,
+      })
+      .cookie("admin_access_token", access_token, {
+        expires: cookies_expiration,
         httpOnly: true,
         secure: false,
       })
@@ -111,7 +112,7 @@ export const login = async (req, res) => {
         role: existedUser.role,
       });
   } catch (error) {
-    console.log(error);
+    console.log("admin-controller => Login" + error);
     res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
   }
 };
@@ -136,11 +137,21 @@ export const signup = async (req, res) => {
     await newUser.save();
 
     // JWT
-    const token = generateToken(newUser._id);
+    const refresh_token = await generateRefreshToken(newUser._id);
+    const access_token = generateAccessToken(newUser._id);
+
+    const cookies_expiration = new Date(
+      Date.now() + INTEGER.COOKIES_EXPIRATION_TIME
+    );
     return res
       .status(200)
-      .cookie("admin", token, {
-        expires: new Date(Date.now() + COOKIES_EXPIRATION_TIME),
+      .cookie("admin_refresh_token", refresh_token, {
+        expires: cookies_expiration,
+        httpOnly: true,
+        secure: false,
+      })
+      .cookie("admin_access_token", access_token, {
+        expires: cookies_expiration,
         httpOnly: true,
         secure: false,
       })
@@ -156,7 +167,20 @@ export const signup = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.status(200).clearCookie("admin").send("Logout completely");
+  try {
+    const refresh_token = req.cookies.admin_refresh_token;
+    if (refresh_token) {
+      revokeRefreshToken(refresh_token);
+    }
+    res
+      .status(200)
+      .clearCookie("admin_access_token")
+      .clearCookie("admin_refresh_token")
+      .send("Logout completely");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
+  }
 };
 
 export const getAllUserForForm = async (req, res) => {

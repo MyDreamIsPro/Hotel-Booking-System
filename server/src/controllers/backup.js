@@ -37,18 +37,22 @@ export const createBackup = async (req, res) => {
     const databasePath = path.join("BACKUP", backupFolderName, "database");
     const imagePath = path.join("BACKUP", backupFolderName, "images");
     if (!existsSync(databasePath)) mkdirSync(databasePath, { recursive: true });
-
     if (!existsSync(imagePath)) mkdirSync(imagePath, { recursive: true });
 
     exec(
       `mongodump --db=qq --excludeCollection=backups -o  ${databasePath}`,
       (err, stdout, stderr) => {
         if (err) {
+          // delete backup folder if backup process is failed
+          const deleted_path = path.join("BACKUP", backupFolderName);
+          if (existsSync(deleted_path)) {
+            rmSync(deleted_path, { recursive: true });
+          }
           console.log("ERR: ", err);
           return res.status(500).send(STRING.UNEXPECTED_ERROR_MESSAGE);
         }
         if (stderr) {
-          // console.log("STDERR");
+          console.log("STDERR");
         }
         const originalImagePath = "STATIC";
         cpSync(originalImagePath, imagePath, { recursive: true });

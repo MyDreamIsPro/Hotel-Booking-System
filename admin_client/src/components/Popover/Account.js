@@ -131,7 +131,7 @@ export default function AccountPopover({ iconColor }) {
               }
             >
               <Button fullWidth color="inherit" variant="outlined">
-                Logout
+                Đăng xuất
               </Button>
             </Box>
           </>

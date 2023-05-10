@@ -8,11 +8,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const COOKIES_EXPIRATION_TIME = 3600000; //ms
-const ACCESS_TOKEN_EXPIRATION_TIME = "1d";
+const ACCESS_TOKEN_EXPIRATION = 60; // 1 minute
+const REFRESH_TOKEN_EXPIRATION = 60 * 2; // 2 minutes
 
-const generateToken = (_id) => {
+const generateAccessToken = (_id) => {
   return jwt.sign({ id: _id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
-    expiresIn: ACCESS_TOKEN_EXPIRATION_TIME,
+    expiresIn: ACCESS_TOKEN_EXPIRATION,
   });
 };
 
@@ -95,7 +96,7 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(401).send(STRING.WRONG_USERNAME_PASSWORD_ERROR_MESSAGE);
 
-    const token = generateToken(existedUser._id);
+    const token = generateAccessToken(existedUser._id);
     if (existedUser.role === 1998) {
       return res
         .status(200)
@@ -151,7 +152,7 @@ export const signup = async (req, res) => {
     await newUser.save();
 
     // JWT
-    const token = generateToken(newUser._id);
+    const token = generateAccessToken(newUser._id);
     return res
       .status(200)
       .cookie("customer", token, {

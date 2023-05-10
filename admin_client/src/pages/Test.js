@@ -51,7 +51,7 @@ const Test = () => {
         <Button
           variant="contained"
           onClick={() => {
-            if (text) console.log(text);
+            if (text !== "") console.log(text);
             else alert("empty");
           }}
         >

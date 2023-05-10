@@ -1,0 +1,183 @@
+@SOME USEFUL LIBS TO BE USED
+    https://fullcalendar.io/docs/react
+
+@BREAK_POINTS
+    xs, extra-small: 0px
+    sm, small: 600px
+    md, medium: 900px
+    lg, large: 1200px
+    xl, extra-large: 1536px
+
+@SCREEN SIZES
+    size        0px      600px    900px    1200px   1536px
+    innerWidth  |xs      sm       md       lg       xl
+                |--------|--------|--------|--------|-------->
+    width       |   xs   |   sm   |   md   |   lg   |   xl
+
+@QUERY
+    Up query
+        //Match [md, ∞) <=> [900px, ∞)
+        [theme.breakpoints.up('md')]: { 
+            backgroundColor: 'red'
+        },
+    Down query
+        //Match [0, md) <=> [0, 900px)
+        [theme.breakpoints.down('md')]: { 
+            backgroundColor: 'red'
+        },
+
+@useEffect DETAILS
+    useEffect(callback)
+        Callback được gọi sau khi component được mount
+        Callback được gọi mỗi khi component được re-render
+        Callback được gọi mỗi khi component thêm element vào DOM
+
+    useEffect(callback, [])
+        Callback được gọi 1 lần sau khi component được mount
+        (Dùng khi cần xử lý logic 1 lần sau khi component được mount)
+
+    useEffect(callback, [dependencies])
+        Callback được gọi sau khi component được mount
+        Callback được gọi mỗi khi dependencies thay đổi
+
+    Cleanup function
+        Function được trả về bởi useEffect
+        Luôn được gọi trước khi component unmount
+
+@useState DETAILS
+    Component chỉ re-render khi giá trị của state thay đổi khác so với giá trị trước đó
+    (Nếu true => true sẽ không trigger component re-render)
+
+    useState(callback): Giá trị khởi tạo sẽ là giá trị trả về của callback
+    setState(callback): Giá trị thay đổi sẽ là giá trị trả về của callback
+    one-way binding: Giao diện tác động lên Dữ liệu
+    two-ways binding: Giao diện tác động lên Dữ liệu && Dữ liệu tác động lên Giao diện
+
+@useMemo DETAILS
+    Syntax
+        useMemo(callback, [dependencies])
+    Detail
+        useMemo được sử dụng để tránh 1 logic nào đó bị thực hiện lại ko cần thiết bởi việc component re-render
+    Params
+        callback: logic cần tránh thực hiện lại ko cần thiết
+        [dependencies]: tương tự như useEffect, 1 array gồm các dependencies được truyền vào để react biết khi nào logic
+            bên trong callback cần được thực hiện lại
+
+@PASSING FUNCTION
+    const foo = () => {...some logics}
+
+    onClick={foo}
+        You're passing a reference of foo()
+        The function will be called if onClick event triggered
+
+    onClick={() => foo()}
+        You're passing a callback which returns a calling of foo()
+        The function will be called if onClick event triggered
+
+    onClick={foo()}
+        You're calling foo() directly, not passing it
+        The function will be called once and can not be called if onClick event triggered
+
+@MOUNT & UNMOUNT
+    Mount là thời điểm component được add vào React
+    Unmount là thời điểm component bị gỡ ra khỏi React
+
+@TO PREVENT "Can't perform a React state update on an unmounted component" WARNING WHEN USING useEffect
+    useEffect(() => {
+        let isMounted = true;               // note mutable flag
+        someAsyncOperation().then(data => {
+            if (isMounted) setState(data);  // add conditional check
+        })
+        return () => { isMounted = false }; // cleanup toggles value, if unmounted
+    }, []);                                 // adjust dependencies to your needs
+
+@TO PREVENT "MUI: License key not found" WARNING FROM MUI-X
+    Insert [-License] or [-trial-only] to Chrome's Filter bar
+
+@INDEX ROUTE IN REACT ROUTER V6
+    <Route path="/" element={<ProtectedRoute />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        ...
+    This means everytime user enter "/" route, it will automatically re-direct to "/dashboard" route
+
+@flexGrow PARENT BREAKS TABLE SCROLLBAR
+
+@CONTROLLED COMPONENT VS UNCONTROLLED COMPONENT
+    Either you use
+        an uncontrolled Component (-onChange, -value,+defaultValue, +ref)
+        OR you use a controlled component (+onChange, +value, -defaultValue, ref->only if needed).
+    
+    DefaultValue should be used for the uncontrolled ones!
+    
+    - CONTROLLED COMPONENT
+        <Autocomplete className="cb" id={"ansType"} options={ansTypes}
+            ...
+            onChange={obj => this.selectAnsType(obj)}
+            value={this.state.quest.ansType}
+            ... />
+    
+    - UNCONTROLLED COMPONENT
+            defaultAnsType={...};
+            myUncontrolledAutocomplete=React.createRef();
+            <Autocomplete className="cb" id={"ansType"} options={ansTypes}
+                ...
+                defaultValue={this.defaultAnsType}
+                ref={this.myUncontrolledAutocomplete}
+                ... />
+
+@Promise
+    3 states:
+        1 - Pending
+        2 - Fulfilled (resolve)
+        3 - Rejected (reject)
+    Syntax:
+        var my_promise = new Promise(
+            // Executor function
+            function(resolve, reject) {
+                //Do your logic here and consider when to call
+                //data get passed from callback to then and catch below
+                if(OKAY) resolve(data);
+                else reject(data);
+            }
+        )
+        my_promise
+            .then(function(data) { // Resolve, data from above 
+                return 1;
+            })
+            .then(function(data) { // data returned from previous 'then' function, (1 in this case)
+                return 2;
+            })
+            .then(function(data) { // data returned from previous 'then' function, (2 in this case)
+                
+            })
+            .catch(function(data) { // Reject, data from above
+
+            })
+            .finally(function() {
+
+            });
+    Features
+        If 'then' function does not return a promise then the next 'then' function will execute
+        immediately after
+        If 'then' function return a promise then the next 'then' function will wait ultil
+        the promise get resolve to execute
+        If one of 'then' functions get rejected then all 'then' functions on the next will be ignored and 
+        'catch' function will execute
+    Create a fixed promise
+        var resolved_promise = Promise.resolve("success");
+        var rejected_promise = Promise.resolve("fail");
+    Promise.all
+        var promise1 = new Promise(function(resolve) {
+            resolve([1]);
+        })
+        var promise2 = new Promise(function(resolve) {
+            resolve([2, 3]);
+        })
+        Promise.all([promise1, promise2])
+            .then(function(data) { // data is an array of result from all promises
+            })
+            .catch(function() { 
+            })
+            // if a promise get rejected then all remaining promises will be ignored
+            // and catch will execute

@@ -38,6 +38,11 @@ export const INTEGER = {
   // DISCOUNT TYPE
   AMOUNT_DISCOUNT: 0,
   PERCENTAGE_DISCOUNT: 1,
+
+  // TOKEN LENGTH
+  COOKIES_EXPIRATION_TIME: 3600000, //ms
+  ACCESS_TOKEN_EXPIRATION_TIME: 60, // 1 minute
+  REFRESH_TOKEN_EXPIRATION: 2.5 * 60 * 1000, // 2.5 minutes in milliseconds
 };
 
 export const STRING = {
