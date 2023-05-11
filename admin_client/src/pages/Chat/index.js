@@ -64,7 +64,7 @@ const Chat = () => {
   useEffect(() => {
     socketRef.current = io(STRING.SERVER_URL, {
       withCredentials: true,
-      query: "role=admin",
+      query: "role=admin_access_token",
     });
 
     socketRef.current.on("get-initial-data", (data) => {

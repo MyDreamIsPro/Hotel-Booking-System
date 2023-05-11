@@ -1,28 +1,169 @@
-/users/authenticate - public route that accepts HTTP POST requests containing a username and password 
-    in the body. If the username and password are correct then a JWT authentication token and the user 
-    details are returned in the response body, and a refresh token cookie (HTTP Only) is returned in the 
-    response headers.
+// Import React dependencies.
+import { useCallback, useState } from "react";
+// Import the Slate editor factory.
+import { Element, Transforms, createEditor, Editor, Text } from "slate";
 
-/users/refresh-token - public route that accepts HTTP POST requests with a refresh token cookie. 
-    If the cookie exists and the refresh token is valid then a new JWT authentication token and the 
-    user details are returned in the response body, a new refresh token cookie (HTTP Only) is returned 
-    in the response headers and the old refresh token is revoked.
+// Import the Slate components and React plugin.
+import { Slate, Editable, withReact } from "slate-react";
+// --------------------------
+const initialValue = [
+  {
+    type: "paragraph",
+    children: [{ text: "A line of text in a paragraph." }],
+  },
+];
 
-/users/revoke-token - secure route that accepts HTTP POST requests containing a refresh token either 
-    in the body or in a cookie, if both are present the token in the body is used. If the refresh token 
-    is valid and active then it is revoked and can no longer be used to refresh JWT tokens.
+// Define our own custom set of helpers.
+const editorHelper = {
+  isBoldMarkActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => n.bold === true,
+      universal: true,
+    });
 
-/users - secure route that accepts HTTP GET requests and returns a list of all the users in the 
-    application if the HTTP Authorization header contains a valid JWT token. If there is no auth 
-    token or the token is invalid then a 401 Unauthorized response is returned.
+    return !!match;
+  },
 
-/users/{id} - secure route that accepts HTTP GET requests and returns the details of the user with 
-    the specified id.
+  isCodeBlockActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => n.type === "code",
+    });
 
-/users/{id}/refresh-tokens - secure route that accepts HTTP GET requests and returns a list of all 
-    refresh tokens (active and revoked) of the user with the specified id.
+    return !!match;
+  },
 
-/api-docs - swagger documentation for the api
+  toggleBoldMark(editor) {
+    const isActive = editorHelper.isBoldMarkActive(editor);
+    Transforms.setNodes(
+      editor,
+      { bold: isActive ? null : true },
+      { match: (n) => Text.isText(n), split: true }
+    );
+  },
+
+  toggleCodeBlock(editor) {
+    const isActive = editorHelper.isCodeBlockActive(editor);
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : "code" },
+      { match: (n) => Editor.isBlock(editor, n) }
+    );
+  },
+};
+// --------------------------
+const CustomEditor = () => {
+  // Create a Slate editor object that won't change across renders.
+  const [editor] = useState(() => withReact(createEditor()));
+  // Define a rendering function based on the element passed to `props`. We use
+  // `useCallback` here to memoize the function for subsequent renders.
+  const renderElement = useCallback((props) => {
+    switch (props.element.type) {
+      case "code":
+        return <CodeElement {...props} />;
+      default:
+        return <DefaultElement {...props} />;
+    }
+  }, []);
+  // Define a leaf rendering function that is memoized with `useCallback`.
+  const renderLeaf = useCallback((props) => {
+    return <Leaf {...props} />;
+  }, []);
+
+  const handleKeyEvent = (event) => {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    switch (event.key) {
+      // When "`" is pressed, keep our existing code block logic.
+      case "`": {
+        event.preventDefault();
+        editorHelper.toggleCodeBlock(editor);
+        break;
+      }
+
+      // When "B" is pressed, bold the text in the selection.
+      case "b": {
+        event.preventDefault();
+        editorHelper.toggleBoldMark(editor);
+        break;
+      }
+    }
+  };
+  return (
+    // Add the editable component inside the context.
+    <Slate
+      editor={editor}
+      value={initialValue}
+      onChange={(value) => {
+        const isAstChange = editor.operations.some(
+          (op) => "set_selection" !== op.type
+        );
+        if (isAstChange) {
+          // Save the value to Local Storage.
+          const content = JSON.stringify(value);
+          localStorage.setItem("slate_content", content);
+        }
+      }}
+    >
+      {/* Add a toolbar with buttons that call the same methods. */}
+      <div>
+        <button
+          onMouseDown={(event) => {
+            event.preventDefault();
+            editorHelper.toggleBoldMark(editor);
+          }}
+        >
+          Bold
+        </button>
+        <button
+          onMouseDown={(event) => {
+            event.preventDefault();
+            editorHelper.toggleCodeBlock(editor);
+          }}
+        >
+          Code Block
+        </button>
+      </div>
+      <Editable
+        // Pass in the `renderElement` function.
+        renderElement={renderElement}
+        // Pass in the `renderLeaf` function.
+        renderLeaf={renderLeaf}
+        // Define a new handler which prints the key that was pressed.
+        onKeyDown={handleKeyEvent}
+      />
+    </Slate>
+  );
+};
+
+const DefaultElement = (props) => {
+  return <p {...props.attributes}>{props.children}</p>;
+};
+
+// Define a React component renderer for our code blocks.
+const CodeElement = (props) => {
+  return (
+    <pre {...props.attributes}>
+      <code>{props.children}</code>
+    </pre>
+  );
+};
+
+// Define a React component to render leaves with bold text.
+const Leaf = (props) => {
+  return (
+    <span
+      {...props.attributes}
+      style={{ fontWeight: props.leaf.bold ? "bold" : "normal" }}
+    >
+      {props.children}
+    </span>
+  );
+};
+
+export default CustomEditor;
+
 
 
 @Auth
@@ -42,3 +183,9 @@
 
 @SlateJS tutorial
     https://sushilkbansal.medium.com/customising-slate-js-part-1-adding-material-ui-c98568951258
+    https://github.com/ianstormtaylor/slate/blob/main/site/public/index.css
+    https://www.slatejs.org/examples/richtext
+    https://docs.slatejs.org/walkthroughs/01-installing-slate
+    https://minimals.cc/dashboard/blog/new
+    
+    https://www.topcv.vn/viet-cv/outstanding_8

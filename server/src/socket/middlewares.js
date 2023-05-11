@@ -17,7 +17,7 @@ export const authMiddleware = async (socket, next) => {
   const cookies = cookie.parse(socket.request.headers.cookie);
   const ROLE = socket.request._query["role"];
 
-  if (ROLE !== "admin" && ROLE !== "customer" && !cookies[ROLE]) {
+  if (ROLE !== "admin_access_token" && ROLE !== "customer" && !cookies[ROLE]) {
     next(error);
     return;
   }

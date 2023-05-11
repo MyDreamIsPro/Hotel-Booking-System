@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import Page from "../../components/Page";
-import ImagesExample from "./Editor";
+import Editor from "./CustomEditor";
+import RichTextExample from "./RichTextExample";
+import "./index.css";
 //-----------------------------------------
 //#region EXAMPLE
 //#endregion
@@ -12,9 +14,10 @@ const Test = () => {
     <Page title="TEST">
       <Box
         boxShadow={3}
-        style={{ borderRadius: 4, marginTop: 30, padding: 100 }}
+        style={{ borderRadius: 4, marginTop: 30, padding: 20 }}
       >
-        <ImagesExample />
+        <Editor />
+        {/* <RichTextExample /> */}
       </Box>
     </Page>
   );
