@@ -25,3 +25,8 @@ blockquote[dir="rtl"] {
   padding-right: 10px;
   border-right: 2px solid #ddd;
 }
+
+ul,
+ol {
+  list-style-position: inside;
+}
