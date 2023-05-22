@@ -117,6 +117,10 @@ export const toggleMark = (editor, format) => {
   ReactEditor.focus(editor);
 };
 
+export const clearEditor = (editor) => {
+  editor.children = INITIAL_VALUES;
+};
+
 // Elements
 export const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
